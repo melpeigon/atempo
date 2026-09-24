@@ -1,0 +1,6 @@
+# Archivos temporales generados al revisar los PDF de Branding.
+tmp/
+
+# Archivos del sistema.
+.DS_Store
+Thumbs.db
