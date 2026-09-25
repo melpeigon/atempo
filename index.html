@@ -14,7 +14,7 @@
 </head>
 
 <body>
-  <main class="app-shell">
+  <main class="app-shell" id="pantalla-inicio">
     <header class="logo">
       <img src="Branding/logos/SVG/logo%20oscuro.svg" alt="Atempo" />
     </header>
@@ -27,10 +27,23 @@
 
     <section class="agenda" aria-labelledby="agenda-titulo">
       <h2 id="agenda-titulo">Vuestra agenda</h2>
-      <button class="boton-primera-persona" type="button" data-action="add-person">
-        <span class="icono-redondo" aria-hidden="true">+</span>
-        <span class="mensaje-vacio">Empieza añadiendo<br />a la primera persona.</span>
-      </button>
+      <div id="estado-sin-personas">
+        <button class="boton-primera-persona" id="boton-primera-persona" type="button">
+          <span class="icono-redondo" aria-hidden="true">+</span>
+          <span class="mensaje-vacio">
+            Empieza añadiendo<br />a la primera persona.
+          </span>
+        </button>
+      </div>
+
+      <div class="personas-agenda">
+        <div class="lista-personas" id="lista-personas"></div>
+
+        <button class="boton-anadir-otra-persona" id="boton-anadir-otra-persona" type="button" hidden>
+          <span class="icono-redondo" aria-hidden="true">+</span>
+          <span>Añadir<br />persona</span>
+        </button>
+      </div>
     </section>
 
     <section class="planes-hoy" aria-labelledby="titulo-planes-hoy">
@@ -50,6 +63,26 @@
     </footer>
   </main>
 
+  <section class="ficha-persona app-shell" id="ficha-persona" aria-labelledby="titulo-ficha-persona" hidden>
+    <button class="boton-volver" id="boton-volver-inicio" type="button">
+      ← Volver
+    </button>
+
+    <h1 id="titulo-ficha-persona">Ficha de persona</h1>
+    
+    <!-- FICHA PERSONA -->
+
+    <div id="contenido-ficha-persona"></div>
+    <button class="boton-editar-persona" id="boton-editar-persona" type="button">
+      Editar persona
+    </button>
+
+    <button class="boton-eliminar-persona" id="boton-eliminar-persona" type="button">
+      Eliminar persona
+    </button>
+  </section>
+
+  <!-- FORMULARIO NUEVA PERSONA -->
   <dialog class="emergente-nueva-persona" id="emergente-nueva-persona" aria-labelledby="titulo-emergente-nueva-persona">
     <h2 id="titulo-emergente-nueva-persona">Añade una nueva persona</h2>
 
@@ -64,6 +97,8 @@
         <option value="#f2beba">Melocotón</option>
         <option value="#ffeccc">Amarillo</option>
         <option value="#e0dcd6">Gris</option>
+        <option value="#B0C5D4">Azul</option>
+        <option value="#AEC2B3">Verde</option>
       </select>
 
       <label for="icono">Icono</label>
@@ -75,7 +110,7 @@
         <option value="hombre">Hombre</option>
       </select>
 
-      <button type="submit">Guardar</button>
+      <button type="submit" id="boton-guardar-persona">Guardar</button>
     </form>
 
     <button type="button" data-action="cerrar-dialogo-persona">
