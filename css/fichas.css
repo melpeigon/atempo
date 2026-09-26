@@ -40,6 +40,73 @@
   object-fit: contain;
 }
 
+.proximas-actividades-persona {
+  width: 100%;
+  margin-top: 16px;
+  text-align: left;
+}
+
+.proximas-actividades-persona h3 {
+  margin: 0 0 12px;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.lista-proximas-actividades {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.tarjeta-proxima-actividad {
+  min-height: 62px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 13px;
+  background: var(--white);
+}
+
+.icono-proxima-actividad {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-persona);
+}
+
+.icono-proxima-actividad img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.informacion-proxima-actividad {
+  min-width: 0;
+}
+
+.nombre-proxima-actividad {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.fecha-proxima-actividad,
+.mensaje-sin-actividades-persona {
+  margin-top: 3px;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.mensaje-sin-actividades-persona {
+  padding: 14px;
+  border-radius: 13px;
+  background: var(--white);
+}
+
 .ficha-actividad {
   gap: 24px;
   align-items: center;

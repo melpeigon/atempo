@@ -38,6 +38,7 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 
 ## Calendario
 
+- [ ] Crear `js/calendario.js` y `css/calendario.css` para mantener esta pantalla separada.
 - [ ] Crear la pantalla de calendario.
 - [ ] Conectar el botón «Ver calendario».
 - [ ] Mostrar actividades puntuales y recurrentes en sus fechas correspondientes.
@@ -50,8 +51,7 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Abrir la ficha de una persona.
 - [x] Editar personas.
 - [x] Eliminar personas.
-- [ ] Mostrar en la ficha de cada persona sus próximas actividades.
-- [ ] Valorar una confirmación personalizada antes de eliminar una persona.
+- [x] Mostrar en la ficha de cada persona sus próximas actividades.
 
 ## Diseño adaptable y móvil
 
@@ -73,6 +73,8 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 
 ## Ayuda y guía de uso
 
+- [ ] Revisar todos los textos de la aplicación para que sean divertidos, cariñosos, claros y cercanos.
+- [ ] Mantener una voz coherente en mensajes vacíos, ayudas, errores, confirmaciones y notificaciones.
 - [ ] Añadir un botón visible para abrir las instrucciones o guía de la aplicación.
 - [ ] Explicar en la guía que cada persona tiene asignado un color y que ese color identifica también sus actividades.
 - [ ] Explicar brevemente cómo crear personas, añadir actividades, elegir la recurrencia y consultar la agenda.
@@ -80,11 +82,27 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [ ] Explicar la recurrencia anual y el caso especial del 29 de febrero.
 - [ ] Decidir si la guía se mostrará como una pantalla propia o como una ventana emergente.
 
+## Notificaciones — imprescindibles para la versión 1.0
+
+- [ ] Diseñar las opciones de aviso de cada actividad: sin aviso, a la hora, 5, 10, 15 o 30 minutos antes, 1 hora antes y 1 día antes.
+- [ ] Decidir si una actividad puede tener uno o varios avisos.
+- [ ] Añadir al formulario de actividad la elección de cuándo recibir la notificación.
+- [ ] Guardar la configuración del aviso junto con los demás datos de la actividad.
+- [ ] Mostrar en la ficha de actividad cuándo se recibirá la notificación.
+- [ ] Permitir modificar o desactivar posteriormente el aviso de una actividad.
+- [ ] Añadir un botón para activar las notificaciones y solicitar permiso solamente después de pulsarlo.
+- [ ] Convertir Atempo en una aplicación web instalable (PWA), con manifiesto e iconos.
+- [ ] Registrar un `service worker` para recibir y mostrar notificaciones persistentes en móvil.
+- [ ] Guardar las actividades y las suscripciones a notificaciones en una base de datos.
+- [ ] Programar desde el servidor el envío de cada aviso, incluso cuando Atempo esté cerrada.
+- [ ] Probar las notificaciones con la aplicación instalada en Android y en iPhone.
+- [ ] Explicar en la guía cómo instalar Atempo, activar los avisos y modificar sus permisos.
+
 ## Datos y publicación
 
 - [x] Guardar personas y actividades localmente con `localStorage` durante el desarrollo.
-- [ ] Decidir si la aplicación necesitará usuarios y sincronización entre dispositivos.
-- [ ] Si necesita sincronización, configurar una base de datos y autenticación, por ejemplo con Supabase.
+- [ ] Diseñar los usuarios y la sincronización entre dispositivos necesarios para las notificaciones.
+- [ ] Configurar una base de datos y autenticación, por ejemplo con Supabase.
 - [ ] Preparar los datos existentes para poder migrarlos desde `localStorage`.
 - [ ] Publicar una primera versión de prueba.
 - [ ] Probar instalación como aplicación web en el móvil si se convierte en PWA.
@@ -102,3 +120,9 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 
 - [ ] Diferenciar visualmente las actividades cuya hora ya ha pasado.
 - [ ] Valorar un estado manual para marcar una actividad como completada.
+
+## Ideas para versiones futuras
+
+- [ ] Explorar una función de inteligencia artificial que aporte utilidad real a las familias.
+- [ ] Valorar ideas como resumir la semana, detectar conflictos de horarios, sugerir momentos libres o ayudar a redactar recordatorios.
+- [ ] Definir primero el problema que resolverá la IA antes de elegir una herramienta o incorporarla a la aplicación.

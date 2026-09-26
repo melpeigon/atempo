@@ -65,55 +65,106 @@ function obtenerUltimoDiaDelMes(ano, mes) {
   return new Date(ano, mes, 0).getDate();
 }
 
-function obtenerActividadesDeHoy() {
-  const fechaHoyFormatoInput = `${anoActual}-${mesActual}-${diaActual}`;
-  const nombreDiaHoy = nombresDiasSemana[fechaActual.getDay()];
-  const numeroDiaHoy = fechaActual.getDate();
+function convertirFechaAFormatoInput(fecha) {
+  const ano = fecha.getFullYear();
+  const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+  const dia = String(fecha.getDate()).padStart(2, "0");
 
-  const actividadesDeHoy = actividades.filter(function (actividad) {
-    if (actividad.fecha > fechaHoyFormatoInput) {
+  return `${ano}-${mes}-${dia}`;
+}
+
+function convertirTextoEnFecha(fecha) {
+  const partesFecha = fecha.split("-");
+
+  return new Date(
+    Number(partesFecha[0]),
+    Number(partesFecha[1]) - 1,
+    Number(partesFecha[2])
+  );
+}
+
+function actividadOcurreEnFecha(actividad, fechaConsultada) {
+  const fechaConsultadaFormatoInput = convertirFechaAFormatoInput(fechaConsultada);
+
+  if (actividad.fecha > fechaConsultadaFormatoInput) {
+    return false;
+  }
+
+  if (actividad.recurrencia === "puntual") {
+    return actividad.fecha === fechaConsultadaFormatoInput;
+  }
+
+  if (actividad.recurrencia === "semanal") {
+    const nombreDia = nombresDiasSemana[fechaConsultada.getDay()];
+    return (actividad.dias || []).includes(nombreDia);
+  }
+
+  if (actividad.recurrencia === "mensual") {
+    const numeroDiaActividad = Number(actividad.fecha.split("-")[2]);
+    const ultimoDiaMes = obtenerUltimoDiaDelMes(
+      fechaConsultada.getFullYear(),
+      fechaConsultada.getMonth() + 1
+    );
+    const diaActividadEsteMes = Math.min(numeroDiaActividad, ultimoDiaMes);
+
+    return diaActividadEsteMes === fechaConsultada.getDate();
+  }
+
+  if (actividad.recurrencia === "anual") {
+    const partesFechaActividad = actividad.fecha.split("-");
+    const mesActividad = Number(partesFechaActividad[1]);
+    const numeroDiaActividad = Number(partesFechaActividad[2]);
+    const mesConsultado = fechaConsultada.getMonth() + 1;
+
+    if (mesActividad !== mesConsultado) {
       return false;
     }
 
-    if (actividad.recurrencia === "puntual") {
-      return actividad.fecha === fechaHoyFormatoInput;
-    }
+    const ultimoDiaMes = obtenerUltimoDiaDelMes(
+      fechaConsultada.getFullYear(),
+      mesConsultado
+    );
+    const diaActividadEsteAno = Math.min(numeroDiaActividad, ultimoDiaMes);
 
-    if (actividad.recurrencia === "semanal") {
-      return actividad.dias.includes(nombreDiaHoy);
-    }
+    return diaActividadEsteAno === fechaConsultada.getDate();
+  }
 
-    if (actividad.recurrencia === "mensual") {
-      const numeroDiaActividad = Number(actividad.fecha.split("-")[2]);
-      const ultimoDiaMesActual = obtenerUltimoDiaDelMes(
-        fechaActual.getFullYear(),
-        fechaActual.getMonth() + 1
-      );
-      const diaActividadEsteMes = Math.min(numeroDiaActividad, ultimoDiaMesActual);
+  return false;
+}
 
-      return diaActividadEsteMes === numeroDiaHoy;
-    }
+function obtenerProximaFechaActividad(actividad) {
+  const ahora = new Date();
+  const horaActual =
+    `${String(ahora.getHours()).padStart(2, "0")}:${String(ahora.getMinutes()).padStart(2, "0")}`;
+  const hoy = new Date(ahora);
+  hoy.setHours(0, 0, 0, 0);
 
-    if (actividad.recurrencia === "anual") {
-      const partesFechaActividad = actividad.fecha.split("-");
-      const mesActividad = Number(partesFechaActividad[1]);
-      const numeroDiaActividad = Number(partesFechaActividad[2]);
-      const mesActualNumero = fechaActual.getMonth() + 1;
+  let fechaBuscada = new Date(hoy);
+  const fechaInicio = convertirTextoEnFecha(actividad.fecha);
 
-      if (mesActividad !== mesActualNumero) {
-        return false;
+  if (fechaInicio > fechaBuscada) {
+    fechaBuscada = fechaInicio;
+  }
+
+  for (let diasRevisados = 0; diasRevisados <= 370; diasRevisados++) {
+    if (actividadOcurreEnFecha(actividad, fechaBuscada)) {
+      const esHoy = convertirFechaAFormatoInput(fechaBuscada) === convertirFechaAFormatoInput(hoy);
+      const yaHaPasado = esHoy && actividad.hora < horaActual;
+
+      if (!yaHaPasado) {
+        return new Date(fechaBuscada);
       }
-
-      const ultimoDiaMesActual = obtenerUltimoDiaDelMes(
-        fechaActual.getFullYear(),
-        mesActualNumero
-      );
-      const diaActividadEsteAno = Math.min(numeroDiaActividad, ultimoDiaMesActual);
-
-      return diaActividadEsteAno === numeroDiaHoy;
     }
 
-    return false;
+    fechaBuscada.setDate(fechaBuscada.getDate() + 1);
+  }
+
+  return null;
+}
+
+function obtenerActividadesDeHoy() {
+  const actividadesDeHoy = actividades.filter(function (actividad) {
+    return actividadOcurreEnFecha(actividad, fechaActual);
   });
 
   return actividadesDeHoy;

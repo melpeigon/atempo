@@ -96,13 +96,108 @@ function abrirFichaPersona(idPersona) {
   const nombreFichaPersona = document.createElement("h2");
   nombreFichaPersona.textContent = personaSeleccionada.nombre;
 
+  const seccionProximasActividades = document.createElement("section");
+  seccionProximasActividades.classList.add("proximas-actividades-persona");
+
+  const tituloProximasActividades = document.createElement("h3");
+  tituloProximasActividades.textContent = "Próximas actividades";
+
+  const listaProximasActividades = document.createElement("div");
+  listaProximasActividades.classList.add("lista-proximas-actividades");
+
+  const proximasActividades = actividades
+    .filter(function (actividad) {
+      return actividad.personaId === personaSeleccionada.id;
+    })
+    .map(function (actividad) {
+      return {
+        actividad: actividad,
+        proximaFecha: obtenerProximaFechaActividad(actividad),
+      };
+    })
+    .filter(function (proximaActividad) {
+      return proximaActividad.proximaFecha !== null;
+    })
+    .sort(function (primeraActividad, segundaActividad) {
+      const diferenciaFechas =
+        primeraActividad.proximaFecha - segundaActividad.proximaFecha;
+
+      if (diferenciaFechas !== 0) {
+        return diferenciaFechas;
+      }
+
+      return primeraActividad.actividad.hora.localeCompare(
+        segundaActividad.actividad.hora
+      );
+    })
+    .slice(0, 3);
+
+  if (proximasActividades.length === 0) {
+    const mensajeSinActividades = document.createElement("p");
+    mensajeSinActividades.classList.add("mensaje-sin-actividades-persona");
+    mensajeSinActividades.textContent = "Todavía no hay próximas actividades.";
+
+    listaProximasActividades.append(mensajeSinActividades);
+  } else {
+    for (const proximaActividad of proximasActividades) {
+      const tarjetaProximaActividad = document.createElement("article");
+      tarjetaProximaActividad.classList.add("tarjeta-proxima-actividad");
+      tarjetaProximaActividad.style.setProperty(
+        "--color-persona",
+        personaSeleccionada.color
+      );
+
+      const iconoProximaActividad = document.createElement("div");
+      iconoProximaActividad.classList.add("icono-proxima-actividad");
+
+      const imagenProximaActividad = document.createElement("img");
+      imagenProximaActividad.src =
+        rutasIconosActividades[proximaActividad.actividad.actividad];
+      imagenProximaActividad.alt = "";
+
+      const informacionProximaActividad = document.createElement("div");
+      informacionProximaActividad.classList.add("informacion-proxima-actividad");
+
+      const nombreProximaActividad = document.createElement("p");
+      nombreProximaActividad.classList.add("nombre-proxima-actividad");
+      nombreProximaActividad.textContent =
+        nombresActividades[proximaActividad.actividad.actividad];
+
+      const fechaProximaActividad = document.createElement("p");
+      fechaProximaActividad.classList.add("fecha-proxima-actividad");
+      fechaProximaActividad.textContent =
+        `${proximaActividad.proximaFecha.toLocaleDateString("es-ES", {
+          weekday: "short",
+          day: "numeric",
+          month: "short",
+        })} · ${proximaActividad.actividad.hora}`;
+
+      iconoProximaActividad.append(imagenProximaActividad);
+      informacionProximaActividad.append(
+        nombreProximaActividad,
+        fechaProximaActividad
+      );
+      tarjetaProximaActividad.append(
+        iconoProximaActividad,
+        informacionProximaActividad
+      );
+      listaProximasActividades.append(tarjetaProximaActividad);
+    }
+  }
+
+  seccionProximasActividades.append(
+    tituloProximasActividades,
+    listaProximasActividades
+  );
+
   idPersonaSeleccionada = idPersona;
 
   avatarFichaPersona.append(iconoFichaPersona);
 
   contenidoFichaPersona.append(
     avatarFichaPersona,
-    nombreFichaPersona
+    nombreFichaPersona,
+    seccionProximasActividades
   );
 
   pantallaInicio.hidden = true;

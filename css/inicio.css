@@ -242,10 +242,15 @@
 
 .actions {
   margin-top: auto;
-  padding-top: 26px;
+  padding-top: 14px;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 9px;
+  background: var(--crema);
+  box-shadow: 0 -12px 18px var(--crema);
 }
 
 .button {
