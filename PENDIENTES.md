@@ -1,6 +1,6 @@
 # Pendientes de Atempo
 
-Última revisión: 26 de septiembre de 2026.
+Última revisión: 27 de septiembre de 2026.
 
 Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar primero el funcionamiento principal de la aplicación y dejar las mejoras más grandes para después.
 
@@ -23,7 +23,9 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Guardar las actividades en `localStorage`.
 - [x] Sustituir los avisos `alert()` del navegador por un mensaje de advertencia dentro del formulario.
 - [x] Dar estilo al mensaje de advertencia y hacerlo accesible para lectores de pantalla.
-- [ ] Decidir cómo se comportan las actividades mensuales iniciadas los días 29, 30 o 31 en meses más cortos.
+- [x] Mostrar las actividades mensuales de los días 29, 30 o 31 el último día de los meses más cortos.
+- [x] Avisar de esta regla al elegir una recurrencia mensual que comienza los días 29, 30 o 31.
+- [x] Añadir la recurrencia anual para cumpleaños y otros acontecimientos anuales.
 - [ ] Mostrar un mensaje claro si se intenta añadir una actividad sin haber creado ninguna persona.
 
 ## Gestión de actividades
@@ -32,7 +34,7 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Editar una actividad existente.
 - [x] Eliminar una actividad existente.
 - [ ] Sustituir la confirmación nativa `confirm()` por una confirmación diseñada dentro de la aplicación.
-- [ ] Evitar actividades huérfanas cuando se elimina una persona o decidir qué hacer con ellas.
+- [x] Eliminar también las actividades asociadas cuando se elimina una persona.
 
 ## Calendario
 
@@ -69,6 +71,15 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [ ] Devolver el foco al botón que abrió un formulario cuando este se cierre.
 - [ ] Comprobar que los mensajes de error se anuncien correctamente.
 
+## Ayuda y guía de uso
+
+- [ ] Añadir un botón visible para abrir las instrucciones o guía de la aplicación.
+- [ ] Explicar en la guía que cada persona tiene asignado un color y que ese color identifica también sus actividades.
+- [ ] Explicar brevemente cómo crear personas, añadir actividades, elegir la recurrencia y consultar la agenda.
+- [ ] Explicar que las recurrencias mensuales de los días 29, 30 o 31 pasan al último día de los meses más cortos.
+- [ ] Explicar la recurrencia anual y el caso especial del 29 de febrero.
+- [ ] Decidir si la guía se mostrará como una pantalla propia o como una ventana emergente.
+
 ## Datos y publicación
 
 - [x] Guardar personas y actividades localmente con `localStorage` durante el desarrollo.
@@ -81,8 +92,13 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 ## Revisión final
 
 - [ ] Probar crear, editar y eliminar varias personas.
-- [ ] Probar actividades puntuales, semanales y mensuales.
+- [ ] Probar actividades puntuales, semanales, mensuales y anuales.
 - [ ] Probar varias actividades iguales en días y horas diferentes.
 - [ ] Probar la aplicación sin datos guardados y con muchos datos guardados.
 - [ ] Revisar errores de la consola.
 - [ ] Guardar una versión estable en Git.
+
+## Versión 1.1
+
+- [ ] Diferenciar visualmente las actividades cuya hora ya ha pasado.
+- [ ] Valorar un estado manual para marcar una actividad como completada.

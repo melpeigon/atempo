@@ -8,6 +8,7 @@ const selectorPersonaActividad = document.querySelector("#elige-persona");
 const selectorRecurrencia = document.querySelector("#elige-recurrencia");
 const contenedorDias = document.querySelector("#opciones-semanales");
 const campoFechaActividad = document.querySelector("#elige-fecha");
+const avisoRecurrenciaMensual = document.querySelector("#aviso-recurrencia-mensual");
 const mensajeErrorActividad = document.querySelector("#mensaje-error-actividad");
 const tituloEmergenteActividad = document.querySelector("#titulo-emergente-nueva-actividad");
 const botonGuardarActividad = document.querySelector("#boton-guardar-actividad");
@@ -49,6 +50,15 @@ function cambiarOpcionesRecurrencia() {
       dia.checked = false;
     }
   }
+
+  mostrarAvisoRecurrenciaMensual();
+}
+
+function mostrarAvisoRecurrenciaMensual() {
+  const diaElegido = Number(campoFechaActividad.value.split("-")[2]);
+  const necesitaAviso = selectorRecurrencia.value === "mensual" && diaElegido >= 29;
+
+  avisoRecurrenciaMensual.hidden = !necesitaAviso;
 }
 
 function obtenerNombreDiaDeFecha(fecha) {
@@ -91,6 +101,7 @@ function abrirEmergenteNuevaActividad() {
 
   formularioActividad.reset();
   contenedorDias.hidden = true;
+  avisoRecurrenciaMensual.hidden = true;
   campoFechaActividad.min = `${anoActual}-${mesActual}-${diaActual}`;
 
   tituloEmergenteActividad.textContent = "Añade una actividad";
@@ -165,6 +176,8 @@ function editarActividadSeleccionada() {
   } else {
     contenedorDias.hidden = true;
   }
+
+  mostrarAvisoRecurrenciaMensual();
 
   tituloEmergenteActividad.textContent = "Editar actividad";
   botonGuardarActividad.textContent = "Guardar cambios";
@@ -247,6 +260,7 @@ function guardarNuevaActividad(evento) {
 
   formularioActividad.reset();
   contenedorDias.hidden = true;
+  avisoRecurrenciaMensual.hidden = true;
 
   cerrarEmergenteNuevaActividad();
 
@@ -262,4 +276,5 @@ botonCerrarActividad.addEventListener("click", cerrarEmergenteNuevaActividad);
 formularioActividad.addEventListener("submit", guardarNuevaActividad);
 selectorRecurrencia.addEventListener("change", cambiarOpcionesRecurrencia);
 campoFechaActividad.addEventListener("change", marcarDiaDeFechaInicio);
+campoFechaActividad.addEventListener("change", mostrarAvisoRecurrenciaMensual);
 botonEditarActividad.addEventListener("click", editarActividadSeleccionada);

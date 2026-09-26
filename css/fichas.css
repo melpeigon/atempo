@@ -47,51 +47,134 @@
 
 #contenido-ficha-actividad {
   width: 100%;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
+  padding-top: 8px;
+  --color-persona: var(--lila);
+}
+
+.cabecera-ficha-actividad {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 82px;
   align-items: center;
-  gap: 12px;
-  border-radius: 24px;
-  background: var(--white);
-  text-align: center;
+  gap: 18px;
+}
+
+.titulo-ficha-actividad {
+  min-width: 0;
+}
+
+.titulo-ficha-actividad h2 {
+  font-size: 30px;
 }
 
 .icono-ficha-actividad {
-  width: 100px;
-  height: 100px;
+  width: 82px;
+  height: 82px;
   display: grid;
   place-items: center;
   overflow: hidden;
   border-radius: 50%;
+  background: var(--color-persona);
 }
 
 .icono-ficha-actividad img {
-  width: 70px;
-  height: 70px;
+  width: 56px;
+  height: 56px;
   object-fit: contain;
 }
 
-#contenido-ficha-actividad h2 {
-  margin-top: 4px;
-}
-
 .persona-ficha-actividad {
-  font-size: 16px;
+  margin-top: 5px;
+  font-size: 18px;
   font-weight: 700;
 }
 
-#contenido-ficha-actividad p {
-  font-size: 14px;
+.horario-ficha-actividad {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.dato-ficha-actividad {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 9px;
+  min-width: 0;
+  text-align: left;
+}
+
+.horario-ficha-actividad .dato-ficha-actividad {
+  width: 100%;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--color-persona);
+}
+
+.horario-ficha-actividad .dato-ficha-actividad:first-child {
+  border-top: 1px solid var(--color-persona);
+}
+
+.dato-ficha-actividad img {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.dato-ficha-actividad p {
+  margin: 0;
+}
+
+.fecha-ficha-actividad p {
+  font-size: 16px;
   line-height: 1.4;
+}
+
+.hora-ficha-actividad {
+  justify-content: flex-start;
+}
+
+.hora-ficha-actividad img {
+  width: 26px;
+  height: 26px;
+}
+
+.hora-ficha-actividad p {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.recurrencia-ficha-actividad {
+  margin-top: 0;
+}
+
+.recurrencia-ficha-actividad p {
+  font-size: 15px;
+  line-height: 1.4;
+  opacity: 0.75;
 }
 
 .recordatorio-ficha-actividad {
   width: 100%;
-  margin-top: 8px;
-  padding: 12px;
-  border-radius: 12px;
-  background: var(--amarillo);
+  margin-top: 20px;
+  padding: 14px 16px;
+  justify-content: flex-start;
+  border-radius: 16px;
+  background: color-mix(
+    in srgb,
+    var(--color-persona) 32%,
+    var(--white)
+  );
+}
+
+.recordatorio-ficha-actividad img {
+  width: 24px;
+  height: 24px;
+}
+
+.recordatorio-ficha-actividad p {
+  font-size: 16px;
+  line-height: 1.45;
 }
 
 .boton-editar-persona,

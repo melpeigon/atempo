@@ -61,6 +61,10 @@ const botonVolverActividad = document.querySelector("#boton-volver-actividad");
 const botonEditarActividad = document.querySelector("#boton-editar-actividad");
 const botonEliminarActividad = document.querySelector("#boton-eliminar-actividad");
 
+function obtenerUltimoDiaDelMes(ano, mes) {
+  return new Date(ano, mes, 0).getDate();
+}
+
 function obtenerActividadesDeHoy() {
   const fechaHoyFormatoInput = `${anoActual}-${mesActual}-${diaActual}`;
   const nombreDiaHoy = nombresDiasSemana[fechaActual.getDay()];
@@ -81,7 +85,32 @@ function obtenerActividadesDeHoy() {
 
     if (actividad.recurrencia === "mensual") {
       const numeroDiaActividad = Number(actividad.fecha.split("-")[2]);
-      return numeroDiaActividad === numeroDiaHoy;
+      const ultimoDiaMesActual = obtenerUltimoDiaDelMes(
+        fechaActual.getFullYear(),
+        fechaActual.getMonth() + 1
+      );
+      const diaActividadEsteMes = Math.min(numeroDiaActividad, ultimoDiaMesActual);
+
+      return diaActividadEsteMes === numeroDiaHoy;
+    }
+
+    if (actividad.recurrencia === "anual") {
+      const partesFechaActividad = actividad.fecha.split("-");
+      const mesActividad = Number(partesFechaActividad[1]);
+      const numeroDiaActividad = Number(partesFechaActividad[2]);
+      const mesActualNumero = fechaActual.getMonth() + 1;
+
+      if (mesActividad !== mesActualNumero) {
+        return false;
+      }
+
+      const ultimoDiaMesActual = obtenerUltimoDiaDelMes(
+        fechaActual.getFullYear(),
+        mesActualNumero
+      );
+      const diaActividadEsteAno = Math.min(numeroDiaActividad, ultimoDiaMesActual);
+
+      return diaActividadEsteAno === numeroDiaHoy;
     }
 
     return false;
@@ -110,6 +139,25 @@ function formatearFechaActividad(fecha) {
   });
 }
 
+function crearDatoFichaActividad(rutaIcono, texto, clase) {
+  const datoFichaActividad = document.createElement("div");
+  datoFichaActividad.classList.add("dato-ficha-actividad", clase);
+
+  const iconoDatoActividad = document.createElement("img");
+  iconoDatoActividad.src = rutaIcono;
+  iconoDatoActividad.alt = "";
+
+  const textoDatoActividad = document.createElement("p");
+  textoDatoActividad.textContent = texto;
+
+  datoFichaActividad.append(
+    iconoDatoActividad,
+    textoDatoActividad
+  );
+
+  return datoFichaActividad;
+}
+
 function abrirFichaActividad(idActividad) {
   const actividadSeleccionada = actividades.find(function (actividad) {
     return actividad.id === idActividad;
@@ -129,10 +177,19 @@ function abrirFichaActividad(idActividad) {
 
   idActividadSeleccionada = idActividad;
   contenidoFichaActividad.replaceChildren();
+  contenidoFichaActividad.style.setProperty(
+    "--color-persona",
+    personaActividad.color
+  );
+
+  const cabeceraFichaActividad = document.createElement("div");
+  cabeceraFichaActividad.classList.add("cabecera-ficha-actividad");
+
+  const tituloFichaActividad = document.createElement("div");
+  tituloFichaActividad.classList.add("titulo-ficha-actividad");
 
   const iconoFichaActividad = document.createElement("div");
   iconoFichaActividad.classList.add("icono-ficha-actividad");
-  iconoFichaActividad.style.backgroundColor = personaActividad.color;
 
   const imagenFichaActividad = document.createElement("img");
   imagenFichaActividad.src = rutasIconosActividades[actividadSeleccionada.actividad];
@@ -147,37 +204,70 @@ function abrirFichaActividad(idActividad) {
   personaFichaActividad.classList.add("persona-ficha-actividad");
   personaFichaActividad.textContent = personaActividad.nombre;
 
-  const fechaFichaActividad = document.createElement("p");
-  fechaFichaActividad.textContent =
-  `Fecha de inicio: ${formatearFechaActividad(actividadSeleccionada.fecha)}`;
+  tituloFichaActividad.append(
+    nombreFichaActividad,
+    personaFichaActividad
+  );
 
-  const horaFichaActividad = document.createElement("p");
-  horaFichaActividad.textContent = `Hora: ${actividadSeleccionada.hora}`;
+  cabeceraFichaActividad.append(
+    tituloFichaActividad,
+    iconoFichaActividad
+  );
 
-  const recurrenciaFichaActividad = document.createElement("p");
+  const horarioFichaActividad = document.createElement("div");
+  horarioFichaActividad.classList.add("horario-ficha-actividad");
+
+  const fechaFichaActividad = crearDatoFichaActividad(
+    "Branding/iconos/SVG/dia.svg",
+    formatearFechaActividad(actividadSeleccionada.fecha),
+    "fecha-ficha-actividad"
+  );
+
+  const horaFichaActividad = crearDatoFichaActividad(
+    "Branding/iconos/SVG/hora.svg",
+    actividadSeleccionada.hora,
+    "hora-ficha-actividad"
+  );
+
+  let textoRecurrencia;
 
   if (actividadSeleccionada.recurrencia === "semanal") {
-    recurrenciaFichaActividad.textContent =
-      `Recurrencia: semanal — ${actividadSeleccionada.dias.join(", ")}`;
+    const diasBonitos = actividadSeleccionada.dias.map(function (dia) {
+      return dia.charAt(0).toUpperCase() + dia.slice(1);
+    });
+
+    textoRecurrencia = `Semanal · ${diasBonitos.join(", ")}`;
+  } else if (actividadSeleccionada.recurrencia === "mensual") {
+    textoRecurrencia = "Mensual";
+  } else if (actividadSeleccionada.recurrencia === "anual") {
+    textoRecurrencia = "Anual";
   } else {
-    recurrenciaFichaActividad.textContent =
-      `Recurrencia: ${actividadSeleccionada.recurrencia}`;
+    textoRecurrencia = "Puntual";
   }
 
-  contenidoFichaActividad.append(
-    iconoFichaActividad,
-    nombreFichaActividad,
-    personaFichaActividad,
+  const recurrenciaFichaActividad = crearDatoFichaActividad(
+    "Branding/iconos/SVG/recurrente.svg",
+    textoRecurrencia,
+    "recurrencia-ficha-actividad"
+  );
+
+  horarioFichaActividad.append(
     fechaFichaActividad,
     horaFichaActividad,
     recurrenciaFichaActividad
   );
 
+  contenidoFichaActividad.append(
+    cabeceraFichaActividad,
+    horarioFichaActividad
+  );
+
   if (actividadSeleccionada.recordatorio !== "") {
-    const recordatorioFichaActividad = document.createElement("p");
-    recordatorioFichaActividad.classList.add("recordatorio-ficha-actividad");
-    recordatorioFichaActividad.textContent =
-      `Recordatorio: ${actividadSeleccionada.recordatorio}`;
+    const recordatorioFichaActividad = crearDatoFichaActividad(
+      "Branding/iconos/SVG/recordatorio.svg",
+      actividadSeleccionada.recordatorio,
+      "recordatorio-ficha-actividad"
+    );
 
     contenidoFichaActividad.append(recordatorioFichaActividad);
   }

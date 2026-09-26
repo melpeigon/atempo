@@ -152,10 +152,19 @@ function eliminarPersonaSeleccionada() {
   }
 
   const persona = personas[indicePersona];
+  const numeroActividadesPersona = actividades.filter(function (actividad) {
+    return actividad.personaId === persona.id;
+  }).length;
 
-  const confirmarEliminacion = confirm(
-    `¿Quieres eliminar a ${persona.nombre}?`
-  );
+  let mensajeConfirmacion = `¿Quieres eliminar a ${persona.nombre}?`;
+
+  if (numeroActividadesPersona === 1) {
+    mensajeConfirmacion += " También se eliminará su actividad.";
+  } else if (numeroActividadesPersona > 1) {
+    mensajeConfirmacion += ` También se eliminarán sus ${numeroActividadesPersona} actividades.`;
+  }
+
+  const confirmarEliminacion = confirm(mensajeConfirmacion);
 
   if (!confirmarEliminacion) {
     return;
@@ -163,9 +172,17 @@ function eliminarPersonaSeleccionada() {
 
   personas.splice(indicePersona, 1);
 
+  for (let indice = actividades.length - 1; indice >= 0; indice--) {
+    if (actividades[indice].personaId === persona.id) {
+      actividades.splice(indice, 1);
+    }
+  }
+
   localStorage.setItem("personas", JSON.stringify(personas));
+  localStorage.setItem("actividades", JSON.stringify(actividades));
 
   renderizarPersonas();
+  renderizarActividadesDeHoy();
 
   volverInicio();
 
