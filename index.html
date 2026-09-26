@@ -10,7 +10,11 @@
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap"
     rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/inicio.css" />
+  <link rel="stylesheet" href="css/fichas.css" />
+  <link rel="stylesheet" href="css/formularios.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
 </head>
 
 <body>
@@ -83,6 +87,28 @@
 
       <button class="boton-eliminar-persona" id="boton-eliminar-persona" type="button">
         Eliminar persona
+      </button>
+    </div>
+  </section>
+
+  <!-- FICHA ACTIVIDAD -->
+
+  <section class="ficha-actividad app-shell" id="ficha-actividad" aria-labelledby="titulo-ficha-actividad" hidden>
+    <button class="boton-volver" id="boton-volver-actividad" type="button">
+      ← Volver
+    </button>
+
+    <h1 id="titulo-ficha-actividad">Ficha de actividad</h1>
+
+    <div id="contenido-ficha-actividad"></div>
+
+    <div class="botones-ficha-actividad">
+      <button class="boton-editar-actividad" id="boton-editar-actividad" type="button">
+        Editar actividad
+      </button>
+
+      <button class="boton-eliminar-actividad" id="boton-eliminar-actividad" type="button">
+        Eliminar actividad
       </button>
     </div>
   </section>
@@ -196,6 +222,7 @@
   </dialog>
 
   <script src="js/app.js"></script>
+  <script src="js/actividades.js"></script>
   <script src="js/formulario-actividades.js"></script>
 </body>
 

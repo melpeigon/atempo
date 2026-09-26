@@ -1,0 +1,21 @@
+/* =========================================================
+   AJUSTES PARA PANTALLAS BAJAS
+   ========================================================= */
+
+@media (max-height: 650px) {
+  .app-shell {
+    padding-top: 18px;
+  }
+
+  .bienvenida {
+    margin-top: 18px;
+  }
+
+  .planes-hoy {
+    margin-top: 22px;
+  }
+
+  .actions {
+    padding-top: 12px;
+  }
+}

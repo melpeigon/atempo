@@ -10,7 +10,7 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Ordenar las actividades de hoy por hora.
 - [x] Mostrar en cada tarjeta la hora, la actividad, el icono, la persona, su color y el recordatorio.
 - [x] Aplicar los estilos iniciales a las tarjetas siguiendo el boceto.
-- [ ] Abrir una ficha o detalle al pulsar una actividad.
+- [x] Abrir una ficha o detalle al pulsar una actividad.
 
 ## Formulario de actividades
 
@@ -28,9 +28,9 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 
 ## Gestión de actividades
 
-- [ ] Abrir una ficha o detalle al pulsar una actividad.
-- [ ] Editar una actividad existente.
-- [ ] Eliminar una actividad existente.
+- [x] Abrir una ficha o detalle al pulsar una actividad.
+- [x] Editar una actividad existente.
+- [x] Eliminar una actividad existente.
 - [ ] Sustituir la confirmación nativa `confirm()` por una confirmación diseñada dentro de la aplicación.
 - [ ] Evitar actividades huérfanas cuando se elimina una persona o decidir qué hacer con ellas.
 

@@ -1,0 +1,104 @@
+/* =========================================================
+   FORMULARIOS EMERGENTES
+   ========================================================= */
+
+.emergente-nueva-persona,
+.emergente-nueva-actividad {
+  width: min(calc(100% - 40px), 360px);
+  margin: auto;
+  padding: 28px;
+  border: 0;
+  border-radius: 24px;
+  color: var(--ciruela);
+  background: var(--crema);
+  box-shadow: 0 20px 60px rgba(80, 65, 82, 0.25);
+}
+
+.emergente-nueva-persona::backdrop,
+.emergente-nueva-actividad::backdrop {
+  background: rgba(80, 65, 82, 0.45);
+}
+
+.introducir-datos-persona,
+.form-anadir-actividad {
+  display: grid;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.introducir-datos-persona label,
+.form-anadir-actividad label {
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.introducir-datos-persona input,
+.introducir-datos-persona select,
+.form-anadir-actividad input:not([type="checkbox"]),
+.form-anadir-actividad select {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--gris);
+  border-radius: 12px;
+  color: var(--ciruela);
+  background: var(--white);
+  font: inherit;
+}
+
+.introducir-datos-persona button[type="submit"],
+.form-anadir-actividad button[type="submit"] {
+  min-height: 44px;
+  margin-top: 16px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--ciruela);
+  background: var(--degradado);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.boton-cerrar-emergente {
+  width: 100%;
+  min-height: 40px;
+  margin-top: 10px;
+  border: 0;
+  color: var(--ciruela);
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.boton-cerrar-emergente:hover {
+  background: var(--gris);
+}
+
+.boton-cerrar-emergente:active {
+  background: var(--melocoton);
+  transform: scale(0.98);
+}
+
+.ayuda-formulario {
+  margin-top: 2px;
+  color: var(--ciruela);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  opacity: 0.75;
+}
+
+.mensaje-error-formulario {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--melocoton);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--melocoton) 25%, var(--white));
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.mensaje-error-formulario[hidden] {
+  display: none;
+}

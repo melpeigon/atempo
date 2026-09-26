@@ -1,0 +1,124 @@
+/* =========================================================
+   FICHAS DE PERSONA Y ACTIVIDAD
+   ========================================================= */
+
+.ficha-persona {
+  gap: 24px;
+  align-items: center;
+}
+
+.boton-volver {
+  align-self: flex-start;
+  border: 0;
+  background: transparent;
+  color: var(--ciruela);
+  font: inherit;
+  cursor: pointer;
+}
+
+#contenido-ficha-persona {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  text-align: center;
+}
+
+.avatar-ficha-persona {
+  width: 132px;
+  height: 132px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.avatar-ficha-persona img {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+}
+
+.ficha-actividad {
+  gap: 24px;
+  align-items: center;
+}
+
+#contenido-ficha-actividad {
+  width: 100%;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  border-radius: 24px;
+  background: var(--white);
+  text-align: center;
+}
+
+.icono-ficha-actividad {
+  width: 100px;
+  height: 100px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.icono-ficha-actividad img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}
+
+#contenido-ficha-actividad h2 {
+  margin-top: 4px;
+}
+
+.persona-ficha-actividad {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+#contenido-ficha-actividad p {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.recordatorio-ficha-actividad {
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--amarillo);
+}
+
+.boton-editar-persona,
+.boton-eliminar-persona,
+.boton-editar-actividad,
+.boton-eliminar-actividad {
+  width: 150px;
+  min-height: 40px;
+  padding: 8px;
+  border: 2px solid var(--ciruela);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.botones-ficha-persona,
+.botones-ficha-actividad {
+  width: 100%;
+  margin-top: auto;
+  display: flex;
+  gap: 10px;
+}
+
+.botones-ficha-persona button,
+.botones-ficha-actividad button {
+  width: auto;
+  min-width: 0;
+  flex: 1;
+}

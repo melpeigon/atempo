@@ -1,0 +1,78 @@
+/* =========================================================
+   BASE: colores, tipografías y reglas compartidas
+   ========================================================= */
+
+:root {
+  --ciruela: #504152;
+  --crema: #fcf9f5;
+  --white: #ffffff;
+  --melocoton: #f2beba;
+  --lila: #c6afd0;
+  --amarillo: #ffeccc;
+  --gris: #e0dcd6;
+  --font-body: "DM Sans", sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
+
+  --degradado: linear-gradient(105deg,
+      var(--lila),
+      var(--melocoton));
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  color: var(--ciruela);
+  background: #6d6b6a;
+  font-family: var(--font-body);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+.app-shell {
+  width: min(100%, 390px);
+  min-height: 100vh;
+  padding: 36px 28px 20px;
+  display: flex;
+  flex-direction: column;
+  background: var(--crema);
+}
+
+.app-shell[hidden] {
+  display: none;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1,
+h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+}
+
+h1 {
+  font-size: 28px;
+  line-height: 1.1;
+}
+
+h2 {
+  font-size: 27px;
+  line-height: 1.2;
+}
+
+button:focus-visible {
+  outline: 3px solid var(--lila);
+  outline-offset: 3px;
+}
