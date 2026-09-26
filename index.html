@@ -10,7 +10,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap"
     rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 
 <body>
@@ -46,22 +46,27 @@
       </div>
     </section>
 
+    <!-- AGENDA - PLANES HOY -->
     <section class="planes-hoy" aria-labelledby="titulo-planes-hoy">
       <div class="cabecera-planes-hoy">
         <h2 id="titulo-planes-hoy">Hoy</h2>
-        <span class="num-planes-hoy">0 Planes</span>
+        <span class="num-planes-hoy" id="numero-planes-hoy">0 Planes</span>
       </div>
-      <p class="mensaje-sin-planes mensaje-vacio">Todavía no hay planes. Cuando añadas una actividad, aparecerá aquí.
-      </p>
+      <p class="mensaje-sin-planes mensaje-vacio" id="mensaje-sin-planes">Todavía no hay planes. Cuando añadas una
+        actividad, aparecerá aquí.</p>
+      <div class="lista-actividades-hoy" id="lista-actividades-hoy"></div>
+
     </section>
 
     <footer class="actions" aria-label="Acciones principales">
-      <button class="button button-primary" type="button" data-action="add-activity">
+      <button class="button button-primary" id="boton-anadir-actividad" type="button">
         <span aria-hidden="true">+</span> Añadir actividad
       </button>
       <button class="button" type="button" data-action="open-calendar">Ver calendario</button>
     </footer>
   </main>
+
+  <!-- FICHA PERSONA -->
 
   <section class="ficha-persona app-shell" id="ficha-persona" aria-labelledby="titulo-ficha-persona" hidden>
     <button class="boton-volver" id="boton-volver-inicio" type="button">
@@ -69,17 +74,17 @@
     </button>
 
     <h1 id="titulo-ficha-persona">Ficha de persona</h1>
-    
-    <!-- FICHA PERSONA -->
 
     <div id="contenido-ficha-persona"></div>
-    <button class="boton-editar-persona" id="boton-editar-persona" type="button">
-      Editar persona
-    </button>
+    <div class="botones-ficha-persona">
+      <button class="boton-editar-persona" id="boton-editar-persona" type="button">
+        Editar persona
+      </button>
 
-    <button class="boton-eliminar-persona" id="boton-eliminar-persona" type="button">
-      Eliminar persona
-    </button>
+      <button class="boton-eliminar-persona" id="boton-eliminar-persona" type="button">
+        Eliminar persona
+      </button>
+    </div>
   </section>
 
   <!-- FORMULARIO NUEVA PERSONA -->
@@ -92,7 +97,7 @@
       <input type="text" id="nombre" name="nombre" required />
 
       <label for="color">Color</label>
-      <select id="color" name="color">
+      <select id="color" name="color" required>
         <option value="#c6afd0">Lila</option>
         <option value="#f2beba">Melocotón</option>
         <option value="#ffeccc">Amarillo</option>
@@ -113,12 +118,85 @@
       <button type="submit" id="boton-guardar-persona">Guardar</button>
     </form>
 
-    <button type="button" data-action="cerrar-dialogo-persona">
+    <button class="boton-cerrar-emergente" id="boton-cerrar-emergente" type="button">
       Cerrar
     </button>
   </dialog>
 
-  <script src="app.js"></script>
+
+  <!-- FORMULARIO EMERGENTE AÑADIR ACTIVIDAD -->
+
+  <dialog class="emergente-nueva-actividad" id="emergente-nueva-actividad"
+    aria-labelledby="titulo-emergente-nueva-actividad">
+    <h2 id="titulo-emergente-nueva-actividad">
+      Añade una actividad
+    </h2>
+
+    <form class="form-anadir-actividad" id="form-anadir-actividad">
+
+      <label for="elige-persona">Elige persona </label>
+      <select id="elige-persona" name="persona" required>
+        <option value="" selected disabled>Elige una persona</option>
+
+      </select>
+
+      <label for="elige-actividad">Actividad </label>
+      <select id="elige-actividad" name="actividad" required>
+        <option value="" selected disabled>Elige una actividad</option>
+        <option value="musica">Música</option>
+        <option value="catequesis">Catequesis</option>
+        <option value="futbol">Fútbol</option>
+        <option value="cumple">Cumpleaños</option>
+        <option value="peluqueria">Peluquería</option>
+        <option value="dentista">Dentista</option>
+        <option value="ingles">Inglés</option>
+        <option value="padel">Pádel</option>
+        <option value="gym">Gym</option>
+      </select>
+
+      <label for="elige-fecha">Fecha inicio</label>
+      <input type="date" id="elige-fecha" name="fecha" required />
+
+      <label for="elige-recurrencia">Recurrencia</label>
+      <select id="elige-recurrencia" name="recurrencia" required>
+        <option value="puntual">Puntual</option>
+        <option value="semanal">Semanal</option>
+        <option value="mensual">Mensual</option>
+      </select>
+
+      <div class="opciones-semanales" id="opciones-semanales" hidden>
+        <p class="ayuda-formulario">
+          Selecciona varios días sólo si coinciden en la misma hora.
+        </p>
+
+        <div class="dias-container" id="dias-container">
+          <label><input type="checkbox" name="dias" value="lunes" /> Lunes</label>
+          <label><input type="checkbox" name="dias" value="martes" /> Martes</label>
+          <label><input type="checkbox" name="dias" value="miercoles" /> Miércoles</label>
+          <label><input type="checkbox" name="dias" value="jueves" /> Jueves</label>
+          <label><input type="checkbox" name="dias" value="viernes" /> Viernes</label>
+          <label><input type="checkbox" name="dias" value="sabado" /> Sábado</label>
+          <label><input type="checkbox" name="dias" value="domingo" /> Domingo</label>
+        </div>
+      </div>
+      <label for="elige-hora">Hora</label>
+      <input type="time" id="elige-hora" name="hora" required />
+
+      <label for="introduce-anotacion">Escribe tu recordatorio </label>
+      <input type="text" id="introduce-anotacion" name="recordatorio" />
+
+      <p class="mensaje-error-formulario" id="mensaje-error-actividad" role="alert" hidden></p>
+
+      <button type="submit" id="boton-guardar-actividad">Guardar</button>
+    </form>
+
+    <button class="boton-cerrar-emergente" id="boton-cerrar-actividad" type="button">
+      Cerrar
+    </button>
+  </dialog>
+
+  <script src="js/app.js"></script>
+  <script src="js/formulario-actividades.js"></script>
 </body>
 
 </html>

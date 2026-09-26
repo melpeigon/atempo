@@ -50,6 +50,7 @@ button {
   display: none;
 }
 
+
 /* =========================================================
    2. PANTALLA INICIO: logo, bienvenida y acciones inferiores
    ========================================================= */
@@ -272,22 +273,102 @@ button:focus-visible {
 }
 
 /* =========================================================
-   4. FICHA DE PERSONA
+   4. FICHA DE ACTIVIDAD
+   ========================================================= */
+
+.lista-actividades-hoy {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.tarjeta-actividad {
+  width: 100%;
+  min-height: 64px;
+  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: 52px 1px 42px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  border-radius: 13px;
+  background: var(--white);
+}
+
+.bloque-hora-actividad {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hora-actividad {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.nombre-persona-actividad {
+  font-size: 10px;
+}
+
+.separador-actividad {
+  width: 1px;
+  height: 38px;
+  background: var(--gris);
+}
+
+.icono-actividad {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.icono-actividad img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.informacion-actividad {
+  min-width: 0;
+}
+
+.informacion-actividad h3 {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.informacion-actividad p {
+  margin-top: 4px;
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   5. FICHA DE PERSONA
    ========================================================= */
 
 .ficha-persona {
   gap: 24px;
+  align-items: center;
 }
 
 .boton-volver {
   align-self: flex-start;
-  padding: 0;
+
   border: 0;
   background: transparent;
   color: var(--ciruela);
   font: inherit;
   cursor: pointer;
 }
+
 
 #contenido-ficha-persona {
   display: flex;
@@ -313,11 +394,26 @@ button:focus-visible {
   object-fit: contain;
 }
 
+.boton-editar-persona, .boton-eliminar-persona {
+
+  min-height: 40px;
+  width: 150px;
+  padding: 8px;
+  border: 2px solid var(--ciruela);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 14px;
+  cursor: pointer;
+
+}
+
+
 /* =========================================================
-   5. EMERGENTE: crear y editar persona
+   6. FORMULARIOS EMERGENTES
    ========================================================= */
 
-.emergente-nueva-persona {
+.emergente-nueva-persona,
+.emergente-nueva-actividad {
   width: min(calc(100% - 40px), 360px);
   margin: auto;
   padding: 28px;
@@ -328,24 +424,29 @@ button:focus-visible {
   box-shadow: 0 20px 60px rgba(80, 65, 82, 0.25);
 }
 
-.emergente-nueva-persona::backdrop {
+.emergente-nueva-persona::backdrop,
+.emergente-nueva-actividad::backdrop {
   background: rgba(80, 65, 82, 0.45);
 }
 
-.introducir-datos-persona {
+.introducir-datos-persona,
+.form-anadir-actividad {
   display: grid;
   gap: 8px;
   margin-top: 24px;
 }
 
-.introducir-datos-persona label {
+.introducir-datos-persona label,
+.form-anadir-actividad label {
   margin-top: 8px;
   font-size: 13px;
   font-weight: 700;
 }
 
 .introducir-datos-persona input,
-.introducir-datos-persona select {
+.introducir-datos-persona select,
+.form-anadir-actividad input:not([type="checkbox"]),
+.form-anadir-actividad select {
   width: 100%;
   min-height: 44px;
   padding: 10px 12px;
@@ -356,7 +457,8 @@ button:focus-visible {
   font: inherit;
 }
 
-.introducir-datos-persona button[type="submit"] {
+.introducir-datos-persona button[type="submit"],
+.form-anadir-actividad button[type="submit"] {
   min-height: 44px;
   margin-top: 16px;
   border: 0;
@@ -368,7 +470,7 @@ button:focus-visible {
   cursor: pointer;
 }
 
-.emergente-nueva-persona > button[type="button"] {
+.boton-cerrar-emergente {
   width: 100%;
   min-height: 40px;
   margin-top: 10px;
@@ -379,8 +481,40 @@ button:focus-visible {
   cursor: pointer;
 }
 
+.boton-cerrar-emergente:hover {
+  background: var(--gris);
+}
+
+.boton-cerrar-emergente:active {
+  background: var(--melocoton);
+  transform: scale(0.98);
+}
+
+.ayuda-formulario {
+  margin-top: 2px;
+  color: var(--ciruela);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  opacity: 0.75;
+}
+
+.mensaje-error-formulario {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--melocoton);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--melocoton) 25%, var(--white));
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.mensaje-error-formulario[hidden] {
+  display: none;
+}
+
 /* =========================================================
-   6. AJUSTES PARA PANTALLAS BAJAS
+   7. AJUSTES PARA PANTALLAS BAJAS
    ========================================================= */
 
 @media (max-height: 650px) {

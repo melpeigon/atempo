@@ -41,7 +41,7 @@ fechaHoy.textContent = fechaBonita;
 
 const botonPersona = document.querySelector("#boton-primera-persona");
 const emergenteNuevaPersona = document.querySelector("#emergente-nueva-persona");
-const botonCerrarEmergente = document.querySelector("[data-action='cerrar-dialogo-persona']");
+const botonCerrarEmergente = document.querySelector("#boton-cerrar-emergente");
 const formularioNuevaPersona = document.querySelector("#formulario-nueva-persona");
 const botonAnadirOtraPersona = document.querySelector("#boton-anadir-otra-persona");
 
