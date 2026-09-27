@@ -421,3 +421,16 @@ emergenteConfirmacion.addEventListener("cancel", function () {
 });
 
 renderizarPersonas();
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker
+      .register("./service-worker.js")
+      .then(function () {
+        console.log("Service worker registrado correctamente.");
+      })
+      .catch(function (error) {
+        console.log("No se pudo registrar el service worker:", error);
+      });
+  });
+}

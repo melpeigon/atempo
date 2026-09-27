@@ -133,6 +133,7 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 
 ## Ideas para versiones futuras
 
+- [ ] Incorporar cuentas e inicio de sesión para que cada familia pueda acceder a sus datos desde distintos dispositivos.
 - [ ] Explorar una función de inteligencia artificial que aporte utilidad real a las familias.
 - [ ] Valorar ideas como resumir la semana, detectar conflictos de horarios, sugerir momentos libres o ayudar a redactar recordatorios.
 - [ ] Definir primero el problema que resolverá la IA antes de elegir una herramienta o incorporarla a la aplicación.
