@@ -57,6 +57,36 @@ const botonEliminarPersona = document.querySelector("#boton-eliminar-persona");
 const botonEditarPersona = document.querySelector("#boton-editar-persona");
 const tituloEmergentePersona = document.querySelector("#titulo-emergente-nueva-persona");
 const botonGuardarPersona = document.querySelector("#boton-guardar-persona");
+const emergenteConfirmacion = document.querySelector("#emergente-confirmacion");
+const tituloConfirmacion = document.querySelector("#titulo-confirmacion");
+const mensajeConfirmacionEmergente = document.querySelector("#mensaje-confirmacion");
+const botonCancelarConfirmacion = document.querySelector("#boton-cancelar-confirmacion");
+const botonAceptarConfirmacion = document.querySelector("#boton-aceptar-confirmacion");
+
+let accionPendienteConfirmacion = null;
+
+function abrirConfirmacion(titulo, mensaje, accion) {
+  tituloConfirmacion.textContent = titulo;
+  mensajeConfirmacionEmergente.textContent = mensaje;
+  accionPendienteConfirmacion = accion;
+  emergenteConfirmacion.showModal();
+}
+
+function cancelarConfirmacion() {
+  accionPendienteConfirmacion = null;
+  emergenteConfirmacion.close();
+}
+
+function aceptarConfirmacion() {
+  const accionConfirmada = accionPendienteConfirmacion;
+
+  accionPendienteConfirmacion = null;
+  emergenteConfirmacion.close();
+
+  if (accionConfirmada) {
+    accionConfirmada();
+  }
+}
 
 function abrirEmergenteNuevaPersona() {
   idPersonaEnEdicion = null;
@@ -259,29 +289,26 @@ function eliminarPersonaSeleccionada() {
     mensajeConfirmacion += ` También se eliminarán sus ${numeroActividadesPersona} actividades.`;
   }
 
-  const confirmarEliminacion = confirm(mensajeConfirmacion);
+  abrirConfirmacion("Eliminar persona", mensajeConfirmacion, function () {
+    personas.splice(indicePersona, 1);
 
-  if (!confirmarEliminacion) {
-    return;
-  }
-
-  personas.splice(indicePersona, 1);
-
-  for (let indice = actividades.length - 1; indice >= 0; indice--) {
-    if (actividades[indice].personaId === persona.id) {
-      actividades.splice(indice, 1);
+    for (let indice = actividades.length - 1; indice >= 0; indice--) {
+      if (actividades[indice].personaId === persona.id) {
+        actividades.splice(indice, 1);
+      }
     }
-  }
 
-  localStorage.setItem("personas", JSON.stringify(personas));
-  localStorage.setItem("actividades", JSON.stringify(actividades));
+    localStorage.setItem("personas", JSON.stringify(personas));
+    localStorage.setItem("actividades", JSON.stringify(actividades));
 
-  renderizarPersonas();
-  renderizarActividadesDeHoy();
+    renderizarPersonas();
+    renderizarActividadesDeHoy();
+    mostrarMes();
 
-  volverInicio();
+    volverInicio();
 
-  idPersonaSeleccionada = null;
+    idPersonaSeleccionada = null;
+  });
 }
 
 // formulario de añadir nueva persona//
@@ -324,6 +351,7 @@ function guardarNuevaPersona(evento) {
   localStorage.setItem("personas", JSON.stringify(personas));
 
   renderizarPersonas();
+  mostrarMes();
 
   formularioNuevaPersona.reset();
 
@@ -386,5 +414,10 @@ botonAnadirOtraPersona.addEventListener("click", abrirEmergenteNuevaPersona);
 botonVolverInicio.addEventListener("click", volverInicio);
 botonEliminarPersona.addEventListener("click", eliminarPersonaSeleccionada);
 botonEditarPersona.addEventListener("click", editarPersonaSeleccionada);
+botonCancelarConfirmacion.addEventListener("click", cancelarConfirmacion);
+botonAceptarConfirmacion.addEventListener("click", aceptarConfirmacion);
+emergenteConfirmacion.addEventListener("cancel", function () {
+  accionPendienteConfirmacion = null;
+});
 
 renderizarPersonas();

@@ -37,6 +37,11 @@ button {
   color: inherit;
 }
 
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
 .app-shell {
   width: min(100%, 390px);
   min-height: 100vh;

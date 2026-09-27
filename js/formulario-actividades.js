@@ -9,6 +9,9 @@ const selectorRecurrencia = document.querySelector("#elige-recurrencia");
 const contenedorDias = document.querySelector("#opciones-semanales");
 const campoFechaActividad = document.querySelector("#elige-fecha");
 const avisoRecurrenciaMensual = document.querySelector("#aviso-recurrencia-mensual");
+const selectorAviso = document.querySelector("#elige-aviso");
+const contenedorHoraAviso = document.querySelector("#opciones-hora-aviso");
+const campoHoraAviso = document.querySelector("#hora-aviso");
 const mensajeErrorActividad = document.querySelector("#mensaje-error-actividad");
 const tituloEmergenteActividad = document.querySelector("#titulo-emergente-nueva-actividad");
 const botonGuardarActividad = document.querySelector("#boton-guardar-actividad");
@@ -61,6 +64,17 @@ function mostrarAvisoRecurrenciaMensual() {
   avisoRecurrenciaMensual.hidden = !necesitaAviso;
 }
 
+function cambiarOpcionesAviso() {
+  const usaHoraConcreta = selectorAviso.value === "hora-concreta";
+
+  contenedorHoraAviso.hidden = !usaHoraConcreta;
+  campoHoraAviso.required = usaHoraConcreta;
+
+  if (!usaHoraConcreta) {
+    campoHoraAviso.value = "";
+  }
+}
+
 function obtenerNombreDiaDeFecha(fecha) {
   const partesFecha = fecha.split("-");
   const ano = Number(partesFecha[0]);
@@ -102,6 +116,8 @@ function abrirEmergenteNuevaActividad() {
   formularioActividad.reset();
   contenedorDias.hidden = true;
   avisoRecurrenciaMensual.hidden = true;
+  contenedorHoraAviso.hidden = true;
+  campoHoraAviso.required = false;
   campoFechaActividad.min = `${anoActual}-${mesActual}-${diaActual}`;
 
   tituloEmergenteActividad.textContent = "Añade una actividad";
@@ -161,6 +177,16 @@ function editarActividadSeleccionada() {
   formularioActividad.elements.recordatorio.value =
     actividadSeleccionada.recordatorio || "";
 
+  const avisoGuardado = actividadSeleccionada.aviso || "sin-aviso";
+
+  formularioActividad.elements.aviso.value =
+    avisoGuardado === "a-la-hora" ? "sin-aviso" : avisoGuardado;
+
+  formularioActividad.elements.horaAviso.value =
+    actividadSeleccionada.horaAviso || "";
+
+  cambiarOpcionesAviso();
+
   if (actividadSeleccionada.recurrencia === "semanal") {
     contenedorDias.hidden = false;
 
@@ -193,7 +219,22 @@ function guardarNuevaActividad(evento) {
   const datosFormulario = new FormData(formularioActividad);
   const recurrenciaElegida = datosFormulario.get("recurrencia");
   const diasElegidos = datosFormulario.getAll("dias");
+  const avisoElegido = datosFormulario.get("aviso");
+  const horaAvisoElegida = datosFormulario.get("horaAviso");
   const idDeActividadEditada = idActividadEnEdicion;
+
+  if (avisoElegido === "hora-concreta" && horaAvisoElegida === "") {
+    mostrarErrorActividad("Elige la hora a la que quieres recibir el aviso.");
+    return;
+  }
+
+  if (
+    avisoElegido === "hora-concreta" &&
+    horaAvisoElegida > datosFormulario.get("hora")
+  ) {
+    mostrarErrorActividad("La hora del aviso debe ser anterior a la actividad.");
+    return;
+  }
 
   if (recurrenciaElegida === "semanal" && diasElegidos.length === 0) {
     mostrarErrorActividad("Elige al menos un día de la semana.");
@@ -220,6 +261,8 @@ function guardarNuevaActividad(evento) {
     hora: datosFormulario.get("hora"),
     recurrencia: recurrenciaElegida,
     dias: diasElegidos,
+    aviso: avisoElegido,
+    horaAviso: horaAvisoElegida,
     recordatorio: datosFormulario.get("recordatorio"),
   };
 
@@ -238,6 +281,8 @@ function guardarNuevaActividad(evento) {
     actividadExistente.hora = datosActividad.hora;
     actividadExistente.recurrencia = datosActividad.recurrencia;
     actividadExistente.dias = datosActividad.dias;
+    actividadExistente.aviso = datosActividad.aviso;
+    actividadExistente.horaAviso = datosActividad.horaAviso;
     actividadExistente.recordatorio = datosActividad.recordatorio;
   } else {
     const nuevaActividad = {
@@ -248,6 +293,8 @@ function guardarNuevaActividad(evento) {
       hora: datosActividad.hora,
       recurrencia: datosActividad.recurrencia,
       dias: datosActividad.dias,
+      aviso: datosActividad.aviso,
+      horaAviso: datosActividad.horaAviso,
       recordatorio: datosActividad.recordatorio,
     };
 
@@ -257,10 +304,13 @@ function guardarNuevaActividad(evento) {
   localStorage.setItem("actividades", JSON.stringify(actividades));
 
   renderizarActividadesDeHoy();
+  mostrarMes();
 
   formularioActividad.reset();
   contenedorDias.hidden = true;
   avisoRecurrenciaMensual.hidden = true;
+  contenedorHoraAviso.hidden = true;
+  campoHoraAviso.required = false;
 
   cerrarEmergenteNuevaActividad();
 
@@ -275,6 +325,7 @@ botonAnadirActividad.addEventListener("click", abrirEmergenteNuevaActividad);
 botonCerrarActividad.addEventListener("click", cerrarEmergenteNuevaActividad);
 formularioActividad.addEventListener("submit", guardarNuevaActividad);
 selectorRecurrencia.addEventListener("change", cambiarOpcionesRecurrencia);
+selectorAviso.addEventListener("change", cambiarOpcionesAviso);
 campoFechaActividad.addEventListener("change", marcarDiaDeFechaInicio);
 campoFechaActividad.addEventListener("change", mostrarAvisoRecurrenciaMensual);
 botonEditarActividad.addEventListener("click", editarActividadSeleccionada);

@@ -3,7 +3,8 @@
    ========================================================= */
 
 .emergente-nueva-persona,
-.emergente-nueva-actividad {
+.emergente-nueva-actividad,
+.emergente-confirmacion {
   width: min(calc(100% - 40px), 360px);
   margin: auto;
   padding: 28px;
@@ -15,8 +16,43 @@
 }
 
 .emergente-nueva-persona::backdrop,
-.emergente-nueva-actividad::backdrop {
+.emergente-nueva-actividad::backdrop,
+.emergente-confirmacion::backdrop {
   background: rgba(80, 65, 82, 0.45);
+}
+
+.emergente-confirmacion p {
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.botones-confirmacion {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.botones-confirmacion button {
+  min-height: 42px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.boton-cancelar-confirmacion {
+  border: 2px solid var(--ciruela);
+  background: transparent;
+}
+
+.boton-aceptar-confirmacion {
+  border: 0;
+  background: var(--melocoton);
+}
+
+.botones-confirmacion button:active {
+  transform: scale(0.97);
 }
 
 .introducir-datos-persona,
@@ -97,6 +133,15 @@
 }
 
 .aviso-recurrencia-mensual[hidden] {
+  display: none;
+}
+
+.opciones-hora-aviso {
+  display: grid;
+  gap: 8px;
+}
+
+.opciones-hora-aviso[hidden] {
   display: none;
 }
 

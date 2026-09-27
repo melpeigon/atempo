@@ -1,0 +1,153 @@
+/* =========================================================
+   MENÚ Y CONFIGURACIÓN
+   ========================================================= */
+
+.logo {
+  position: relative;
+}
+
+.boton-abrir-menu {
+  width: 42px;
+  height: 42px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: var(--degradado);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-size: 30px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.boton-abrir-menu:active {
+  opacity: 0.65;
+  transform: scale(0.96);
+}
+
+.emergente-menu,
+.emergente-notificaciones {
+  width: min(calc(100% - 40px), 360px);
+  margin: auto;
+  padding: 28px;
+  border: 0;
+  border-radius: 24px;
+  color: var(--ciruela);
+  background: var(--crema);
+  box-shadow: 0 20px 60px rgba(80, 65, 82, 0.25);
+}
+
+.emergente-menu::backdrop,
+.emergente-notificaciones::backdrop {
+  background: rgba(80, 65, 82, 0.45);
+}
+
+.opciones-menu {
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.opciones-menu button {
+  width: 100%;
+  min-height: 50px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--white);
+  text-align: left;
+  cursor: pointer;
+}
+
+.opciones-menu img {
+  width: 26px;
+  height: 26px;
+}
+
+.opciones-menu button:active {
+  background: var(--melocoton);
+  transform: scale(0.98);
+}
+
+.boton-cerrar-menu {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 14px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.formulario-notificaciones {
+  margin-top: 22px;
+  display: grid;
+  gap: 10px;
+}
+
+.formulario-notificaciones label {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.formulario-notificaciones select,
+.formulario-notificaciones input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--gris);
+  border-radius: 12px;
+  color: var(--ciruela);
+  background: var(--white);
+  font: inherit;
+}
+
+.opciones-resumen-diario {
+  display: grid;
+  gap: 8px;
+}
+
+.opciones-resumen-diario[hidden],
+.mensaje-configuracion[hidden] {
+  display: none;
+}
+
+.mensaje-configuracion {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--lila) 28%, var(--white));
+  font-size: 13px;
+}
+
+.boton-guardar-configuracion {
+  min-height: 44px;
+  margin-top: 10px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--degradado);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.boton-cerrar-notificaciones {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 10px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.boton-guardar-configuracion:active,
+.boton-cerrar-notificaciones:active {
+  transform: scale(0.98);
+}

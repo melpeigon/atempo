@@ -31,6 +31,7 @@ const actividades = actividadesGuardadas
   : [];
 
 let idActividadSeleccionada = null;
+let origenFichaActividad = "inicio";
 
 const fechaActual = new Date();
 const anoActual = fechaActual.getFullYear();
@@ -209,7 +210,19 @@ function crearDatoFichaActividad(rutaIcono, texto, clase) {
   return datoFichaActividad;
 }
 
-function abrirFichaActividad(idActividad) {
+function obtenerTextoAvisoActividad(actividad) {
+  if (actividad.aviso === "una-hora-antes") {
+    return "Aviso 1 hora antes";
+  }
+
+  if (actividad.aviso === "hora-concreta") {
+    return `Aviso a las ${actividad.horaAviso}`;
+  }
+
+  return "Sin aviso";
+}
+
+function abrirFichaActividad(idActividad, nuevoOrigen) {
   const actividadSeleccionada = actividades.find(function (actividad) {
     return actividad.id === idActividad;
   });
@@ -224,6 +237,10 @@ function abrirFichaActividad(idActividad) {
 
   if (!personaActividad) {
     return;
+  }
+
+  if (nuevoOrigen) {
+    origenFichaActividad = nuevoOrigen;
   }
 
   idActividadSeleccionada = idActividad;
@@ -302,10 +319,17 @@ function abrirFichaActividad(idActividad) {
     "recurrencia-ficha-actividad"
   );
 
+  const avisoFichaActividad = crearDatoFichaActividad(
+    "Branding/iconos/SVG/recordatorio.svg",
+    obtenerTextoAvisoActividad(actividadSeleccionada),
+    "aviso-ficha-actividad"
+  );
+
   horarioFichaActividad.append(
     fechaFichaActividad,
     horaFichaActividad,
-    recurrenciaFichaActividad
+    recurrenciaFichaActividad,
+    avisoFichaActividad
   );
 
   contenidoFichaActividad.append(
@@ -327,9 +351,15 @@ function abrirFichaActividad(idActividad) {
   fichaActividad.hidden = false;
 }
 
-function volverInicioDesdeActividad() {
+function volverDesdeActividad() {
   fichaActividad.hidden = true;
-  pantallaInicio.hidden = false;
+
+  if (origenFichaActividad === "calendario") {
+    pantallaCalendario.hidden = false;
+  } else {
+    pantallaInicio.hidden = false;
+  }
+
   idActividadSeleccionada = null;
 }
 
@@ -368,7 +398,7 @@ function renderizarActividadesDeHoy() {
     tarjetaActividad.classList.add("tarjeta-actividad");
 
     tarjetaActividad.addEventListener("click", function () {
-      abrirFichaActividad(actividad.id);
+      abrirFichaActividad(actividad.id, "inicio");
     });
 
     const bloqueHora = document.createElement("div");
@@ -433,25 +463,25 @@ function eliminarActividadSeleccionada() {
   }
 
   const actividadSeleccionada = actividades[indiceActividad];
+  const nombreActividad = nombresActividades[actividadSeleccionada.actividad];
 
-  const confirmarEliminacion = confirm(
-    `¿Quieres eliminar ${nombresActividades[actividadSeleccionada.actividad]}?`
+  abrirConfirmacion(
+    "Eliminar actividad",
+    `¿Quieres eliminar ${nombreActividad}? Esta acción no se puede deshacer.`,
+    function () {
+      actividades.splice(indiceActividad, 1);
+
+      localStorage.setItem("actividades", JSON.stringify(actividades));
+
+      renderizarActividadesDeHoy();
+      mostrarMes();
+      volverDesdeActividad();
+    }
   );
-
-  if (!confirmarEliminacion) {
-    return;
-  }
-
-  actividades.splice(indiceActividad, 1);
-
-  localStorage.setItem("actividades", JSON.stringify(actividades));
-
-  renderizarActividadesDeHoy();
-  volverInicioDesdeActividad();
 }
 
 
-botonVolverActividad.addEventListener("click", volverInicioDesdeActividad);
+botonVolverActividad.addEventListener("click", volverDesdeActividad);
 botonEliminarActividad.addEventListener("click", eliminarActividadSeleccionada);
 
 renderizarActividadesDeHoy();

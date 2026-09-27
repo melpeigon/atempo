@@ -1,0 +1,72 @@
+/* =========================================================
+   GUÍA DE USO
+   ========================================================= */
+
+.guia {
+  gap: 24px;
+}
+
+.cabecera-guia {
+  text-align: center;
+}
+
+.cabecera-guia img {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 14px;
+  object-fit: contain;
+}
+
+.cabecera-guia h1 {
+  font-size: 30px;
+}
+
+.cabecera-guia p {
+  margin-top: 14px;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.contenido-guia {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bloque-guia {
+  padding: 18px;
+  border-left: 4px solid var(--lila);
+  border-radius: 14px;
+  background: var(--white);
+}
+
+.bloque-guia:nth-child(2),
+.bloque-guia:nth-child(5) {
+  border-left-color: var(--melocoton);
+}
+
+.bloque-guia:nth-child(3) {
+  border-left-color: var(--amarillo);
+}
+
+.bloque-guia:nth-child(4) {
+  border-left-color: #b0c5d4;
+}
+
+.bloque-guia h2 {
+  font-size: 21px;
+}
+
+.bloque-guia > p {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.bloque-guia .nota-guia {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--lila) 14%, var(--crema));
+  font-size: 12px;
+}

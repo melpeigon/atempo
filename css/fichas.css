@@ -221,6 +221,11 @@
   opacity: 0.75;
 }
 
+.aviso-ficha-actividad p {
+  font-size: 15px;
+  line-height: 1.4;
+}
+
 .recordatorio-ficha-actividad {
   width: 100%;
   margin-top: 20px;

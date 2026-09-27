@@ -14,6 +14,9 @@
   <link rel="stylesheet" href="css/inicio.css" />
   <link rel="stylesheet" href="css/fichas.css" />
   <link rel="stylesheet" href="css/formularios.css" />
+  <link rel="stylesheet" href="css/calendario.css" />
+  <link rel="stylesheet" href="css/menu.css" />
+  <link rel="stylesheet" href="css/guia.css" />
   <link rel="stylesheet" href="css/responsive.css" />
 </head>
 
@@ -21,6 +24,10 @@
   <main class="app-shell" id="pantalla-inicio">
     <header class="logo">
       <img src="Branding/logos/SVG/logo%20oscuro.svg" alt="Atempo" />
+
+      <button class="boton-abrir-menu" id="boton-abrir-menu" type="button" aria-label="Abrir menú">
+        ☰
+      </button>
     </header>
 
     <section class="bienvenida" aria-labelledby="bienvenida-titulo">
@@ -66,7 +73,7 @@
       <button class="button button-primary" id="boton-anadir-actividad" type="button">
         <span aria-hidden="true">+</span> Añadir actividad
       </button>
-      <button class="button" type="button" data-action="open-calendar">Ver calendario</button>
+      <button class="button" id="boton-ver-calendario" type="button">Ver calendario</button>
     </footer>
   </main>
 
@@ -110,6 +117,120 @@
       <button class="boton-eliminar-actividad" id="boton-eliminar-actividad" type="button">
         Eliminar actividad
       </button>
+    </div>
+  </section>
+
+  <!-- CALENDARIO -->
+
+  <section class="calendario app-shell" id="pantalla-calendario" aria-labelledby="titulo-calendario" hidden>
+    <button class="boton-volver" id="boton-volver-calendario" type="button">
+      ← Volver
+    </button>
+
+    <h1 id="titulo-calendario">Calendario</h1>
+
+    <div class="navegacion-calendario">
+      <button class="boton-mes-calendario" id="boton-mes-anterior" type="button" aria-label="Mes anterior">
+        ←
+      </button>
+
+      <h2 id="mes-calendario" aria-live="polite">Mes y año</h2>
+
+      <button class="boton-mes-calendario" id="boton-mes-siguiente" type="button" aria-label="Mes siguiente">
+        →
+      </button>
+    </div>
+
+    <div class="cuerpo-calendario">
+      <div class="dias-semana" aria-hidden="true">
+        <span>L</span>
+        <span>M</span>
+        <span>X</span>
+        <span>J</span>
+        <span>V</span>
+        <span>S</span>
+        <span>D</span>
+      </div>
+
+      <div class="cuadricula-calendario" id="cuadricula-calendario" aria-labelledby="mes-calendario"></div>
+    </div>
+
+    <section class="actividades-dia-calendario" id="actividades-dia-calendario"
+      aria-labelledby="titulo-actividades-dia" hidden>
+      <h2 id="titulo-actividades-dia"></h2>
+      <div class="lista-actividades-dia" id="lista-actividades-dia"></div>
+    </section>
+  </section>
+
+  <!-- GUÍA DE USO -->
+
+  <section class="guia app-shell" id="pantalla-guia" aria-labelledby="titulo-guia" hidden>
+    <button class="boton-volver" id="boton-volver-guia" type="button">
+      ← Volver al menú
+    </button>
+
+    <header class="cabecera-guia">
+      <img src="Branding/logos/simbolos/SVG/simbolo%20solo.svg" alt="" />
+
+      <h1 id="titulo-guia">Aquí empieza tu respiro.</h1>
+
+      <p>
+        Tu cabeza ya tiene suficientes pestañas abiertas. Deja aquí horarios, actividades y recordatorios. Atempo te
+        ayuda a tenerlos a mano, sin cargar con todo a todas horas.
+      </p>
+    </header>
+
+    <div class="contenido-guia">
+      <section class="bloque-guia">
+        <h2>Cada persona, su color</h2>
+        <p>
+          Crea una persona para cada miembro de la familia. Su color te ayudará a reconocer sus planes con solo echar
+          un vistazo.
+        </p>
+      </section>
+
+      <section class="bloque-guia">
+        <h2>Apúntalo una vez</h2>
+        <p>
+          Elige la persona, la actividad, la fecha y la hora. Añade una nota si hay algo más que quieras tener a mano.
+        </p>
+      </section>
+
+      <section class="bloque-guia">
+        <h2>¿Una vez o se repite?</h2>
+        <p>
+          Elige puntual para un solo día, semanal para días fijos, mensual para el mismo día de cada mes o anual para
+          cumpleaños y fechas especiales.
+        </p>
+
+        <p class="nota-guia">
+          Si un mes no tiene el día 29, 30 o 31 que elegiste, Atempo llevará la actividad a su último día disponible.
+        </p>
+
+        <p class="nota-guia">
+          Si una actividad semanal tiene horarios diferentes, crea una actividad para cada horario.
+        </p>
+      </section>
+
+      <section class="bloque-guia">
+        <h2>Hoy a mano. Lo demás, en el calendario.</h2>
+        <p>
+          En Inicio encontrarás las actividades de hoy ordenadas por hora. En el calendario podrás moverte entre meses
+          y pulsar cada icono para ver sus detalles.
+        </p>
+
+        <p class="nota-guia">
+          El icono representa la actividad y su color indica a qué persona pertenece.
+        </p>
+      </section>
+
+      <section class="bloque-guia">
+        <h2>Avisos sin ruido</h2>
+        <p>
+          Elige avisos para actividades concretas, un resumen diario o un poquito de ambos. Tú decides cuánto quieres
+          que Atempo te cuente.
+        </p>
+      </section>
     </div>
   </section>
 
@@ -213,6 +334,18 @@
       <label for="elige-hora">Hora</label>
       <input type="time" id="elige-hora" name="hora" required />
 
+      <label for="elige-aviso">Avisarme</label>
+      <select id="elige-aviso" name="aviso" required>
+        <option value="sin-aviso">Sin aviso</option>
+        <option value="una-hora-antes">1 hora antes</option>
+        <option value="hora-concreta">A una hora concreta</option>
+      </select>
+
+      <div class="opciones-hora-aviso" id="opciones-hora-aviso" hidden>
+        <label for="hora-aviso">Hora del aviso</label>
+        <input type="time" id="hora-aviso" name="horaAviso" />
+      </div>
+
       <label for="introduce-anotacion">Escribe tu recordatorio </label>
       <input type="text" id="introduce-anotacion" name="recordatorio" />
 
@@ -226,9 +359,85 @@
     </button>
   </dialog>
 
+  <!-- CONFIRMACIÓN PARA ELIMINAR -->
+
+  <dialog class="emergente-confirmacion" id="emergente-confirmacion" aria-labelledby="titulo-confirmacion">
+    <h2 id="titulo-confirmacion">¿Seguro?</h2>
+    <p id="mensaje-confirmacion"></p>
+
+    <div class="botones-confirmacion">
+      <button class="boton-cancelar-confirmacion" id="boton-cancelar-confirmacion" type="button">
+        Cancelar
+      </button>
+
+      <button class="boton-aceptar-confirmacion" id="boton-aceptar-confirmacion" type="button">
+        Eliminar
+      </button>
+    </div>
+  </dialog>
+
+  <!-- MENÚ -->
+
+  <dialog class="emergente-menu" id="emergente-menu" aria-labelledby="titulo-menu">
+    <h2 id="titulo-menu">Menú</h2>
+
+    <nav class="opciones-menu" aria-label="Opciones de Atempo">
+      <button id="boton-menu-notificaciones" type="button">
+        <img src="Branding/iconos/SVG/notificaciones.svg" alt="" />
+        Notificaciones
+      </button>
+
+      <button id="boton-menu-guia" type="button">
+        <img src="Branding/iconos/SVG/guia.svg" alt="" />
+        Guía de uso
+      </button>
+    </nav>
+
+    <button class="boton-cerrar-menu" id="boton-cerrar-menu" type="button">
+      Cerrar
+    </button>
+  </dialog>
+
+  <!-- CONFIGURACIÓN DE NOTIFICACIONES -->
+
+  <dialog class="emergente-notificaciones" id="emergente-notificaciones" aria-labelledby="titulo-notificaciones">
+    <h2 id="titulo-notificaciones">Notificaciones</h2>
+
+    <form class="formulario-notificaciones" id="formulario-notificaciones">
+      <label for="modo-notificaciones">¿Cómo quieres recibir los avisos?</label>
+
+      <select id="modo-notificaciones" name="modo">
+        <option value="desactivadas">Notificaciones desactivadas</option>
+        <option value="solo-actividades">Solo avisos individuales</option>
+        <option value="solo-resumen">Solo resumen diario</option>
+        <option value="resumen-y-actividades">Resumen + avisos individuales</option>
+      </select>
+
+      <div class="opciones-resumen-diario" id="opciones-resumen-diario" hidden>
+        <label for="hora-resumen-diario">Hora del resumen</label>
+        <input type="time" id="hora-resumen-diario" name="horaResumen" />
+      </div>
+
+      <p class="mensaje-configuracion" id="mensaje-configuracion" role="status" hidden>
+        Configuración guardada.
+      </p>
+
+      <button class="boton-guardar-configuracion" type="submit">
+        Guardar preferencias
+      </button>
+    </form>
+
+    <button class="boton-cerrar-notificaciones" id="boton-cerrar-notificaciones" type="button">
+      Volver al menú
+    </button>
+  </dialog>
+
   <script src="js/app.js"></script>
   <script src="js/actividades.js"></script>
   <script src="js/formulario-actividades.js"></script>
+  <script src="js/calendario.js"></script>
+  <script src="js/menu.js"></script>
+  <script src="js/guia.js"></script>
 </body>
 
 </html>

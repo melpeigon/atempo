@@ -26,23 +26,26 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Mostrar las actividades mensuales de los días 29, 30 o 31 el último día de los meses más cortos.
 - [x] Avisar de esta regla al elegir una recurrencia mensual que comienza los días 29, 30 o 31.
 - [x] Añadir la recurrencia anual para cumpleaños y otros acontecimientos anuales.
-- [ ] Mostrar un mensaje claro si se intenta añadir una actividad sin haber creado ninguna persona.
+- [x] Impedir guardar actividades si todavía no existe ninguna persona mediante el selector obligatorio vacío.
+- [ ] Valorar más adelante un mensaje propio que explique que primero hay que añadir una persona.
 
 ## Gestión de actividades
 
 - [x] Abrir una ficha o detalle al pulsar una actividad.
 - [x] Editar una actividad existente.
 - [x] Eliminar una actividad existente.
-- [ ] Sustituir la confirmación nativa `confirm()` por una confirmación diseñada dentro de la aplicación.
+- [x] Sustituir la confirmación nativa `confirm()` por una confirmación diseñada dentro de la aplicación.
 - [x] Eliminar también las actividades asociadas cuando se elimina una persona.
 
 ## Calendario
 
-- [ ] Crear `js/calendario.js` y `css/calendario.css` para mantener esta pantalla separada.
-- [ ] Crear la pantalla de calendario.
-- [ ] Conectar el botón «Ver calendario».
-- [ ] Mostrar actividades puntuales y recurrentes en sus fechas correspondientes.
-- [ ] Permitir navegar entre días o meses.
+- [x] Crear `js/calendario.js` y `css/calendario.css` para mantener esta pantalla separada.
+- [x] Crear la estructura de la pantalla de calendario.
+- [x] Conectar el botón «Ver calendario» y el botón «Volver».
+- [x] Mostrar actividades puntuales y recurrentes en sus fechas correspondientes.
+- [x] Permitir navegar entre meses.
+- [x] Limitar los iconos visibles por día y mostrar un indicador cuando existan más actividades.
+- [x] Mostrar la lista completa de un día desde su indicador y abrir sus fichas.
 
 ## Personas
 
@@ -75,21 +78,27 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 
 - [ ] Revisar todos los textos de la aplicación para que sean divertidos, cariñosos, claros y cercanos.
 - [ ] Mantener una voz coherente en mensajes vacíos, ayudas, errores, confirmaciones y notificaciones.
-- [ ] Añadir un botón visible para abrir las instrucciones o guía de la aplicación.
-- [ ] Explicar en la guía que cada persona tiene asignado un color y que ese color identifica también sus actividades.
-- [ ] Explicar brevemente cómo crear personas, añadir actividades, elegir la recurrencia y consultar la agenda.
-- [ ] Explicar que las recurrencias mensuales de los días 29, 30 o 31 pasan al último día de los meses más cortos.
-- [ ] Explicar la recurrencia anual y el caso especial del 29 de febrero.
-- [ ] Decidir si la guía se mostrará como una pantalla propia o como una ventana emergente.
+- [x] Añadir un botón visible para abrir las instrucciones o guía de la aplicación.
+- [x] Explicar en la guía que cada persona tiene asignado un color y que ese color identifica también sus actividades.
+- [x] Explicar brevemente cómo crear personas, añadir actividades, elegir la recurrencia y consultar la agenda.
+- [x] Explicar que las recurrencias mensuales de los días 29, 30 o 31 pasan al último día de los meses más cortos.
+- [x] Explicar la recurrencia anual y el caso especial del 29 de febrero.
+- [x] Mostrar la guía como una pantalla propia y desplazable.
 
 ## Notificaciones — imprescindibles para la versión 1.0
 
-- [ ] Diseñar las opciones de aviso de cada actividad: sin aviso, a la hora, 5, 10, 15 o 30 minutos antes, 1 hora antes y 1 día antes.
+- [x] Añadir al formulario de actividad un selector «Avisarme»: sin aviso, 1 hora antes o a una hora concreta.
+- [x] Mostrar un campo de hora solamente cuando se elija «A una hora concreta».
 - [ ] Decidir si una actividad puede tener uno o varios avisos.
-- [ ] Añadir al formulario de actividad la elección de cuándo recibir la notificación.
-- [ ] Guardar la configuración del aviso junto con los demás datos de la actividad.
-- [ ] Mostrar en la ficha de actividad cuándo se recibirá la notificación.
-- [ ] Permitir modificar o desactivar posteriormente el aviso de una actividad.
+- [x] Añadir al formulario de actividad la elección de cuándo recibir la notificación.
+- [x] Guardar la configuración del aviso junto con los demás datos de la actividad.
+- [x] Mostrar en la ficha de actividad cuándo se recibirá la notificación.
+- [x] Permitir modificar o desactivar posteriormente el aviso de una actividad.
+- [x] Añadir una configuración general e independiente para recibir un resumen con todas las actividades del día.
+- [x] Permitir activar o desactivar el resumen diario y elegir su hora mediante un campo de hora.
+- [x] Permitir elegir un modo general: notificaciones desactivadas, solo avisos individuales, solo resumen diario o resumen más avisos individuales.
+- [x] Si se elige «Solo resumen diario», conservar los avisos configurados en las actividades para ignorarlos temporalmente al conectar los envíos.
+- [x] Crear un menú general desde el que se pueda acceder a «Notificaciones» y «Guía de uso».
 - [ ] Añadir un botón para activar las notificaciones y solicitar permiso solamente después de pulsarlo.
 - [ ] Convertir Atempo en una aplicación web instalable (PWA), con manifiesto e iconos.
 - [ ] Registrar un `service worker` para recibir y mostrar notificaciones persistentes en móvil.
@@ -109,8 +118,9 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 
 ## Revisión final
 
-- [ ] Probar crear, editar y eliminar varias personas.
+- [x] Probar crear, editar y eliminar varias personas.
 - [ ] Probar actividades puntuales, semanales, mensuales y anuales.
+- [x] Probar crear, editar y eliminar actividades.
 - [ ] Probar varias actividades iguales en días y horas diferentes.
 - [ ] Probar la aplicación sin datos guardados y con muchos datos guardados.
 - [ ] Revisar errores de la consola.
