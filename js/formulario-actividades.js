@@ -185,6 +185,9 @@ function editarActividadSeleccionada() {
   formularioActividad.elements.horaAviso.value =
     actividadSeleccionada.horaAviso || "";
 
+  formularioActividad.elements.incluirResumen.checked =
+    actividadSeleccionada.incluirResumen !== false;
+
   cambiarOpcionesAviso();
 
   if (actividadSeleccionada.recurrencia === "semanal") {
@@ -263,6 +266,7 @@ function guardarNuevaActividad(evento) {
     dias: diasElegidos,
     aviso: avisoElegido,
     horaAviso: horaAvisoElegida,
+    incluirResumen: datosFormulario.has("incluirResumen"),
     recordatorio: datosFormulario.get("recordatorio"),
   };
 
@@ -283,6 +287,7 @@ function guardarNuevaActividad(evento) {
     actividadExistente.dias = datosActividad.dias;
     actividadExistente.aviso = datosActividad.aviso;
     actividadExistente.horaAviso = datosActividad.horaAviso;
+    actividadExistente.incluirResumen = datosActividad.incluirResumen;
     actividadExistente.recordatorio = datosActividad.recordatorio;
   } else {
     const nuevaActividad = {
@@ -295,6 +300,7 @@ function guardarNuevaActividad(evento) {
       dias: datosActividad.dias,
       aviso: datosActividad.aviso,
       horaAviso: datosActividad.horaAviso,
+      incluirResumen: datosActividad.incluirResumen,
       recordatorio: datosActividad.recordatorio,
     };
 

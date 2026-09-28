@@ -96,7 +96,8 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Permitir modificar o desactivar posteriormente el aviso de una actividad.
 - [x] Añadir una configuración general e independiente para recibir un resumen con todas las actividades del día.
 - [x] Permitir activar o desactivar el resumen diario y elegir su hora mediante un campo de hora.
-- [x] Permitir elegir un modo general: notificaciones desactivadas, solo avisos individuales, solo resumen diario o resumen más avisos individuales.
+- [x] Permitir activar o pausar las notificaciones en cada dispositivo mediante una casilla visible.
+- [x] Permitir elegir un modo general: solo avisos individuales, solo resumen diario o resumen más avisos individuales.
 - [x] Si se elige «Solo resumen diario», conservar los avisos configurados en las actividades para ignorarlos temporalmente al conectar los envíos.
 - [x] Crear un menú general desde el que se pueda acceder a «Notificaciones» y «Guía de uso».
 - [ ] Añadir un botón para activar las notificaciones y solicitar permiso solamente después de pulsarlo.
@@ -128,8 +129,12 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 
 ## Versión 1.1
 
+- [x] Sustituir los iconos de instalación por una versión con solo el símbolo de Atempo, sin el nombre pequeño.
+- [ ] Añadir «Médico» a la lista de actividades utilizando su icono propio.
+- [ ] Añadir una actividad «Personalizada» que permita escribir su nombre.
 - [ ] Diferenciar visualmente las actividades cuya hora ya ha pasado.
 - [ ] Valorar un estado manual para marcar una actividad como completada.
+- [ ] avisar en actividades que configure las notificaciones? o primeros pasos
 
 ## Ideas para versiones futuras
 

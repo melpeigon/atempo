@@ -136,6 +136,20 @@
   display: none;
 }
 
+.form-anadir-actividad .opcion-resumen-actividad {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 40px;
+}
+
+.opcion-resumen-actividad input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--lila);
+}
+
 .mensaje-error-formulario {
   margin-top: 8px;
   padding: 10px 12px;

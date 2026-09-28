@@ -8,7 +8,7 @@
   <title>Atempo - Inicio</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="Branding/logos/SVG/fabicon.svg" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="Branding/logos/PNG/icono-180.png" />
+  <link rel="apple-touch-icon" href="Branding/logos/PNG/simbolo-180.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -350,6 +350,11 @@
         <input type="time" id="hora-aviso" name="horaAviso" />
       </div>
 
+      <label class="opcion-resumen-actividad" for="incluir-resumen-diario">
+        <input type="checkbox" id="incluir-resumen-diario" name="incluirResumen" checked />
+        Incluir esta actividad en el resumen diario
+      </label>
+
       <label for="introduce-anotacion">Escribe tu recordatorio </label>
       <input type="text" id="introduce-anotacion" name="recordatorio" />
 
@@ -407,11 +412,15 @@
   <dialog class="emergente-notificaciones" id="emergente-notificaciones" aria-labelledby="titulo-notificaciones">
     <h2 id="titulo-notificaciones">Notificaciones</h2>
 
+    <label class="opcion-activar-notificaciones" for="activar-notificaciones">
+      <input type="checkbox" id="activar-notificaciones" />
+      Notificaciones activas en este dispositivo
+    </label>
+
     <form class="formulario-notificaciones" id="formulario-notificaciones">
       <label for="modo-notificaciones">¿Cómo quieres recibir los avisos?</label>
 
       <select id="modo-notificaciones" name="modo">
-        <option value="desactivadas">Notificaciones desactivadas</option>
         <option value="solo-actividades">Solo avisos individuales</option>
         <option value="solo-resumen">Solo resumen diario</option>
         <option value="resumen-y-actividades">Resumen + avisos individuales</option>

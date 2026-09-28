@@ -93,6 +93,27 @@
   gap: 10px;
 }
 
+.opcion-activar-notificaciones {
+  min-height: 48px;
+  margin-top: 18px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 14px;
+  background: var(--white);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.opcion-activar-notificaciones input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--lila);
+}
+
 .formulario-notificaciones label {
   margin-top: 6px;
   font-size: 13px;

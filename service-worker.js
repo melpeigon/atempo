@@ -1,4 +1,4 @@
-const NOMBRE_CACHE = "atempo-v3";
+const NOMBRE_CACHE = "atempo-v9";
 
 const ARCHIVOS_PRINCIPALES = [
   "./",
@@ -21,9 +21,9 @@ const ARCHIVOS_PRINCIPALES = [
   "./Branding/logos/SVG/logo oscuro.svg",
   "./Branding/logos/SVG/simbolo solo.svg",
   "./Branding/logos/SVG/fabicon.svg",
-  "./Branding/logos/PNG/icono-180.png",
-  "./Branding/logos/PNG/icono-192.png",
-  "./Branding/logos/PNG/icono-512.png",
+  "./Branding/logos/PNG/simbolo-180.png",
+  "./Branding/logos/PNG/simbolo-192.png",
+  "./Branding/logos/PNG/simbolo-512.png",
   "./Branding/iconos/SVG/bebe.svg",
   "./Branding/iconos/SVG/catequesis.svg",
   "./Branding/iconos/SVG/cumplea%C3%B1os.svg",
@@ -76,20 +76,51 @@ self.addEventListener("fetch", function (evento) {
   }
 
   evento.respondWith(
-    caches.match(evento.request).then(function (respuestaGuardada) {
-      if (respuestaGuardada) {
-        return respuestaGuardada;
-      }
-
-      return fetch(evento.request).then(function (respuestaInternet) {
+    fetch(evento.request)
+      .then(function (respuestaInternet) {
         const copiaRespuesta = respuestaInternet.clone();
 
-        caches.open(NOMBRE_CACHE).then(function (cache) {
-          cache.put(evento.request, copiaRespuesta);
-        });
+        if (respuestaInternet.ok || respuestaInternet.type === "opaque") {
+          caches.open(NOMBRE_CACHE).then(function (cache) {
+            cache.put(evento.request, copiaRespuesta);
+          });
+        }
 
         return respuestaInternet;
-      });
-    })
+      })
+      .catch(function () {
+        return caches.match(evento.request).then(function (respuestaGuardada) {
+          if (respuestaGuardada) {
+            return respuestaGuardada;
+          }
+
+          if (evento.request.mode === "navigate") {
+            return caches.match("./index.html");
+          }
+
+          return Response.error();
+        });
+      })
+  );
+});
+
+self.addEventListener("notificationclick", function (evento) {
+  evento.notification.close();
+
+  evento.waitUntil(
+    self.clients
+      .matchAll({
+        type: "window",
+        includeUncontrolled: true,
+      })
+      .then(function (ventanasAbiertas) {
+        for (const ventana of ventanasAbiertas) {
+          if (ventana.url.startsWith(self.registration.scope)) {
+            return ventana.focus();
+          }
+        }
+
+        return self.clients.openWindow("./");
+      })
   );
 });
