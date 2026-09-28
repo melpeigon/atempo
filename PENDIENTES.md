@@ -139,11 +139,11 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Añadir «Médico» a la lista de actividades utilizando su icono propio.
 - [x] Crear el icono `personalizado.svg`: un lápiz con una pequeña chispa, sin fondo.
 - [x] Añadir una actividad «Personalizada» que permita escribir su nombre y utilice su icono propio.
-- [x ] Diseñar la bienvenida que se muestra al abrir el enlace de Atempo sin instalarla.
-- [ x] Mostrar un botón de instalación compatible en Android.
-- [x ] Mostrar instrucciones breves para instalar Atempo desde Safari en iPhone.
-- [x ] Ocultar la bienvenida cuando Atempo ya esté instalada.
-- [x ] Conectar el botón Atrás del móvil con la navegación interna de Atempo.
+- [x] Diseñar la bienvenida que se muestra al abrir el enlace de Atempo sin instalarla.
+- [x] Mostrar un botón de instalación compatible en Android.
+- [x] Mostrar instrucciones breves para instalar Atempo desde Safari en iPhone.
+- [x] Ocultar la bienvenida cuando Atempo ya esté instalada.
+- [x] Conectar el botón Atrás del móvil con la navegación interna de Atempo.
 
 ## Versión 1.2
 
