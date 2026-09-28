@@ -107,15 +107,6 @@
   cursor: pointer;
 }
 
-.boton-cerrar-emergente:hover {
-  background: var(--gris);
-}
-
-.boton-cerrar-emergente:active {
-  background: var(--melocoton);
-  transform: scale(0.98);
-}
-
 .ayuda-formulario {
   margin-top: 2px;
   color: var(--ciruela);
