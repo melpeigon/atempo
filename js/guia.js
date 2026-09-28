@@ -8,12 +8,11 @@ function abrirGuia() {
   pantallaInicio.hidden = true;
   pantallaGuia.hidden = false;
   window.scrollTo(0, 0);
+  registrarPantalla("guia");
 }
 
 function volverAlMenuDesdeGuia() {
-  pantallaGuia.hidden = true;
-  pantallaInicio.hidden = false;
-  emergenteMenu.showModal();
+  history.back();
 }
 
 botonMenuGuia.addEventListener("click", abrirGuia);

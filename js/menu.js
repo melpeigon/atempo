@@ -30,6 +30,7 @@ if (configuracionNotificaciones.modo === "desactivadas") {
 
 function abrirMenu() {
   emergenteMenu.showModal();
+  registrarPantalla("menu");
 }
 
 function cerrarMenu() {
@@ -60,11 +61,15 @@ function abrirConfiguracionNotificaciones() {
 
   cambiarOpcionesNotificaciones();
   emergenteNotificaciones.showModal();
+  registrarPantalla("notificaciones");
 }
 
 function volverAlMenuDesdeNotificaciones() {
-  emergenteNotificaciones.close();
-  emergenteMenu.showModal();
+  history.back();
+}
+
+function volverDesdeMenu() {
+  history.back();
 }
 
 function guardarConfiguracionNotificaciones(evento) {
@@ -149,7 +154,7 @@ async function cambiarEstadoNotificaciones() {
 }
 
 botonAbrirMenu.addEventListener("click", abrirMenu);
-botonCerrarMenu.addEventListener("click", cerrarMenu);
+botonCerrarMenu.addEventListener("click", volverDesdeMenu);
 botonMenuNotificaciones.addEventListener("click", abrirConfiguracionNotificaciones);
 botonCerrarNotificaciones.addEventListener("click", volverAlMenuDesdeNotificaciones);
 selectorModoNotificaciones.addEventListener("change", cambiarOpcionesNotificaciones);

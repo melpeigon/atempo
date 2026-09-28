@@ -106,7 +106,7 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [ ] Guardar las actividades y las suscripciones a notificaciones en una base de datos.
 - [ ] Programar desde el servidor el envío de cada aviso, incluso cuando Atempo esté cerrada.
 - [x] Probar las notificaciones con la aplicación instalada en un móvil real.
-- [ ] Probar la instalación y las notificaciones en el otro sistema móvil: Android o iPhone.
+- [ ] Probar en un iPhone real la instalación y las notificaciones programadas cuando esté conectado el servidor de avisos.
 - [ ] Explicar en la guía cómo instalar Atempo, activar los avisos y modificar sus permisos.
 
 ## Datos y publicación
@@ -139,11 +139,11 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Añadir «Médico» a la lista de actividades utilizando su icono propio.
 - [x] Crear el icono `personalizado.svg`: un lápiz con una pequeña chispa, sin fondo.
 - [x] Añadir una actividad «Personalizada» que permita escribir su nombre y utilice su icono propio.
-- [ ] Diseñar la bienvenida que se muestra al abrir el enlace de Atempo sin instalarla.
-- [ ] Mostrar un botón de instalación compatible en Android.
-- [ ] Mostrar instrucciones breves para instalar Atempo desde Safari en iPhone.
-- [ ] Ocultar la bienvenida cuando Atempo ya esté instalada.
-- [ ] Conectar el botón Atrás del móvil con la navegación interna de Atempo.
+- [x ] Diseñar la bienvenida que se muestra al abrir el enlace de Atempo sin instalarla.
+- [ x] Mostrar un botón de instalación compatible en Android.
+- [x ] Mostrar instrucciones breves para instalar Atempo desde Safari en iPhone.
+- [x ] Ocultar la bienvenida cuando Atempo ya esté instalada.
+- [x ] Conectar el botón Atrás del móvil con la navegación interna de Atempo.
 
 ## Versión 1.2
 

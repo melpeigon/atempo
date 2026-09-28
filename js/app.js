@@ -104,7 +104,7 @@ function cerrarEmergenteNuevaPersona() {
   emergenteNuevaPersona.close();
 }
 
-function abrirFichaPersona(idPersona) {
+function abrirFichaPersona(idPersona, guardarEnHistorial = true) {
   const personaSeleccionada = personas.find(function (persona) {
     return persona.id === idPersona;
   });
@@ -233,6 +233,10 @@ function abrirFichaPersona(idPersona) {
 
   pantallaInicio.hidden = true;
   fichaPersona.hidden = false;
+
+  if (guardarEnHistorial) {
+    registrarPantalla("persona", { idPersona: idPersona });
+  }
 }
 
 function editarPersonaSeleccionada() {
@@ -263,9 +267,7 @@ function editarPersonaSeleccionada() {
 }
 
 function volverInicio() {
-  fichaPersona.hidden = true;
-
-  pantallaInicio.hidden = false;
+  history.back();
 }
 
 function eliminarPersonaSeleccionada() {
@@ -361,7 +363,7 @@ function guardarNuevaPersona(evento) {
   idPersonaEnEdicion = null;
 
   if (idDeLaPersonaEditada !== null) {
-    abrirFichaPersona(idDeLaPersonaEditada);
+    abrirFichaPersona(idDeLaPersonaEditada, false);
   }
 }
 

@@ -1,4 +1,4 @@
-const NOMBRE_CACHE = "atempo-v12";
+const NOMBRE_CACHE = "atempo-v14";
 
 const ARCHIVOS_PRINCIPALES = [
   "./",
@@ -20,6 +20,7 @@ const ARCHIVOS_PRINCIPALES = [
   "./js/menu.js",
   "./js/guia.js",
   "./js/instalacion.js",
+  "./js/navegacion.js",
   "./Branding/logos/SVG/logo oscuro.svg",
   "./Branding/logos/SVG/simbolo solo.svg",
   "./Branding/logos/SVG/fabicon.svg",

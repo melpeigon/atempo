@@ -178,11 +178,11 @@ function ocultarActividadesDelDia() {
 function abrirCalendario() {
   pantallaInicio.hidden = true;
   pantallaCalendario.hidden = false;
+  registrarPantalla("calendario");
 }
 
 function volverInicioDesdeCalendario() {
-  pantallaCalendario.hidden = true;
-  pantallaInicio.hidden = false;
+  history.back();
 }
 
 function mostrarMesAnterior() {

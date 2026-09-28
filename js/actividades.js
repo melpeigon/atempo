@@ -234,7 +234,7 @@ function obtenerTextoAvisoActividad(actividad) {
   return "Sin aviso";
 }
 
-function abrirFichaActividad(idActividad, nuevoOrigen) {
+function abrirFichaActividad(idActividad, nuevoOrigen, guardarEnHistorial = true) {
   const actividadSeleccionada = actividades.find(function (actividad) {
     return actividad.id === idActividad;
   });
@@ -361,18 +361,17 @@ function abrirFichaActividad(idActividad, nuevoOrigen) {
 
   pantallaInicio.hidden = true;
   fichaActividad.hidden = false;
+
+  if (guardarEnHistorial) {
+    registrarPantalla("actividad", {
+      idActividad: idActividad,
+      origen: origenFichaActividad,
+    });
+  }
 }
 
 function volverDesdeActividad() {
-  fichaActividad.hidden = true;
-
-  if (origenFichaActividad === "calendario") {
-    pantallaCalendario.hidden = false;
-  } else {
-    pantallaInicio.hidden = false;
-  }
-
-  idActividadSeleccionada = null;
+  history.back();
 }
 
 function renderizarActividadesDeHoy() {

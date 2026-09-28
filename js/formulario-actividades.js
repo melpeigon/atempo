@@ -349,7 +349,7 @@ function guardarNuevaActividad(evento) {
   idActividadEnEdicion = null;
 
   if (idDeActividadEditada !== null) {
-    abrirFichaActividad(idDeActividadEditada);
+    abrirFichaActividad(idDeActividadEditada, origenFichaActividad, false);
   }
 }
 
