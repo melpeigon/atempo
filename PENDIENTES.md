@@ -135,6 +135,8 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [ ] Diferenciar visualmente las actividades cuya hora ya ha pasado.
 - [ ] Valorar un estado manual para marcar una actividad como completada.
 - [ ] avisar en actividades que configure las notificaciones? o primeros pasos
+- [ ] Añadir pantalla que aparece al abrir el enlace
+- [ ] En iPhone, Apple no permite iniciar directamente la instalación desde un botón. Tendríamos que mostrar unas instrucciones breves:
 
 ## Ideas para versiones futuras
 
@@ -142,3 +144,4 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [ ] Explorar una función de inteligencia artificial que aporte utilidad real a las familias.
 - [ ] Valorar ideas como resumir la semana, detectar conflictos de horarios, sugerir momentos libres o ayudar a redactar recordatorios.
 - [ ] Definir primero el problema que resolverá la IA antes de elegir una herramienta o incorporarla a la aplicación.
+- [ ] La pantalla breve durante el arranque.

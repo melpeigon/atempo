@@ -1,4 +1,4 @@
-const NOMBRE_CACHE = "atempo-v9";
+const NOMBRE_CACHE = "atempo-v10";
 
 const ARCHIVOS_PRINCIPALES = [
   "./",
@@ -50,23 +50,29 @@ self.addEventListener("install", function (evento) {
   evento.waitUntil(
     caches.open(NOMBRE_CACHE).then(function (cache) {
       return cache.addAll(ARCHIVOS_PRINCIPALES);
+    }).then(function () {
+      return self.skipWaiting();
     })
   );
 });
 
 self.addEventListener("activate", function (evento) {
   evento.waitUntil(
-    caches.keys().then(function (nombresCache) {
-      const cachesAntiguas = nombresCache.filter(function (nombreCache) {
-        return nombreCache !== NOMBRE_CACHE;
-      });
+    caches.keys()
+      .then(function (nombresCache) {
+        const cachesAntiguas = nombresCache.filter(function (nombreCache) {
+          return nombreCache !== NOMBRE_CACHE;
+        });
 
-      return Promise.all(
-        cachesAntiguas.map(function (nombreCache) {
-          return caches.delete(nombreCache);
-        })
-      );
-    })
+        return Promise.all(
+          cachesAntiguas.map(function (nombreCache) {
+            return caches.delete(nombreCache);
+          })
+        );
+      })
+      .then(function () {
+        return self.clients.claim();
+      })
   );
 });
 

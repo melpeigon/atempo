@@ -425,7 +425,7 @@ renderizarPersonas();
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function () {
     navigator.serviceWorker
-      .register("./service-worker.js")
+      .register("./service-worker.js", { updateViaCache: "none" })
       .then(function () {
         console.log("Service worker registrado correctamente.");
       })
