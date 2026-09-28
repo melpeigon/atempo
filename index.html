@@ -5,6 +5,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#fcf9f5" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Atempo" />
   <title>Atempo - Inicio</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="Branding/logos/SVG/fabicon.svg" type="image/svg+xml" />
@@ -21,10 +24,38 @@
   <link rel="stylesheet" href="css/calendario.css" />
   <link rel="stylesheet" href="css/menu.css" />
   <link rel="stylesheet" href="css/guia.css" />
+  <link rel="stylesheet" href="css/instalacion.css" />
   <link rel="stylesheet" href="css/responsive.css" />
 </head>
 
 <body>
+  <section class="pantalla-instalacion" id="pantalla-instalacion" hidden>
+    <div class="contenido-instalacion">
+      <img class="simbolo-instalacion" src="Branding/logos/SVG/simbolo solo.svg" alt="" />
+
+      <h1>Tu respiro empieza aquí.</h1>
+
+      <p>Instala Atempo para tener vuestra agenda siempre a mano.</p>
+
+      <div id="instalacion-android" hidden>
+        <button class="boton-instalar" id="boton-instalar" type="button">
+          Instalar Atempo
+        </button>
+      </div>
+
+      <div class="instrucciones-iphone" id="instrucciones-iphone" hidden>
+        <p>Para instalar Atempo en tu iPhone:</p>
+
+        <ol>
+          <li>Abre este enlace desde Safari.</li>
+          <li>Pulsa el botón Compartir.</li>
+          <li>Elige «Añadir a pantalla de inicio».</li>
+          <li>Pulsa «Añadir».</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
   <main class="app-shell" id="pantalla-inicio">
     <header class="logo">
       <img src="Branding/logos/SVG/logo%20oscuro.svg" alt="Atempo" />
@@ -303,7 +334,15 @@
         <option value="ingles">Inglés</option>
         <option value="padel">Pádel</option>
         <option value="gym">Gym</option>
+        <option value="medico">Médico</option>
+        <option value="personalizada">Personalizada</option>
       </select>
+
+      <div class="opciones-actividad-personalizada" id="opciones-actividad-personalizada" hidden>
+        <label for="nombre-actividad-personalizada">Nombre de la actividad</label>
+        <input type="text" id="nombre-actividad-personalizada" name="nombrePersonalizado"
+          placeholder="Por ejemplo, reunión del colegio" />
+      </div>
 
       <label for="elige-fecha">Fecha inicio</label>
       <input type="date" id="elige-fecha" name="fecha" required />
@@ -451,6 +490,7 @@
   <script src="js/calendario.js"></script>
   <script src="js/menu.js"></script>
   <script src="js/guia.js"></script>
+  <script src="js/instalacion.js"></script>
 </body>
 
 </html>

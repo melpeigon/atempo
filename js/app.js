@@ -190,8 +190,9 @@ function abrirFichaPersona(idPersona) {
 
       const nombreProximaActividad = document.createElement("p");
       nombreProximaActividad.classList.add("nombre-proxima-actividad");
-      nombreProximaActividad.textContent =
-        nombresActividades[proximaActividad.actividad.actividad];
+      nombreProximaActividad.textContent = obtenerNombreActividad(
+        proximaActividad.actividad
+      );
 
       const fechaProximaActividad = document.createElement("p");
       fechaProximaActividad.classList.add("fecha-proxima-actividad");

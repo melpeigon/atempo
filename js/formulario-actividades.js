@@ -5,6 +5,9 @@ const botonCerrarActividad = document.querySelector("#boton-cerrar-actividad");
 const emergenteNuevaActividad = document.querySelector("#emergente-nueva-actividad");
 const formularioActividad = document.querySelector("#form-anadir-actividad");
 const selectorPersonaActividad = document.querySelector("#elige-persona");
+const selectorTipoActividad = document.querySelector("#elige-actividad");
+const contenedorActividadPersonalizada = document.querySelector("#opciones-actividad-personalizada");
+const campoNombreActividadPersonalizada = document.querySelector("#nombre-actividad-personalizada");
 const selectorRecurrencia = document.querySelector("#elige-recurrencia");
 const contenedorDias = document.querySelector("#opciones-semanales");
 const campoFechaActividad = document.querySelector("#elige-fecha");
@@ -75,6 +78,17 @@ function cambiarOpcionesAviso() {
   }
 }
 
+function cambiarOpcionesActividad() {
+  const esPersonalizada = selectorTipoActividad.value === "personalizada";
+
+  contenedorActividadPersonalizada.hidden = !esPersonalizada;
+  campoNombreActividadPersonalizada.required = esPersonalizada;
+
+  if (!esPersonalizada) {
+    campoNombreActividadPersonalizada.value = "";
+  }
+}
+
 function obtenerNombreDiaDeFecha(fecha) {
   const partesFecha = fecha.split("-");
   const ano = Number(partesFecha[0]);
@@ -115,6 +129,8 @@ function abrirEmergenteNuevaActividad() {
 
   formularioActividad.reset();
   contenedorDias.hidden = true;
+  contenedorActividadPersonalizada.hidden = true;
+  campoNombreActividadPersonalizada.required = false;
   avisoRecurrenciaMensual.hidden = true;
   contenedorHoraAviso.hidden = true;
   campoHoraAviso.required = false;
@@ -164,6 +180,11 @@ function editarActividadSeleccionada() {
 
   formularioActividad.elements.actividad.value =
     actividadSeleccionada.actividad;
+
+  formularioActividad.elements.nombrePersonalizado.value =
+    actividadSeleccionada.nombrePersonalizado || "";
+
+  cambiarOpcionesActividad();
 
   formularioActividad.elements.fecha.value =
     actividadSeleccionada.fecha;
@@ -260,6 +281,7 @@ function guardarNuevaActividad(evento) {
   const datosActividad = {
     personaId: datosFormulario.get("persona"),
     actividad: datosFormulario.get("actividad"),
+    nombrePersonalizado: datosFormulario.get("nombrePersonalizado").trim(),
     fecha: datosFormulario.get("fecha"),
     hora: datosFormulario.get("hora"),
     recurrencia: recurrenciaElegida,
@@ -281,6 +303,7 @@ function guardarNuevaActividad(evento) {
 
     actividadExistente.personaId = datosActividad.personaId;
     actividadExistente.actividad = datosActividad.actividad;
+    actividadExistente.nombrePersonalizado = datosActividad.nombrePersonalizado;
     actividadExistente.fecha = datosActividad.fecha;
     actividadExistente.hora = datosActividad.hora;
     actividadExistente.recurrencia = datosActividad.recurrencia;
@@ -294,6 +317,7 @@ function guardarNuevaActividad(evento) {
       id: crypto.randomUUID(),
       personaId: datosActividad.personaId,
       actividad: datosActividad.actividad,
+      nombrePersonalizado: datosActividad.nombrePersonalizado,
       fecha: datosActividad.fecha,
       hora: datosActividad.hora,
       recurrencia: datosActividad.recurrencia,
@@ -314,6 +338,8 @@ function guardarNuevaActividad(evento) {
 
   formularioActividad.reset();
   contenedorDias.hidden = true;
+  contenedorActividadPersonalizada.hidden = true;
+  campoNombreActividadPersonalizada.required = false;
   avisoRecurrenciaMensual.hidden = true;
   contenedorHoraAviso.hidden = true;
   campoHoraAviso.required = false;
@@ -331,6 +357,7 @@ botonAnadirActividad.addEventListener("click", abrirEmergenteNuevaActividad);
 botonCerrarActividad.addEventListener("click", cerrarEmergenteNuevaActividad);
 formularioActividad.addEventListener("submit", guardarNuevaActividad);
 selectorRecurrencia.addEventListener("change", cambiarOpcionesRecurrencia);
+selectorTipoActividad.addEventListener("change", cambiarOpcionesActividad);
 selectorAviso.addEventListener("change", cambiarOpcionesAviso);
 campoFechaActividad.addEventListener("change", marcarDiaDeFechaInicio);
 campoFechaActividad.addEventListener("change", mostrarAvisoRecurrenciaMensual);

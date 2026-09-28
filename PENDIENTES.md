@@ -1,6 +1,6 @@
 # Pendientes de Atempo
 
-Última revisión: 27 de septiembre de 2026.
+Última revisión: 28 de septiembre de 2026.
 
 Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar primero el funcionamiento principal de la aplicación y dejar las mejoras más grandes para después.
 
@@ -58,7 +58,7 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 
 ## Diseño adaptable y móvil
 
-- [ ] Probar la aplicación en un móvil real.
+- [x] Probar la aplicación instalada en un móvil real.
 - [ ] Comprobar el tamaño y la separación de todos los botones en móvil.
 - [ ] Revisar los estados `hover`, `active` y `focus` de los botones. En pantallas táctiles el estado importante es principalmente `active`.
 - [ ] Comprobar que los botones tengan una zona pulsable cómoda, de aproximadamente 44 píxeles como mínimo.
@@ -100,12 +100,13 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Permitir elegir un modo general: solo avisos individuales, solo resumen diario o resumen más avisos individuales.
 - [x] Si se elige «Solo resumen diario», conservar los avisos configurados en las actividades para ignorarlos temporalmente al conectar los envíos.
 - [x] Crear un menú general desde el que se pueda acceder a «Notificaciones» y «Guía de uso».
-- [ ] Añadir un botón para activar las notificaciones y solicitar permiso solamente después de pulsarlo.
-- [ ] Convertir Atempo en una aplicación web instalable (PWA), con manifiesto e iconos.
-- [ ] Registrar un `service worker` para recibir y mostrar notificaciones persistentes en móvil.
+- [x] Solicitar permiso para las notificaciones solamente cuando la persona active su casilla.
+- [x] Convertir Atempo en una aplicación web instalable (PWA), con manifiesto e iconos.
+- [x] Registrar un `service worker` y comprobar que puede mostrar notificaciones en un móvil.
 - [ ] Guardar las actividades y las suscripciones a notificaciones en una base de datos.
 - [ ] Programar desde el servidor el envío de cada aviso, incluso cuando Atempo esté cerrada.
-- [ ] Probar las notificaciones con la aplicación instalada en Android y en iPhone.
+- [x] Probar las notificaciones con la aplicación instalada en un móvil real.
+- [ ] Probar la instalación y las notificaciones en el otro sistema móvil: Android o iPhone.
 - [ ] Explicar en la guía cómo instalar Atempo, activar los avisos y modificar sus permisos.
 
 ## Datos y publicación
@@ -114,8 +115,8 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [ ] Diseñar los usuarios y la sincronización entre dispositivos necesarios para las notificaciones.
 - [ ] Configurar una base de datos y autenticación, por ejemplo con Supabase.
 - [ ] Preparar los datos existentes para poder migrarlos desde `localStorage`.
-- [ ] Publicar una primera versión de prueba.
-- [ ] Probar instalación como aplicación web en el móvil si se convierte en PWA.
+- [x] Publicar una primera versión de prueba en GitHub Pages.
+- [x] Probar la instalación como aplicación web en el móvil.
 
 ## Revisión final
 
@@ -125,18 +126,32 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [ ] Probar varias actividades iguales en días y horas diferentes.
 - [ ] Probar la aplicación sin datos guardados y con muchos datos guardados.
 - [ ] Revisar errores de la consola.
-- [ ] Guardar una versión estable en Git.
+- [x] Guardar una versión estable en Git.
 
-## Versión 1.1
+## Versión 1.1 — cierre de versión
 
 - [x] Sustituir los iconos de instalación por una versión con solo el símbolo de Atempo, sin el nombre pequeño.
-- [ ] Añadir «Médico» a la lista de actividades utilizando su icono propio.
-- [ ] Añadir una actividad «Personalizada» que permita escribir su nombre.
+- [x] Permitir incluir o excluir cada actividad del resumen diario.
+- [x] Activar o pausar las notificaciones mediante una casilla visible.
+- [x] Comprobar las notificaciones con Atempo instalada en un móvil.
+- [x] Hacer que una notificación abra o lleve al frente la aplicación.
+- [x] Mejorar la actualización automática de la PWA cuando se publica una versión nueva.
+- [x] Añadir «Médico» a la lista de actividades utilizando su icono propio.
+- [x] Crear el icono `personalizado.svg`: un lápiz con una pequeña chispa, sin fondo.
+- [x] Añadir una actividad «Personalizada» que permita escribir su nombre y utilice su icono propio.
+- [ ] Diseñar la bienvenida que se muestra al abrir el enlace de Atempo sin instalarla.
+- [ ] Mostrar un botón de instalación compatible en Android.
+- [ ] Mostrar instrucciones breves para instalar Atempo desde Safari en iPhone.
+- [ ] Ocultar la bienvenida cuando Atempo ya esté instalada.
+- [ ] Conectar el botón Atrás del móvil con la navegación interna de Atempo.
+
+## Versión 1.2
+
 - [ ] Diferenciar visualmente las actividades cuya hora ya ha pasado.
 - [ ] Valorar un estado manual para marcar una actividad como completada.
-- [ ] avisar en actividades que configure las notificaciones? o primeros pasos
-- [ ] Añadir pantalla que aparece al abrir el enlace
-- [ ] En iPhone, Apple no permite iniciar directamente la instalación desde un botón. Tendríamos que mostrar unas instrucciones breves:
+- [ ] Añadir una pequeña orientación inicial para configurar las notificaciones.
+- [ ] Organizar las actividades por categorías.
+- [ ] pulsar el numero del calendario y ver todas las actividades como se ven con el boton N
 
 ## Ideas para versiones futuras
 

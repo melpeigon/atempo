@@ -10,6 +10,8 @@ const rutasIconosActividades = {
   ingles: "Branding/iconos/SVG/tarea.svg",
   padel: "Branding/iconos/SVG/pael.svg",
   gym: "Branding/iconos/SVG/gym.svg",
+  medico: "Branding/iconos/SVG/medico.svg",
+  personalizada: "Branding/iconos/SVG/personalizado.svg",
 };
 
 const nombresActividades = {
@@ -22,7 +24,17 @@ const nombresActividades = {
   ingles: "Inglés",
   padel: "Pádel",
   gym: "Gym",
+  medico: "Médico",
+  personalizada: "Personalizada",
 };
+
+function obtenerNombreActividad(actividad) {
+  if (actividad.actividad === "personalizada") {
+    return actividad.nombrePersonalizado || "Actividad personalizada";
+  }
+
+  return nombresActividades[actividad.actividad] || "Actividad";
+}
 
 const actividadesGuardadas = localStorage.getItem("actividades");
 
@@ -266,7 +278,7 @@ function abrirFichaActividad(idActividad, nuevoOrigen) {
   iconoFichaActividad.append(imagenFichaActividad);
 
   const nombreFichaActividad = document.createElement("h2");
-  nombreFichaActividad.textContent = nombresActividades[actividadSeleccionada.actividad];
+  nombreFichaActividad.textContent = obtenerNombreActividad(actividadSeleccionada);
 
   const personaFichaActividad = document.createElement("p");
   personaFichaActividad.classList.add("persona-ficha-actividad");
@@ -432,7 +444,7 @@ function renderizarActividadesDeHoy() {
     informacionActividad.classList.add("informacion-actividad");
 
     const tituloActividad = document.createElement("h3");
-    tituloActividad.textContent = nombresActividades[actividad.actividad];
+    tituloActividad.textContent = obtenerNombreActividad(actividad);
 
     informacionActividad.append(tituloActividad);
 
@@ -463,7 +475,7 @@ function eliminarActividadSeleccionada() {
   }
 
   const actividadSeleccionada = actividades[indiceActividad];
-  const nombreActividad = nombresActividades[actividadSeleccionada.actividad];
+  const nombreActividad = obtenerNombreActividad(actividadSeleccionada);
 
   abrirConfirmacion(
     "Eliminar actividad",

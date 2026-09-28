@@ -132,6 +132,12 @@
   gap: 8px;
 }
 
+.opciones-actividad-personalizada {
+  display: grid;
+  gap: 8px;
+}
+
+.opciones-actividad-personalizada[hidden],
 .opciones-hora-aviso[hidden] {
   display: none;
 }

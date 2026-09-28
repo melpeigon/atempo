@@ -73,7 +73,7 @@ function mostrarMes() {
       botonActividad.style.backgroundColor = personaActividad.color;
       botonActividad.setAttribute(
         "aria-label",
-        `${nombresActividades[actividad.actividad]} de ${personaActividad.nombre}`
+        `${obtenerNombreActividad(actividad)} de ${personaActividad.nombre}`
       );
 
       const imagenActividad = document.createElement("img");
@@ -144,7 +144,7 @@ function mostrarActividadesDelDia(fechaDia, actividadesDelDia) {
 
     const nombreActividad = document.createElement("p");
     nombreActividad.classList.add("nombre-actividad-dia");
-    nombreActividad.textContent = nombresActividades[actividad.actividad];
+    nombreActividad.textContent = obtenerNombreActividad(actividad);
 
     const datosActividad = document.createElement("p");
     datosActividad.classList.add("datos-actividad-dia");
