@@ -78,6 +78,8 @@ async function cargarFamiliaActual(permitirCrearFamilia = true) {
     return false;
   }
 
+  await cargarConfiguracionNotificaciones();
+
   return true;
 }
 
