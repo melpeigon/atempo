@@ -235,7 +235,7 @@ function editarActividadSeleccionada() {
   emergenteNuevaActividad.showModal();
 }
 
-function guardarNuevaActividad(evento) {
+async function guardarNuevaActividad(evento) {
   evento.preventDefault();
 
   ocultarErrorActividad();
@@ -292,46 +292,54 @@ function guardarNuevaActividad(evento) {
     recordatorio: datosFormulario.get("recordatorio"),
   };
 
+  const datosParaSupabase = convertirActividadParaSupabase(datosActividad);
+  botonGuardarActividad.disabled = true;
+
   if (idActividadEnEdicion !== null) {
     const actividadExistente = actividades.find(function (actividad) {
       return actividad.id === idActividadEnEdicion;
     });
 
     if (!actividadExistente) {
+      botonGuardarActividad.disabled = false;
       return;
     }
 
-    actividadExistente.personaId = datosActividad.personaId;
-    actividadExistente.actividad = datosActividad.actividad;
-    actividadExistente.nombrePersonalizado = datosActividad.nombrePersonalizado;
-    actividadExistente.fecha = datosActividad.fecha;
-    actividadExistente.hora = datosActividad.hora;
-    actividadExistente.recurrencia = datosActividad.recurrencia;
-    actividadExistente.dias = datosActividad.dias;
-    actividadExistente.aviso = datosActividad.aviso;
-    actividadExistente.horaAviso = datosActividad.horaAviso;
-    actividadExistente.incluirResumen = datosActividad.incluirResumen;
-    actividadExistente.recordatorio = datosActividad.recordatorio;
+    const { data, error } = await clienteSupabase
+      .from("actividades")
+      .update(datosParaSupabase)
+      .eq("id", actividadExistente.id)
+      .select("*")
+      .single();
+
+    if (error) {
+      console.log("No se pudo editar la actividad:", error);
+      mostrarErrorActividad("No hemos podido guardar los cambios. Inténtalo otra vez.");
+      botonGuardarActividad.disabled = false;
+      return;
+    }
+
+    Object.assign(actividadExistente, convertirActividadDeSupabase(data));
   } else {
-    const nuevaActividad = {
-      id: crypto.randomUUID(),
-      personaId: datosActividad.personaId,
-      actividad: datosActividad.actividad,
-      nombrePersonalizado: datosActividad.nombrePersonalizado,
-      fecha: datosActividad.fecha,
-      hora: datosActividad.hora,
-      recurrencia: datosActividad.recurrencia,
-      dias: datosActividad.dias,
-      aviso: datosActividad.aviso,
-      horaAviso: datosActividad.horaAviso,
-      incluirResumen: datosActividad.incluirResumen,
-      recordatorio: datosActividad.recordatorio,
-    };
+    const { data, error } = await clienteSupabase
+      .from("actividades")
+      .insert(datosParaSupabase)
+      .select("*")
+      .single();
+
+    if (error) {
+      console.log("No se pudo crear la actividad:", error);
+      mostrarErrorActividad("No hemos podido añadir la actividad. Inténtalo otra vez.");
+      botonGuardarActividad.disabled = false;
+      return;
+    }
+
+    const nuevaActividad = convertirActividadDeSupabase(data);
 
     actividades.push(nuevaActividad);
   }
 
-  localStorage.setItem("actividades", JSON.stringify(actividades));
+  botonGuardarActividad.disabled = false;
 
   renderizarActividadesDeHoy();
   mostrarMes();

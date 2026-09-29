@@ -151,6 +151,27 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [ ] Valorar un estado manual para marcar una actividad como completada.
 - [ ] Añadir una pequeña orientación inicial para configurar las notificaciones.
 - [ ] Organizar las actividades por categorías.
+
+### Documentación del proyecto
+
+- [ ] Crear `README.md` con la presentación, instalación, funciones, tecnologías, estado del proyecto y enlace de prueba.
+- [ ] Crear `CHANGELOG.md` para conservar el historial de novedades de cada versión junto con las Releases de GitHub.
+- [ ] Decidir si el código será privado, de uso reservado o de código abierto antes de escoger una licencia.
+- [ ] Añadir el archivo `LICENSE` que corresponda a la decisión anterior.
+- [ ] Documentar cómo se guardan, exportan y eliminan los datos.
+
+### Web pública, privacidad y textos legales
+
+- [ ] Crear una landing pública de Atempo con su explicación, capturas y acceso o instalación de la aplicación.
+- [ ] Preparar un aviso legal con la identidad y el contacto de la responsable de Atempo.
+- [ ] Preparar una política de privacidad adaptada a los datos que realmente trate la aplicación.
+- [ ] Informar claramente sobre nombres, agendas familiares, notificaciones y cualquier dato que se almacene o sincronice.
+- [ ] Revisar especialmente la protección de datos de menores y los datos que puedan revelar información de salud.
+- [ ] Preparar una política de cookies y almacenamiento local, aunque solo se utilice almacenamiento técnico exento de consentimiento.
+- [ ] Auditar las cookies, `localStorage`, fuentes externas, analítica y servicios de terceros antes de decidir si hace falta un banner de consentimiento.
+- [ ] Añadir acceso permanente a Privacidad, Aviso legal y almacenamiento desde la landing y desde Atempo.
+- [ ] Definir un procedimiento de contacto, exportación y eliminación de cuentas y datos antes de crear usuarios reales.
+- [ ] Revisar las condiciones y contratos de los proveedores utilizados, incluida la base de datos y el servicio de notificaciones.
 - [ ] pulsar el numero del calendario y ver todas las actividades como se ven con el boton N
 
 ## Ideas para versiones futuras

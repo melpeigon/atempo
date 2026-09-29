@@ -1,17 +1,6 @@
 
-const personasGuardadas = localStorage.getItem("personas");
-
-const personas = personasGuardadas
-  ? JSON.parse(personasGuardadas)
-  : [];
-
-for (const persona of personas) {
-  if (!persona.id) {
-    persona.id = crypto.randomUUID();
-  }
-}
-
-localStorage.setItem("personas", JSON.stringify(personas));
+// Estos datos se cargan desde Supabase después de iniciar sesión.
+const personas = [];
 
 let idPersonaSeleccionada = null;
 let idPersonaEnEdicion = null;
@@ -57,6 +46,7 @@ const botonEliminarPersona = document.querySelector("#boton-eliminar-persona");
 const botonEditarPersona = document.querySelector("#boton-editar-persona");
 const tituloEmergentePersona = document.querySelector("#titulo-emergente-nueva-persona");
 const botonGuardarPersona = document.querySelector("#boton-guardar-persona");
+const mensajeErrorPersona = document.querySelector("#mensaje-error-persona");
 const emergenteConfirmacion = document.querySelector("#emergente-confirmacion");
 const tituloConfirmacion = document.querySelector("#titulo-confirmacion");
 const mensajeConfirmacionEmergente = document.querySelector("#mensaje-confirmacion");
@@ -68,7 +58,18 @@ let accionPendienteConfirmacion = null;
 function abrirConfirmacion(titulo, mensaje, accion) {
   tituloConfirmacion.textContent = titulo;
   mensajeConfirmacionEmergente.textContent = mensaje;
+  botonCancelarConfirmacion.hidden = false;
+  botonAceptarConfirmacion.textContent = "Eliminar";
   accionPendienteConfirmacion = accion;
+  emergenteConfirmacion.showModal();
+}
+
+function mostrarAviso(titulo, mensaje) {
+  tituloConfirmacion.textContent = titulo;
+  mensajeConfirmacionEmergente.textContent = mensaje;
+  botonCancelarConfirmacion.hidden = true;
+  botonAceptarConfirmacion.textContent = "Entendido";
+  accionPendienteConfirmacion = null;
   emergenteConfirmacion.showModal();
 }
 
@@ -92,6 +93,7 @@ function abrirEmergenteNuevaPersona() {
   idPersonaEnEdicion = null;
 
   formularioNuevaPersona.reset();
+  mensajeErrorPersona.hidden = true;
 
   tituloEmergentePersona.textContent = "Añade una nueva persona";
 
@@ -262,6 +264,7 @@ function editarPersonaSeleccionada() {
   tituloEmergentePersona.textContent = "Editar persona";
 
   botonGuardarPersona.textContent = "Guardar cambios";
+  mensajeErrorPersona.hidden = true;
 
   emergenteNuevaPersona.showModal();
 }
@@ -292,7 +295,25 @@ function eliminarPersonaSeleccionada() {
     mensajeConfirmacion += ` También se eliminarán sus ${numeroActividadesPersona} actividades.`;
   }
 
-  abrirConfirmacion("Eliminar persona", mensajeConfirmacion, function () {
+  abrirConfirmacion("Eliminar persona", mensajeConfirmacion, async function () {
+    const { data, error } = await clienteSupabase
+      .from("personas")
+      .delete()
+      .eq("id", persona.id)
+      .select("id");
+
+    if (error) {
+      console.log("No se pudo eliminar la persona:", error);
+      mostrarAviso("No se pudo eliminar", "Ha ocurrido un problema al eliminar a esta persona. Inténtalo otra vez.");
+      return;
+    }
+
+    if (data.length === 0) {
+      console.log("Supabase no permitió eliminar la persona. Revisa la política RLS de DELETE.");
+      mostrarAviso("No se pudo eliminar", "La base de datos no ha permitido eliminar a esta persona.");
+      return;
+    }
+
     personas.splice(indicePersona, 1);
 
     for (let indice = actividades.length - 1; indice >= 0; indice--) {
@@ -300,9 +321,6 @@ function eliminarPersonaSeleccionada() {
         actividades.splice(indice, 1);
       }
     }
-
-    localStorage.setItem("personas", JSON.stringify(personas));
-    localStorage.setItem("actividades", JSON.stringify(actividades));
 
     renderizarPersonas();
     renderizarActividadesDeHoy();
@@ -316,8 +334,9 @@ function eliminarPersonaSeleccionada() {
 
 // formulario de añadir nueva persona//
 
-function guardarNuevaPersona(evento) {
+async function guardarNuevaPersona(evento) {
   evento.preventDefault();
+  mensajeErrorPersona.hidden = true;
 
   const datosFormulario = new FormData(formularioNuevaPersona);
   const idDeLaPersonaEditada = idPersonaEnEdicion;
@@ -328,12 +347,32 @@ function guardarNuevaPersona(evento) {
     icono: datosFormulario.get("icono"),
   };
 
+  botonGuardarPersona.disabled = true;
+
   if (idPersonaEnEdicion !== null) {
     const personaExistente = personas.find(function (persona) {
       return persona.id === idPersonaEnEdicion;
     });
 
     if (!personaExistente) {
+      botonGuardarPersona.disabled = false;
+      return;
+    }
+
+    const { error } = await clienteSupabase
+      .from("personas")
+      .update({
+        nombre: datosPersona.nombre,
+        color: datosPersona.color,
+        icono: datosPersona.icono,
+      })
+      .eq("id", personaExistente.id);
+
+    if (error) {
+      console.log("No se pudo editar la persona:", error);
+      mensajeErrorPersona.textContent = "No hemos podido guardar los cambios. Inténtalo otra vez.";
+      mensajeErrorPersona.hidden = false;
+      botonGuardarPersona.disabled = false;
       return;
     }
 
@@ -341,8 +380,27 @@ function guardarNuevaPersona(evento) {
     personaExistente.color = datosPersona.color;
     personaExistente.icono = datosPersona.icono;
   } else {
+    const { data, error } = await clienteSupabase
+      .from("personas")
+      .insert({
+        familia_id: familiaActual.id,
+        nombre: datosPersona.nombre,
+        color: datosPersona.color,
+        icono: datosPersona.icono,
+      })
+      .select("id, nombre, color, icono")
+      .single();
+
+    if (error) {
+      console.log("No se pudo crear la persona:", error);
+      mensajeErrorPersona.textContent = "No hemos podido añadir a esta persona. Inténtalo otra vez.";
+      mensajeErrorPersona.hidden = false;
+      botonGuardarPersona.disabled = false;
+      return;
+    }
+
     const nuevaPersona = {
-      id: crypto.randomUUID(),
+      id: data.id,
       nombre: datosPersona.nombre,
       color: datosPersona.color,
       icono: datosPersona.icono,
@@ -351,7 +409,7 @@ function guardarNuevaPersona(evento) {
     personas.push(nuevaPersona);
   }
 
-  localStorage.setItem("personas", JSON.stringify(personas));
+  botonGuardarPersona.disabled = false;
 
   renderizarPersonas();
   mostrarMes();

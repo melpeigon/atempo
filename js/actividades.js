@@ -36,11 +36,8 @@ function obtenerNombreActividad(actividad) {
   return nombresActividades[actividad.actividad] || "Actividad";
 }
 
-const actividadesGuardadas = localStorage.getItem("actividades");
-
-const actividades = actividadesGuardadas
-  ? JSON.parse(actividadesGuardadas)
-  : [];
+// Estos datos se cargan desde Supabase después de iniciar sesión.
+const actividades = [];
 
 let idActividadSeleccionada = null;
 let origenFichaActividad = "inicio";
@@ -479,10 +476,26 @@ function eliminarActividadSeleccionada() {
   abrirConfirmacion(
     "Eliminar actividad",
     `¿Quieres eliminar ${nombreActividad}? Esta acción no se puede deshacer.`,
-    function () {
-      actividades.splice(indiceActividad, 1);
+    async function () {
+      const { data, error } = await clienteSupabase
+        .from("actividades")
+        .delete()
+        .eq("id", actividadSeleccionada.id)
+        .select("id");
 
-      localStorage.setItem("actividades", JSON.stringify(actividades));
+      if (error) {
+        console.log("No se pudo eliminar la actividad:", error);
+        mostrarAviso("No se pudo eliminar", "Ha ocurrido un problema al eliminar la actividad. Inténtalo otra vez.");
+        return;
+      }
+
+      if (data.length === 0) {
+        console.log("Supabase no permitió eliminar la actividad. Revisa la política RLS de DELETE.");
+        mostrarAviso("No se pudo eliminar", "La base de datos no ha permitido eliminar esta actividad.");
+        return;
+      }
+
+      actividades.splice(indiceActividad, 1);
 
       renderizarActividadesDeHoy();
       mostrarMes();
