@@ -6,6 +6,8 @@ const mensajeAcceso = document.querySelector("#mensaje-acceso");
 const botonIniciarSesion = document.querySelector("#boton-iniciar-sesion");
 const botonCrearCuenta = document.querySelector("#boton-crear-cuenta");
 const botonCerrarSesion = document.querySelector("#boton-cerrar-sesion");
+const campoContrasena = document.querySelector("#contrasena-acceso");
+const botonMostrarContrasena = document.querySelector("#boton-mostrar-contrasena");
 
 let familiaActual = null;
 
@@ -19,6 +21,33 @@ function ocultarErrorAcceso() {
   mensajeAcceso.textContent = "";
   mensajeAcceso.classList.remove("mensaje-correcto");
   mensajeAcceso.hidden = true;
+}
+
+function obtenerMensajeErrorRegistro(error) {
+  if (error.code === "over_email_send_rate_limit") {
+    return "Se han enviado demasiados correos en poco tiempo. Espera unos minutos y vuelve a intentarlo.";
+  }
+
+  if (error.code === "user_already_exists" || error.code === "email_exists") {
+    return "Ya existe una cuenta con este correo. Prueba a entrar con tu contraseña.";
+  }
+
+  if (error.code === "weak_password") {
+    return "La contraseña es demasiado sencilla. Prueba con una más larga y segura.";
+  }
+
+  return "No hemos podido crear la cuenta. Comprueba el correo y usa una contraseña de al menos 6 caracteres.";
+}
+
+function cambiarVisibilidadContrasena() {
+  const estaVisible = campoContrasena.type === "text";
+
+  campoContrasena.type = estaVisible ? "password" : "text";
+  botonMostrarContrasena.setAttribute("aria-pressed", String(!estaVisible));
+  botonMostrarContrasena.setAttribute(
+    "aria-label",
+    estaVisible ? "Mostrar contraseña" : "Ocultar contraseña"
+  );
 }
 
 async function crearFamiliaInicial() {
@@ -145,7 +174,7 @@ async function crearCuenta() {
 
   if (error) {
     console.log("No se pudo crear la cuenta:", error);
-    mostrarMensajeAcceso("No hemos podido crear la cuenta. Comprueba el correo y usa una contraseña de al menos 6 caracteres.");
+    mostrarMensajeAcceso(obtenerMensajeErrorRegistro(error));
     return;
   }
 
@@ -183,5 +212,6 @@ async function comprobarSesionInicial() {
 formularioAcceso.addEventListener("submit", iniciarSesion);
 botonCrearCuenta.addEventListener("click", crearCuenta);
 botonCerrarSesion.addEventListener("click", cerrarSesion);
+botonMostrarContrasena.addEventListener("click", cambiarVisibilidadContrasena);
 
 comprobarSesionInicial();

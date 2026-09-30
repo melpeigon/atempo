@@ -59,6 +59,39 @@
   font: inherit;
 }
 
+.campo-contrasena {
+  position: relative;
+}
+
+.campo-contrasena input {
+  padding-right: 52px;
+}
+
+.formulario-acceso .boton-mostrar-contrasena {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  width: 38px;
+  min-height: 38px;
+  margin: 0;
+  padding: 0;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: transparent;
+}
+
+.boton-mostrar-contrasena svg {
+  width: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+}
+
+.boton-mostrar-contrasena:focus-visible {
+  outline: 2px solid var(--ciruela);
+  outline-offset: 1px;
+}
+
 .formulario-acceso button {
   min-height: 46px;
   margin-top: 18px;
