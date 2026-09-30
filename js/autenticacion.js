@@ -135,6 +135,9 @@ async function crearCuenta() {
   const { data, error } = await clienteSupabase.auth.signUp({
     email: datosFormulario.get("correo"),
     password: datosFormulario.get("contrasena"),
+    options: {
+      emailRedirectTo: "https://melpeigon.github.io/atempo/",
+    },
   });
 
   botonCrearCuenta.disabled = false;
