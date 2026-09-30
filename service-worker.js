@@ -1,4 +1,4 @@
-const NOMBRE_CACHE = "atempo-v22";
+const NOMBRE_CACHE = "atempo-v24";
 
 const ARCHIVOS_PRINCIPALES = [
   "./",
@@ -120,6 +120,10 @@ self.addEventListener("fetch", function (evento) {
 
 self.addEventListener("notificationclick", function (evento) {
   evento.notification.close();
+  const destino = new URL(
+    evento.notification.data?.url || "./",
+    self.registration.scope
+  ).href;
 
   evento.waitUntil(
     self.clients
@@ -130,11 +134,48 @@ self.addEventListener("notificationclick", function (evento) {
       .then(function (ventanasAbiertas) {
         for (const ventana of ventanasAbiertas) {
           if (ventana.url.startsWith(self.registration.scope)) {
-            return ventana.focus();
+            return ventana.navigate(destino).then(function () {
+              return ventana.focus();
+            });
           }
         }
 
-        return self.clients.openWindow("./");
+        return self.clients.openWindow(destino);
       })
+  );
+});
+
+self.addEventListener("push", function (evento) {
+  let datosNotificacion = {
+    titulo: "Atempo",
+    mensaje: "Tienes un nuevo aviso.",
+    url: "./",
+  };
+
+  if (evento.data) {
+    try {
+      const datosRecibidos = evento.data.json();
+
+      datosNotificacion.titulo =
+        datosRecibidos.titulo || datosRecibidos.title || datosNotificacion.titulo;
+      datosNotificacion.mensaje =
+        datosRecibidos.mensaje || datosRecibidos.body || datosNotificacion.mensaje;
+      datosNotificacion.url = datosRecibidos.url || datosNotificacion.url;
+      datosNotificacion.tag = datosRecibidos.tag;
+    } catch (error) {
+      datosNotificacion.mensaje = evento.data.text();
+    }
+  }
+
+  evento.waitUntil(
+    self.registration.showNotification(datosNotificacion.titulo, {
+      body: datosNotificacion.mensaje,
+      icon: "./Branding/logos/PNG/simbolo-192.png",
+      badge: "./Branding/logos/PNG/simbolo-192.png",
+      tag: datosNotificacion.tag || "aviso-atempo",
+      data: {
+        url: datosNotificacion.url,
+      },
+    })
   );
 });

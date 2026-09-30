@@ -14,6 +14,8 @@ const mensajeConfiguracion = document.querySelector("#mensaje-configuracion");
 const casillaActivarNotificaciones = document.querySelector("#activar-notificaciones");
 const botonCerrarNotificaciones = document.querySelector("#boton-cerrar-notificaciones");
 
+const CLAVE_PUBLICA_VAPID = "BMWrMGicHyXmdj6rBAUJzlq501Kk0OUG7kXuhbRyrJj7qnATtGSBDVDj16lsvSKcT_IFhGcvm7P-fiJHCmXodjI";
+
 const configuracionAnterior = JSON.parse(
   localStorage.getItem("configuracionNotificaciones") || "null"
 );
@@ -33,6 +35,82 @@ function guardarEstadoLocalNotificaciones() {
     "notificacionesActivasEnDispositivo",
     String(configuracionNotificaciones.activasEnDispositivo)
   );
+}
+
+function convertirClaveVapid(clave) {
+  const relleno = "=".repeat((4 - (clave.length % 4)) % 4);
+  const base64 = (clave + relleno).replace(/-/g, "+").replace(/_/g, "/");
+  const datosBinarios = atob(base64);
+  const resultado = new Uint8Array(datosBinarios.length);
+
+  for (let indice = 0; indice < datosBinarios.length; indice++) {
+    resultado[indice] = datosBinarios.charCodeAt(indice);
+  }
+
+  return resultado;
+}
+
+async function guardarDispositivoEnSupabase(suscripcion) {
+  const { data: datosUsuario, error: errorUsuario } =
+    await clienteSupabase.auth.getUser();
+
+  if (errorUsuario || !datosUsuario.user) {
+    throw new Error("No se pudo identificar al usuario.");
+  }
+
+  const datosSuscripcion = suscripcion.toJSON();
+  const nombreDispositivo = navigator.userAgentData?.platform ||
+    navigator.platform ||
+    "Dispositivo";
+
+  const { error } = await clienteSupabase
+    .from("dispositivos_notificaciones")
+    .upsert(
+      {
+        usuario_id: datosUsuario.user.id,
+        endpoint: datosSuscripcion.endpoint,
+        clave_p256dh: datosSuscripcion.keys.p256dh,
+        clave_auth: datosSuscripcion.keys.auth,
+        nombre_dispositivo: nombreDispositivo,
+        activo: true,
+      },
+      { onConflict: "endpoint" }
+    );
+
+  if (error) {
+    throw error;
+  }
+}
+
+async function obtenerSuscripcionPush() {
+  const registro = await navigator.serviceWorker.ready;
+  return registro.pushManager.getSubscription();
+}
+
+async function retirarDispositivoAlCerrarSesion() {
+  if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+    return;
+  }
+
+  const suscripcion = await obtenerSuscripcionPush();
+
+  if (!suscripcion) {
+    return;
+  }
+
+  const { error } = await clienteSupabase
+    .from("dispositivos_notificaciones")
+    .delete()
+    .eq("endpoint", suscripcion.endpoint);
+
+  if (error) {
+    console.log("No se pudo retirar el dispositivo:", error);
+    return;
+  }
+
+  await suscripcion.unsubscribe();
+  configuracionNotificaciones.activasEnDispositivo = false;
+  guardarEstadoLocalNotificaciones();
 }
 
 async function cargarConfiguracionNotificaciones() {
@@ -98,15 +176,28 @@ function cambiarOpcionesNotificaciones() {
   mensajeConfiguracion.hidden = true;
 }
 
-function abrirConfiguracionNotificaciones() {
+async function abrirConfiguracionNotificaciones() {
   cerrarMenu();
 
   selectorModoNotificaciones.value = configuracionNotificaciones.modo;
   campoHoraResumen.value = configuracionNotificaciones.horaResumen;
+
+  let suscripcion = null;
+
+  if ("serviceWorker" in navigator && "PushManager" in window) {
+    suscripcion = await obtenerSuscripcionPush();
+  }
+
+  configuracionNotificaciones.activasEnDispositivo =
+    "Notification" in window &&
+    Notification.permission === "granted" &&
+    suscripcion !== null;
+  guardarEstadoLocalNotificaciones();
+
   casillaActivarNotificaciones.checked =
     "Notification" in window &&
     Notification.permission === "granted" &&
-    configuracionNotificaciones.activasEnDispositivo !== false;
+    configuracionNotificaciones.activasEnDispositivo;
   mensajeConfiguracion.hidden = true;
 
   cambiarOpcionesNotificaciones();
@@ -170,6 +261,27 @@ async function guardarConfiguracionNotificaciones(evento) {
 
 async function cambiarEstadoNotificaciones() {
   if (!casillaActivarNotificaciones.checked) {
+    let suscripcion = null;
+
+    if ("serviceWorker" in navigator && "PushManager" in window) {
+      suscripcion = await obtenerSuscripcionPush();
+    }
+
+    if (suscripcion) {
+      const { error } = await clienteSupabase
+        .from("dispositivos_notificaciones")
+        .update({ activo: false })
+        .eq("endpoint", suscripcion.endpoint);
+
+      if (error) {
+        console.log("No se pudo pausar el dispositivo:", error);
+        casillaActivarNotificaciones.checked = true;
+        mensajeConfiguracion.textContent = "No hemos podido pausar las notificaciones.";
+        mensajeConfiguracion.hidden = false;
+        return;
+      }
+    }
+
     configuracionNotificaciones.activasEnDispositivo = false;
     guardarEstadoLocalNotificaciones();
 
@@ -178,7 +290,11 @@ async function cambiarEstadoNotificaciones() {
     return;
   }
 
-  if (!("Notification" in window) || !("serviceWorker" in navigator)) {
+  if (
+    !("Notification" in window) ||
+    !("serviceWorker" in navigator) ||
+    !("PushManager" in window)
+  ) {
     casillaActivarNotificaciones.checked = false;
     mensajeConfiguracion.textContent = "Este navegador no permite activar las notificaciones.";
     mensajeConfiguracion.hidden = false;
@@ -197,10 +313,20 @@ async function cambiarEstadoNotificaciones() {
       return;
     }
 
+    const registro = await navigator.serviceWorker.ready;
+    let suscripcion = await registro.pushManager.getSubscription();
+
+    if (!suscripcion) {
+      suscripcion = await registro.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: convertirClaveVapid(CLAVE_PUBLICA_VAPID),
+      });
+    }
+
+    await guardarDispositivoEnSupabase(suscripcion);
+
     configuracionNotificaciones.activasEnDispositivo = true;
     guardarEstadoLocalNotificaciones();
-
-    const registro = await navigator.serviceWorker.ready;
 
     await registro.showNotification("Atempo", {
       body: "Todo listo. Ya puedo avisarte cuando lo necesites.",

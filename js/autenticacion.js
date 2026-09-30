@@ -157,6 +157,7 @@ async function crearCuenta() {
 }
 
 async function cerrarSesion() {
+  await retirarDispositivoAlCerrarSesion();
   await clienteSupabase.auth.signOut();
 
   familiaActual = null;
