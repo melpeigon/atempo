@@ -212,13 +212,16 @@ async function procesarAvisoActividad(
     }
 
     const nombreActividad = obtenerNombreActividad(actividad);
-    const mensaje = actividad.recordatorio ||
-      `${actividad.nombre_persona} tiene ${nombreActividad.toLowerCase()} a las ${actividad.hora.slice(0, 5)}.`;
+    const informacionActividad =
+      `Hoy ${actividad.nombre_persona} tiene ${nombreActividad.toLowerCase()} a las ${actividad.hora.slice(0, 5)}.`;
+    const mensaje = actividad.recordatorio
+      ? `${informacionActividad} ${actividad.recordatorio}`
+      : informacionActividad;
     const enviadas = await enviarADispositivos(
       supabase,
       dispositivos,
       {
-        title: `${nombreActividad} · ${actividad.nombre_persona}`,
+        title: "Toc, toc 💜",
         body: mensaje,
         url: "./",
         tag: clave,
@@ -271,14 +274,14 @@ async function procesarResumen(
 
   const resumen = actividadesDeHoy
     .sort((primera, segunda) => primera.hora.localeCompare(segunda.hora))
-    .map((actividad) =>
-      `${actividad.hora.slice(0, 5)} ${obtenerNombreActividad(actividad)} (${actividad.nombre_persona})`
-    )
-    .join(" · ");
+    .map(function (actividad) {
+      return `${actividad.hora.slice(0, 5)} · ${actividad.nombre_persona} · ${obtenerNombreActividad(actividad)}`;
+    })
+    .join("\n");
 
   const enviadas = await enviarADispositivos(supabase, dispositivos, {
-    title: "Hoy, a vuestro ritmo",
-    body: resumen,
+    title: obtenerTituloResumen(ahora),
+    body: `Hoy tenéis ${actividadesDeHoy.length} ${actividadesDeHoy.length === 1 ? "plan" : "planes"}:\n${resumen}`,
     url: "./",
     tag: clave,
   });
@@ -296,6 +299,14 @@ async function procesarResumen(
   }
 
   return 0;
+}
+
+function obtenerTituloResumen(fecha: DateTime) {
+  if (fecha.hour < 13) {
+    return "Buenos días, ¿qué nos espera hoy?";
+  }
+
+  return "¡Hoolaa! Estos son los planes de esta tarde:";
 }
 
 function actividadOcurreEnFecha(actividad: any, fecha: DateTime) {
