@@ -10,6 +10,10 @@ const rutasIconos = {
   nino: "Branding/iconos/SVG/ni%C3%B1o.svg",
   bebe: "Branding/iconos/SVG/bebe.svg",
   hombre: "Branding/iconos/SVG/papa.svg",
+  nina: "Branding/iconos/SVG/ni%C3%B1a.svg",
+  abuela: "Branding/iconos/SVG/abuela.svg",
+  abuelo: "Branding/iconos/SVG/abuelo.svg",
+  beba: "Branding/iconos/SVG/beba.svg",
 };
 // Devolver fecha actual //
 
@@ -161,8 +165,7 @@ function abrirFichaPersona(idPersona, guardarEnHistorial = true) {
       return primeraActividad.actividad.hora.localeCompare(
         segundaActividad.actividad.hora
       );
-    })
-    .slice(0, 3);
+    });
 
   if (proximasActividades.length === 0) {
     const mensajeSinActividades = document.createElement("p");
@@ -171,9 +174,27 @@ function abrirFichaPersona(idPersona, guardarEnHistorial = true) {
 
     listaProximasActividades.append(mensajeSinActividades);
   } else {
+    let indiceProximaActividad = 0;
+
     for (const proximaActividad of proximasActividades) {
-      const tarjetaProximaActividad = document.createElement("article");
+      const tarjetaProximaActividad = document.createElement("button");
+      tarjetaProximaActividad.type = "button";
       tarjetaProximaActividad.classList.add("tarjeta-proxima-actividad");
+
+      if (indiceProximaActividad >= 3) {
+        tarjetaProximaActividad.classList.add("actividad-proxima-adicional");
+        tarjetaProximaActividad.hidden = true;
+      }
+
+      tarjetaProximaActividad.addEventListener("click", function () {
+        abrirFichaActividad(
+          proximaActividad.actividad.id,
+          "persona",
+          true,
+          convertirFechaAFormatoInput(proximaActividad.proximaFecha)
+        );
+      });
+
       tarjetaProximaActividad.style.setProperty(
         "--color-persona",
         personaSeleccionada.color
@@ -215,6 +236,44 @@ function abrirFichaPersona(idPersona, guardarEnHistorial = true) {
         informacionProximaActividad
       );
       listaProximasActividades.append(tarjetaProximaActividad);
+      indiceProximaActividad++;
+    }
+
+    if (proximasActividades.length > 3) {
+      const botonVerTodas = document.createElement("button");
+      botonVerTodas.type = "button";
+      botonVerTodas.classList.add("boton-ver-todas-actividades");
+      botonVerTodas.textContent = `Ver todas (${proximasActividades.length})`;
+      botonVerTodas.setAttribute("aria-expanded", "false");
+
+      let mostrandoTodas = false;
+
+      botonVerTodas.addEventListener("click", function () {
+        mostrandoTodas = !mostrandoTodas;
+
+        const tarjetasAdicionales =
+          listaProximasActividades.querySelectorAll(
+            ".actividad-proxima-adicional"
+          );
+
+        for (const tarjeta of tarjetasAdicionales) {
+          tarjeta.hidden = !mostrandoTodas;
+        }
+
+        botonVerTodas.setAttribute(
+          "aria-expanded",
+          String(mostrandoTodas)
+        );
+
+        if (mostrandoTodas) {
+          botonVerTodas.textContent = "Ver solo las próximas 3";
+        } else {
+          botonVerTodas.textContent =
+            `Ver todas (${proximasActividades.length})`;
+        }
+      });
+
+      listaProximasActividades.append(botonVerTodas);
     }
   }
 
@@ -470,13 +529,17 @@ function renderizarPersonas() {
 
 botonPersona.addEventListener("click", abrirEmergenteNuevaPersona);
 botonCerrarEmergente.addEventListener("click", cerrarEmergenteNuevaPersona);
+
 formularioNuevaPersona.addEventListener("submit", guardarNuevaPersona);
 botonAnadirOtraPersona.addEventListener("click", abrirEmergenteNuevaPersona);
+
 botonVolverInicio.addEventListener("click", volverInicio);
 botonEliminarPersona.addEventListener("click", eliminarPersonaSeleccionada);
 botonEditarPersona.addEventListener("click", editarPersonaSeleccionada);
+
 botonCancelarConfirmacion.addEventListener("click", cancelarConfirmacion);
 botonAceptarConfirmacion.addEventListener("click", aceptarConfirmacion);
+
 emergenteConfirmacion.addEventListener("cancel", function () {
   accionPendienteConfirmacion = null;
 });

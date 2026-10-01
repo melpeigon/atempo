@@ -60,13 +60,19 @@
 }
 
 .tarjeta-proxima-actividad {
+  width: 100%;
   min-height: 62px;
   padding: 10px 12px;
   display: flex;
   align-items: center;
   gap: 12px;
+  border: 0;
   border-radius: 13px;
   background: var(--white);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
 .icono-proxima-actividad {
@@ -77,6 +83,21 @@
   flex-shrink: 0;
   border-radius: 50%;
   background: var(--color-persona);
+}
+
+.tarjeta-proxima-actividad[hidden] {
+  display: none;
+}
+
+.boton-ver-todas-actividades {
+  align-self: center;
+  padding: 7px 12px;
+  border: 0;
+  background: transparent;
+  color: var(--ciruela);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .icono-proxima-actividad img {
@@ -276,4 +297,16 @@
   width: auto;
   min-width: 0;
   flex: 1;
+}
+
+.boton-anadir-actividad-persona {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--degradado);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
 }

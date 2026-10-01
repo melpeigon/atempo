@@ -176,6 +176,11 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 
 ## Ideas para versiones futuras
 
+- [ ] Permitir que una misma actividad pertenezca a dos o más personas sin duplicarla.
+- [ ] Representar las actividades compartidas con un único icono y los colores de todas las personas asociadas.
+- [ ] Explorar un registro familiar de medicación para anotar a quién se le ha dado, qué medicamento, a qué hora y quién lo ha registrado.
+- [ ] Si se desarrolla, limitarlo a registrar y compartir información introducida por la familia: Atempo no recomendará medicamentos ni calculará dosis.
+- [ ] Estudiar con especial cuidado la privacidad, la sincronización, los avisos y la responsabilidad asociada a datos de salud antes de incorporarlo.
 - [ ] Incorporar cuentas e inicio de sesión para que cada familia pueda acceder a sus datos desde distintos dispositivos.
 - [ ] Explorar una función de inteligencia artificial que aporte utilidad real a las familias.
 - [ ] Valorar ideas como resumir la semana, detectar conflictos de horarios, sugerir momentos libres o ayudar a redactar recordatorios.

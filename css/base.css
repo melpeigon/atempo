@@ -43,7 +43,7 @@ a {
 }
 
 .app-shell {
-  width: min(100%, 390px);
+  width: min(100%, 440px);
   min-height: 100vh;
   padding: 36px 28px 20px;
   display: flex;

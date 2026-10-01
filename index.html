@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#fcf9f5" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Atempo" />
@@ -159,6 +160,10 @@
     <h1 id="titulo-ficha-persona">Ficha de persona</h1>
 
     <div id="contenido-ficha-persona"></div>
+    <button class="boton-anadir-actividad-persona" id="boton-anadir-actividad-persona" type="button">
+      + Añadir actividad
+    </button>
+
     <div class="botones-ficha-persona">
       <button class="boton-editar-persona" id="boton-editar-persona" type="button">
         Editar persona
@@ -227,8 +232,8 @@
       <div class="cuadricula-calendario" id="cuadricula-calendario" aria-labelledby="mes-calendario"></div>
     </div>
 
-    <section class="actividades-dia-calendario" id="actividades-dia-calendario"
-      aria-labelledby="titulo-actividades-dia" hidden>
+    <section class="actividades-dia-calendario" id="actividades-dia-calendario" aria-labelledby="titulo-actividades-dia"
+      hidden>
       <h2 id="titulo-actividades-dia"></h2>
       <div class="lista-actividades-dia" id="lista-actividades-dia"></div>
     </section>
@@ -323,15 +328,24 @@
         <option value="#e0dcd6">Gris</option>
         <option value="#B0C5D4">Azul</option>
         <option value="#AEC2B3">Verde</option>
+        <option value="#F2BBD7">Rosa</option>
+        <option value="#DACEC7">Arena</option>
+        <option value="#EDE7A9">Lima</option>
+
       </select>
 
       <label for="icono">Icono</label>
       <select id="icono" name="icono" required>
         <option value="" selected disabled>Elige un icono</option>
         <option value="mujer">Mujer</option>
-        <option value="nino">Niño</option>
-        <option value="bebe">Bebé</option>
         <option value="hombre">Hombre</option>
+        <option value="nino">Niño</option>
+        <option value="nina">Niña</option>
+        <option value="bebe">Bebé</option>
+        <option value="beba">Bebé niña</option>
+        <option value="abuelo">Abuelo</option>
+        <option value="abuela">Abuela</option>
+
       </select>
 
       <p class="mensaje-error-formulario" id="mensaje-error-persona" role="alert" hidden></p>
@@ -395,7 +409,8 @@
       </select>
 
       <p class="ayuda-formulario aviso-recurrencia-mensual" id="aviso-recurrencia-mensual" aria-live="polite" hidden>
-        No todos los meses tienen ese día. En esos casos, la actividad aparecerá el último día del mes. Consulta la guía para más información.
+        No todos los meses tienen ese día. En esos casos, la actividad aparecerá el último día del mes. Consulta la guía
+        para más información.
       </p>
 
       <div class="opciones-semanales" id="opciones-semanales" hidden>

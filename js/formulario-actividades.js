@@ -1,6 +1,8 @@
 // Elementos del formulario de actividades
 
 const botonAnadirActividad = document.querySelector("#boton-anadir-actividad");
+const botonAnadirActividadPersona = document.querySelector("#boton-anadir-actividad-persona");
+
 const botonCerrarActividad = document.querySelector("#boton-cerrar-actividad");
 const emergenteNuevaActividad = document.querySelector("#emergente-nueva-actividad");
 const formularioActividad = document.querySelector("#form-anadir-actividad");
@@ -124,7 +126,7 @@ function marcarDiaDeFechaInicio() {
   }
 }
 
-function abrirEmergenteNuevaActividad() {
+function abrirEmergenteNuevaActividad(idPersona = null) {
   idActividadEnEdicion = null;
 
   formularioActividad.reset();
@@ -141,6 +143,10 @@ function abrirEmergenteNuevaActividad() {
 
   ocultarErrorActividad();
   mostrarPersonasEnFormulario();
+
+  if (idPersona !== null) {
+    selectorPersonaActividad.value = idPersona;
+  }
 
   emergenteNuevaActividad.showModal();
 }
@@ -357,11 +363,22 @@ async function guardarNuevaActividad(evento) {
   idActividadEnEdicion = null;
 
   if (idDeActividadEditada !== null) {
-    abrirFichaActividad(idDeActividadEditada, origenFichaActividad, false);
+    abrirFichaActividad(
+      idDeActividadEditada,
+      origenFichaActividad,
+      false,
+      fechaOcurrenciaFichaActividad
+    );
   }
 }
 
-botonAnadirActividad.addEventListener("click", abrirEmergenteNuevaActividad);
+botonAnadirActividad.addEventListener("click", function () {
+  abrirEmergenteNuevaActividad();
+});
+
+botonAnadirActividadPersona.addEventListener("click", function () {
+  abrirEmergenteNuevaActividad(idPersonaSeleccionada);
+});
 botonCerrarActividad.addEventListener("click", cerrarEmergenteNuevaActividad);
 formularioActividad.addEventListener("submit", guardarNuevaActividad);
 selectorRecurrencia.addEventListener("change", cambiarOpcionesRecurrencia);

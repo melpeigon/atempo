@@ -115,6 +115,28 @@
   line-height: 1.4;
   opacity: 0.75;
 }
+.dias-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 16px;
+  margin-top: 8px;
+}
+
+.dias-container label {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.dias-container input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: var(--lila);
+}
 
 .aviso-recurrencia-mensual {
   padding: 9px 11px;

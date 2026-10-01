@@ -84,7 +84,12 @@ function mostrarMes() {
 
       botonActividad.addEventListener("click", function () {
         pantallaCalendario.hidden = true;
-        abrirFichaActividad(actividad.id, "calendario");
+        abrirFichaActividad(
+          actividad.id,
+          "calendario",
+          true,
+          convertirFechaAFormatoInput(fechaDia)
+        );
       });
 
       iconosDia.append(botonActividad);
@@ -157,7 +162,12 @@ function mostrarActividadesDelDia(fechaDia, actividadesDelDia) {
     tarjetaActividad.addEventListener("click", function () {
       seccionActividadesDia.hidden = true;
       pantallaCalendario.hidden = true;
-      abrirFichaActividad(actividad.id, "calendario");
+      abrirFichaActividad(
+        actividad.id,
+        "calendario",
+        true,
+        convertirFechaAFormatoInput(fechaDia)
+      );
     });
 
     listaActividadesDia.append(tarjetaActividad);

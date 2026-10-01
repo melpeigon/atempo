@@ -51,7 +51,12 @@ function mostrarPantallaDesdeHistorial(estado) {
       pantallaCalendario.hidden = true;
     }
 
-    abrirFichaActividad(estado.idActividad, estado.origen, false);
+    abrirFichaActividad(
+      estado.idActividad,
+      estado.origen,
+      false,
+      estado.fechaOcurrencia
+    );
     return;
   }
 

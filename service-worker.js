@@ -1,4 +1,4 @@
-const NOMBRE_CACHE = "atempo-v25";
+const NOMBRE_CACHE = "atempo-v26";
 
 const ARCHIVOS_PRINCIPALES = [
   "./",
@@ -51,7 +51,11 @@ const ARCHIVOS_PRINCIPALES = [
   "./Branding/iconos/SVG/peluqueria.svg",
   "./Branding/iconos/SVG/recordatorio.svg",
   "./Branding/iconos/SVG/recurrente.svg",
-  "./Branding/iconos/SVG/tarea.svg"
+  "./Branding/iconos/SVG/tarea.svg",
+  "./Branding/iconos/SVG/ni%C3%B1a.svg",
+  "./Branding/iconos/SVG/abuela.svg",
+  "./Branding/iconos/SVG/abuelo.svg",
+  "./Branding/iconos/SVG/beba.svg"
 ];
 
 self.addEventListener("install", function (evento) {

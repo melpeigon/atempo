@@ -41,6 +41,7 @@ const actividades = [];
 
 let idActividadSeleccionada = null;
 let origenFichaActividad = "inicio";
+let fechaOcurrenciaFichaActividad = null;
 
 const fechaActual = new Date();
 const anoActual = fechaActual.getFullYear();
@@ -231,7 +232,12 @@ function obtenerTextoAvisoActividad(actividad) {
   return "Sin aviso";
 }
 
-function abrirFichaActividad(idActividad, nuevoOrigen, guardarEnHistorial = true) {
+function abrirFichaActividad(
+  idActividad,
+  nuevoOrigen,
+  guardarEnHistorial = true,
+  fechaOcurrencia = null
+) {
   const actividadSeleccionada = actividades.find(function (actividad) {
     return actividad.id === idActividad;
   });
@@ -253,6 +259,7 @@ function abrirFichaActividad(idActividad, nuevoOrigen, guardarEnHistorial = true
   }
 
   idActividadSeleccionada = idActividad;
+  fechaOcurrenciaFichaActividad = fechaOcurrencia;
   contenidoFichaActividad.replaceChildren();
   contenidoFichaActividad.style.setProperty(
     "--color-persona",
@@ -294,9 +301,12 @@ function abrirFichaActividad(idActividad, nuevoOrigen, guardarEnHistorial = true
   const horarioFichaActividad = document.createElement("div");
   horarioFichaActividad.classList.add("horario-ficha-actividad");
 
+  const fechaParaMostrar =
+    fechaOcurrenciaFichaActividad || actividadSeleccionada.fecha;
+
   const fechaFichaActividad = crearDatoFichaActividad(
     "Branding/iconos/SVG/dia.svg",
-    formatearFechaActividad(actividadSeleccionada.fecha),
+    formatearFechaActividad(fechaParaMostrar),
     "fecha-ficha-actividad"
   );
 
@@ -357,12 +367,14 @@ function abrirFichaActividad(idActividad, nuevoOrigen, guardarEnHistorial = true
   }
 
   pantallaInicio.hidden = true;
+  fichaPersona.hidden = true;
   fichaActividad.hidden = false;
 
   if (guardarEnHistorial) {
     registrarPantalla("actividad", {
       idActividad: idActividad,
       origen: origenFichaActividad,
+      fechaOcurrencia: fechaOcurrenciaFichaActividad,
     });
   }
 }
@@ -406,7 +418,12 @@ function renderizarActividadesDeHoy() {
     tarjetaActividad.classList.add("tarjeta-actividad");
 
     tarjetaActividad.addEventListener("click", function () {
-      abrirFichaActividad(actividad.id, "inicio");
+      abrirFichaActividad(
+        actividad.id,
+        "inicio",
+        true,
+        convertirFechaAFormatoInput(fechaActual)
+      );
     });
 
     const bloqueHora = document.createElement("div");
