@@ -168,6 +168,19 @@
   margin-top: 10px;
 }
 
+.titulo-grupo-actividades {
+  margin: 2px 0 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.titulo-actividades-pasadas {
+  margin-top: 8px;
+  color: #8f858e;
+}
+
 .tarjeta-actividad {
   width: 100%;
   min-height: 64px;
@@ -183,6 +196,16 @@
   font: inherit;
   text-align: left;
   cursor: pointer;
+}
+
+.tarjeta-actividad-pasada {
+  color: #8f858e;
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.tarjeta-actividad-pasada .icono-actividad,
+.tarjeta-actividad-pasada .separador-actividad {
+  opacity: 0.55;
 }
 
 .bloque-hora-actividad {

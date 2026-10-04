@@ -174,11 +174,24 @@ function obtenerProximaFechaActividad(actividad) {
 }
 
 function obtenerActividadesDeHoy() {
+  const hoy = new Date();
   const actividadesDeHoy = actividades.filter(function (actividad) {
-    return actividadOcurreEnFecha(actividad, fechaActual);
+    return actividadOcurreEnFecha(actividad, hoy);
   });
 
   return actividadesDeHoy;
+}
+
+function actividadYaHaPasadoHoy(actividad) {
+  if (!actividad.hora) {
+    return false;
+  }
+
+  const ahora = new Date();
+  const horaActual =
+    `${String(ahora.getHours()).padStart(2, "0")}:${String(ahora.getMinutes()).padStart(2, "0")}`;
+
+  return actividad.hora < horaActual;
 }
 
 function formatearFechaActividad(fecha) {
@@ -223,6 +236,10 @@ function crearDatoFichaActividad(rutaIcono, texto, clase) {
 function obtenerTextoAvisoActividad(actividad) {
   if (actividad.aviso === "una-hora-antes") {
     return "Aviso 1 hora antes";
+  }
+
+  if (actividad.aviso === "un-dia-antes") {
+    return "Aviso 1 día antes";
   }
 
   if (actividad.aviso === "hora-concreta") {
@@ -401,8 +418,18 @@ function renderizarActividadesDeHoy() {
   }
 
   actividadesDeHoy.sort(function (primeraActividad, segundaActividad) {
+    const primeraHaPasado = actividadYaHaPasadoHoy(primeraActividad);
+    const segundaHaPasado = actividadYaHaPasadoHoy(segundaActividad);
+
+    if (primeraHaPasado !== segundaHaPasado) {
+      return primeraHaPasado ? 1 : -1;
+    }
+
     return primeraActividad.hora.localeCompare(segundaActividad.hora);
   });
+
+  const hayActividadesPasadas = actividadesDeHoy.some(actividadYaHaPasadoHoy);
+  let grupoMostrado = null;
 
   for (const actividad of actividadesDeHoy) {
     const personaActividad = personas.find(function (persona) {
@@ -413,16 +440,38 @@ function renderizarActividadesDeHoy() {
       continue;
     }
 
+    const actividadHaPasado = actividadYaHaPasadoHoy(actividad);
+    const grupoActividad = actividadHaPasado ? "pasadas" : "proximas";
+
+    if (hayActividadesPasadas && grupoActividad !== grupoMostrado) {
+      const tituloGrupo = document.createElement("p");
+      tituloGrupo.classList.add("titulo-grupo-actividades");
+      tituloGrupo.textContent = actividadHaPasado
+        ? "Ya han pasado"
+        : "Próximos planes";
+
+      if (actividadHaPasado) {
+        tituloGrupo.classList.add("titulo-actividades-pasadas");
+      }
+
+      listaActividadesHoy.append(tituloGrupo);
+      grupoMostrado = grupoActividad;
+    }
+
     const tarjetaActividad = document.createElement("button");
     tarjetaActividad.type = "button";
     tarjetaActividad.classList.add("tarjeta-actividad");
+
+    if (actividadHaPasado) {
+      tarjetaActividad.classList.add("tarjeta-actividad-pasada");
+    }
 
     tarjetaActividad.addEventListener("click", function () {
       abrirFichaActividad(
         actividad.id,
         "inicio",
         true,
-        convertirFechaAFormatoInput(fechaActual)
+        convertirFechaAFormatoInput(new Date())
       );
     });
 
@@ -526,3 +575,4 @@ botonVolverActividad.addEventListener("click", volverDesdeActividad);
 botonEliminarActividad.addEventListener("click", eliminarActividadSeleccionada);
 
 renderizarActividadesDeHoy();
+setInterval(renderizarActividadesDeHoy, 60000);

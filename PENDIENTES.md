@@ -1,6 +1,6 @@
 # Pendientes de Atempo
 
-Última revisión: 28 de septiembre de 2026.
+Última revisión: 4 de octubre de 2026.
 
 Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar primero el funcionamiento principal de la aplicación y dejar las mejoras más grandes para después.
 
@@ -46,6 +46,12 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Permitir navegar entre meses.
 - [x] Limitar los iconos visibles por día y mostrar un indicador cuando existan más actividades.
 - [x] Mostrar la lista completa de un día desde su indicador y abrir sus fichas.
+- [ ] Permitir seleccionar cualquier número del calendario, tenga o no actividades.
+- [ ] Destacar visualmente el día seleccionado para que se vea con claridad qué fecha se está consultando.
+- [ ] Mostrar debajo del calendario la fecha seleccionada y la lista de actividades de ese día.
+- [ ] Mostrar un estado vacío cariñoso cuando el día seleccionado no tenga actividades.
+- [ ] Añadir debajo de la lista un botón «Añadir actividad» con la fecha seleccionada ya rellenada.
+- [ ] Mientras no se haya seleccionado ningún día, mostrar el mensaje: «Toca un día y descubre qué planes os esperan».
 
 ## Personas
 
@@ -55,6 +61,7 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Editar personas.
 - [x] Eliminar personas.
 - [x] Mostrar en la ficha de cada persona sus próximas actividades.
+- [x] Actualizar las próximas actividades de la ficha al añadir una actividad desde esa persona.
 
 ## Diseño adaptable y móvil
 
@@ -147,8 +154,12 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 
 ## Versión 1.2
 
-- [ ] Diferenciar visualmente las actividades cuya hora ya ha pasado.
-- [ ] Valorar un estado manual para marcar una actividad como completada.
+- [x] Permitir configurar un aviso 1 día antes, a la misma hora de la actividad.
+- [x] Separar automáticamente en la agenda de hoy las actividades próximas de aquellas cuya hora ya ha pasado.
+- [x] Mostrar las actividades pasadas después de las próximas, con colores más suaves y sin ocultarlas durante ese día.
+- [x] Mantener las actividades sin hora fuera de esta diferenciación automática.
+- [x] No pedir que se marquen manualmente como realizadas: el paso del tiempo debe actualizar su estado visual.
+- [x] Al cambiar de día, retirarlas de la agenda de hoy sin borrarlas del calendario ni de la base de datos.
 - [ ] Añadir una pequeña orientación inicial para configurar las notificaciones.
 - [ ] Organizar las actividades por categorías.
 
@@ -172,10 +183,14 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [ ] Añadir acceso permanente a Privacidad, Aviso legal y almacenamiento desde la landing y desde Atempo.
 - [ ] Definir un procedimiento de contacto, exportación y eliminación de cuentas y datos antes de crear usuarios reales.
 - [ ] Revisar las condiciones y contratos de los proveedores utilizados, incluida la base de datos y el servicio de notificaciones.
-- [ ] pulsar el numero del calendario y ver todas las actividades como se ven con el boton N
 
 ## Ideas para versiones futuras
 
+- [ ] Crear un panel de configuración familiar desde el que gestionar personas, miembros de la familia y categorías de actividades.
+- [ ] Permitir que cada familia cree sus propias categorías de actividad, con nombre e icono, además de las categorías incluidas en Atempo.
+- [ ] Permitir editar, ordenar y eliminar categorías personalizadas sin afectar a las actividades ya guardadas.
+- [ ] Permitir indicar la duración de una actividad o su hora de finalización.
+- [ ] Mostrar la duración en la ficha y valorar su uso para detectar actividades que se solapan.
 - [ ] Permitir que una misma actividad pertenezca a dos o más personas sin duplicarla.
 - [ ] Representar las actividades compartidas con un único icono y los colores de todas las personas asociadas.
 - [ ] Explorar un registro familiar de medicación para anotar a quién se le ha dado, qué medicamento, a qué hora y quién lo ha registrado.

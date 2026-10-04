@@ -196,9 +196,15 @@ async function procesarAvisoActividad(
     }
 
     const momentoActividad = crearMomento(fecha, actividad.hora);
-    const momentoAviso = actividad.tipo_aviso === "una-hora-antes"
-      ? momentoActividad.minus({ hours: 1 })
-      : crearMomento(fecha, actividad.hora_aviso);
+    let momentoAviso;
+
+    if (actividad.tipo_aviso === "una-hora-antes") {
+      momentoAviso = momentoActividad.minus({ hours: 1 });
+    } else if (actividad.tipo_aviso === "un-dia-antes") {
+      momentoAviso = momentoActividad.minus({ days: 1 });
+    } else {
+      momentoAviso = crearMomento(fecha, actividad.hora_aviso);
+    }
 
     if (!momentoAviso.isValid || momentoAviso.toMillis() !== ahora.toMillis()) {
       continue;
@@ -212,8 +218,11 @@ async function procesarAvisoActividad(
     }
 
     const nombreActividad = obtenerNombreActividad(actividad);
+    const referenciaDia = actividad.tipo_aviso === "un-dia-antes"
+      ? "Mañana"
+      : "Hoy";
     const informacionActividad =
-      `Hoy ${actividad.nombre_persona} tiene ${nombreActividad.toLowerCase()} a las ${actividad.hora.slice(0, 5)}.`;
+      `${referenciaDia} ${actividad.nombre_persona} tiene ${nombreActividad.toLowerCase()} a las ${actividad.hora.slice(0, 5)}.`;
     const mensaje = actividad.recordatorio
       ? `${informacionActividad} ${actividad.recordatorio}`
       : informacionActividad;

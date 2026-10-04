@@ -49,6 +49,7 @@ create table public.actividades (
       tipo_aviso in (
         'sin-aviso',
         'una-hora-antes',
+        'un-dia-antes',
         'hora-concreta'
       )
     ),

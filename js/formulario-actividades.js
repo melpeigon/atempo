@@ -350,6 +350,10 @@ async function guardarNuevaActividad(evento) {
   renderizarActividadesDeHoy();
   mostrarMes();
 
+  if (!fichaPersona.hidden && idPersonaSeleccionada !== null) {
+    abrirFichaPersona(idPersonaSeleccionada, false);
+  }
+
   formularioActividad.reset();
   contenedorDias.hidden = true;
   contenedorActividadPersonalizada.hidden = true;
