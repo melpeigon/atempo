@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+
+    <title>Atempo · Administración</title>
+
+    <link rel="icon" href="Branding/logos/SVG/fabicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="css/admin.css">
+  </head>
+
+  <body>
+    <!--
+      Este mensaje será visible mientras JavaScript comprueba si la cuenta
+      conectada tiene permiso para entrar en el panel.
+    -->
+    <div id="estado-acceso-admin" role="status" aria-live="polite">
+      <p>Comprobando acceso al panel…</p>
+    </div>
+
+    <!-- Se mostrará si la cuenta no tiene permisos de administradora. -->
+    <section id="acceso-denegado-admin" aria-labelledby="titulo-acceso-denegado" hidden>
+      <h1 id="titulo-acceso-denegado">Este espacio es privado</h1>
+      <p id="mensaje-acceso-denegado-admin">
+        La cuenta con la que has entrado no tiene acceso al panel de administración.
+      </p>
+      <a href="index.html">Volver a Atempo</a>
+    </section>
+
+    <!--
+      El contenido permanece oculto hasta que Supabase confirma que la
+      usuaria conectada es administradora.
+    -->
+    <main id="panel-admin" hidden>
+      <header class="cabecera-admin">
+        <a href="index.html" aria-label="Volver a Atempo">
+          <img src="Branding/logos/SVG/logo oscuro.svg" alt="Atempo">
+        </a>
+
+        <div>
+          <p>Panel privado</p>
+          <h1>Administración</h1>
+        </div>
+
+        <div class="sesion-admin">
+          <span id="correo-admin">Cuenta administradora</span>
+          <button id="boton-cerrar-sesion-admin" type="button">Cerrar sesión</button>
+        </div>
+      </header>
+
+      <section aria-labelledby="titulo-resumen-admin">
+        <header>
+          <p>Vista general</p>
+          <h2 id="titulo-resumen-admin">¿Cómo está Atempo?</h2>
+        </header>
+
+        <div class="resumen-admin">
+          <article>
+            <p id="total-testers-admin">0</p>
+            <h3>Testers</h3>
+            <p>Personas que han creado una cuenta.</p>
+          </article>
+
+          <article>
+            <p id="testers-activos-admin">0</p>
+            <h3>Actividad reciente</h3>
+            <p>Testers que han abierto Atempo en los últimos días.</p>
+          </article>
+
+          <article>
+            <p id="versiones-pendientes-admin">0</p>
+            <h3>Actualización pendiente</h3>
+            <p>Dispositivos que todavía usan una versión anterior.</p>
+          </article>
+
+          <article>
+            <p id="avisos-desconectados-admin">0</p>
+            <h3>Avisos por revisar</h3>
+            <p>Dispositivos con las notificaciones desactivadas o desconectadas.</p>
+          </article>
+        </div>
+      </section>
+
+      <section aria-labelledby="titulo-testers-admin">
+        <header>
+          <div>
+            <p>Personas de prueba</p>
+            <h2 id="titulo-testers-admin">Testers</h2>
+          </div>
+
+          <label for="buscar-tester-admin">
+            Buscar tester
+            <input
+              id="buscar-tester-admin"
+              name="buscar-tester"
+              type="search"
+              placeholder="Nombre o correo"
+            >
+          </label>
+        </header>
+
+        <div class="tabla-admin" role="region" aria-label="Listado de testers" tabindex="0">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Tester</th>
+                <th scope="col">Dispositivo</th>
+                <th scope="col">Versión</th>
+                <th scope="col">Última apertura</th>
+                <th scope="col">Notificaciones</th>
+                <th scope="col">Estado</th>
+              </tr>
+            </thead>
+
+            <tbody id="listado-testers-admin">
+              <tr id="estado-sin-testers-admin">
+                <td colspan="6">Todavía no hemos cargado los datos de los testers.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="titulo-errores-admin">
+        <header>
+          <div>
+            <p>Seguimiento</p>
+            <h2 id="titulo-errores-admin">Errores recientes</h2>
+          </div>
+        </header>
+
+        <div id="listado-errores-admin">
+          <p>No hay errores cargados todavía.</p>
+        </div>
+      </section>
+
+      <section aria-labelledby="titulo-comunicaciones-admin">
+        <header>
+          <p>Mensajes</p>
+          <h2 id="titulo-comunicaciones-admin">Comunicaciones</h2>
+        </header>
+
+        <p>
+          Aquí podremos avisar de novedades, nuevas versiones o revisiones importantes
+          a las testers de Atempo.
+        </p>
+
+        <button id="boton-nueva-comunicacion-admin" type="button" disabled>
+          Preparar una comunicación
+        </button>
+        <p>Activaremos esta opción cuando conectemos el panel de forma segura.</p>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/admin.js"></script>
+  </body>
+</html>

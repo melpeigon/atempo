@@ -1,6 +1,6 @@
 # Pendientes de Atempo
 
-Última revisión: 4 de octubre de 2026.
+Última revisión: 6 de octubre de 2026.
 
 Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar primero el funcionamiento principal de la aplicación y dejar las mejoras más grandes para después.
 
@@ -154,6 +154,9 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 
 ## Versión 1.2
 
+- [x] Resaltar en el calendario el número correspondiente al día actual.
+- [x] Aumentar la legibilidad de la fecha en la bienvenida de Inicio.
+- [x] Variar diariamente el saludo de Inicio según la franja horaria, manteniéndolo estable durante el día.
 - [x] Permitir configurar un aviso 1 día antes, a la misma hora de la actividad.
 - [x] Separar automáticamente en la agenda de hoy las actividades próximas de aquellas cuya hora ya ha pasado.
 - [x] Mostrar las actividades pasadas después de las próximas, con colores más suaves y sin ocultarlas durante ese día.
@@ -186,6 +189,27 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 
 ## Ideas para versiones futuras
 
+- [x] Mostrar al final de la guía la versión instalada de Atempo para facilitar las comprobaciones con testers.
+- [ ] Crear un panel de administración privado para consultar testers, versión utilizada, última apertura y estado general de la cuenta.
+- [ ] Registrar la versión y la última apertura de forma independiente a las notificaciones, porque una persona puede usar Atempo sin activarlas.
+- [ ] Mostrar en el panel la última apertura de cada tester para comprobar si sigue utilizando Atempo, diferenciándola del último inicio de sesión.
+- [ ] Crear un registro seguro de errores de la aplicación para mostrarlo en el panel de administración.
+- [ ] Registrar el tipo de error, fecha, versión, plataforma, instalación y usuario cuando ya esté identificado.
+- [ ] Diferenciar en el panel los errores esperados de acceso o conexión de los fallos reales de JavaScript, base de datos y notificaciones.
+- [ ] Permitir filtrar los errores por tester, versión, plataforma, tipo y fecha.
+- [ ] No guardar contraseñas, contenido de actividades ni otros datos privados dentro de los registros de errores.
+- [ ] Permitir redactar y enviar desde el panel avisos generales sobre novedades, actualizaciones o incidencias.
+- [ ] Enviar avisos push solamente a dispositivos con una suscripción activa y registrar los envíos correctos y fallidos.
+- [ ] Publicar también los avisos importantes dentro de Atempo para llegar a quienes tengan las notificaciones desactivadas.
+- [ ] Añadir a los avisos de actualización un acceso directo para revisar la configuración de notificaciones.
+- [ ] Comprobar al abrir Atempo el permiso del navegador, la suscripción push y el estado activo del dispositivo en Supabase.
+- [ ] Mostrar en el menú si las notificaciones están activas, pausadas, bloqueadas o necesitan volver a conectarse.
+- [ ] Avisar dentro de Atempo cuando un dispositivo que antes recibía notificaciones deje de tenerlas activas.
+- [ ] No mostrar ese aviso de recuperación a quienes nunca hayan elegido activar las notificaciones.
+- [ ] Permitir volver a conectar los avisos con una acción clara, solicitando permiso solamente cuando sea necesario.
+- [ ] Proteger los envíos generales mediante el rol de administradora, confirmación previa y control de duplicados.
+- [ ] Proteger el panel mediante un rol de administradora y políticas de seguridad; nunca incluir una clave secreta de Supabase en el navegador.
+- [ ] Limitar el panel a los datos necesarios para soporte y pruebas, evitando mostrar agendas familiares o información personal innecesaria.
 - [ ] Crear un panel de configuración familiar desde el que gestionar personas, miembros de la familia y categorías de actividades.
 - [ ] Permitir que cada familia cree sus propias categorías de actividad, con nombre e icono, además de las categorías incluidas en Atempo.
 - [ ] Permitir editar, ordenar y eliminar categorías personalizadas sin afectar a las actividades ya guardadas.

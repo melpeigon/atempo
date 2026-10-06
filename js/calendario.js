@@ -19,6 +19,7 @@ function mostrarMes() {
 
   const ano = fechaCalendario.getFullYear();
   const mes = fechaCalendario.getMonth();
+  const hoy = new Date();
 
   const primerDiaDelMes = new Date(ano, mes, 1);
   const ultimoDiaDelMes = new Date(ano, mes + 1, 0);
@@ -51,6 +52,15 @@ function mostrarMes() {
     iconosDia.classList.add("iconos-dia-calendario");
 
     const fechaDia = new Date(ano, mes, numeroDia);
+
+    if (
+      numeroDia === hoy.getDate() &&
+      mes === hoy.getMonth() &&
+      ano === hoy.getFullYear()
+    ) {
+      casillaDia.classList.add("dia-calendario-hoy");
+      numeroDiaCalendario.setAttribute("aria-current", "date");
+    }
 
     const actividadesDelDia = actividades.filter(function (actividad) {
       return actividadOcurreEnFecha(actividad, fechaDia);

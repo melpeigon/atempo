@@ -1,4 +1,4 @@
-const NOMBRE_CACHE = "atempo-v28";
+const NOMBRE_CACHE = "atempo-v32";
 
 const ARCHIVOS_PRINCIPALES = [
   "./",
@@ -130,24 +130,36 @@ self.addEventListener("notificationclick", function (evento) {
   ).href;
 
   evento.waitUntil(
-    self.clients
-      .matchAll({
-        type: "window",
-        includeUncontrolled: true,
-      })
-      .then(function (ventanasAbiertas) {
-        for (const ventana of ventanasAbiertas) {
-          if (ventana.url.startsWith(self.registration.scope)) {
-            return ventana.navigate(destino).then(function () {
-              return ventana.focus();
-            });
-          }
-        }
-
-        return self.clients.openWindow(destino);
-      })
+    abrirAtempoDesdeNotificacion(destino)
   );
 });
+
+async function abrirAtempoDesdeNotificacion(destino) {
+  const ventanasAbiertas = await self.clients.matchAll({
+    type: "window",
+    includeUncontrolled: true,
+  });
+
+  for (const ventana of ventanasAbiertas) {
+    if (!ventana.url.startsWith(self.registration.scope)) {
+      continue;
+    }
+
+    try {
+      await ventana.focus();
+
+      if ("navigate" in ventana && ventana.url !== destino) {
+        await ventana.navigate(destino);
+      }
+
+      return ventana;
+    } catch (error) {
+      console.log("No se pudo recuperar la ventana de Atempo:", error);
+    }
+  }
+
+  return self.clients.openWindow(destino);
+}
 
 self.addEventListener("push", function (evento) {
   let datosNotificacion = {

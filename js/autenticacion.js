@@ -8,6 +8,30 @@ const botonCrearCuenta = document.querySelector("#boton-crear-cuenta");
 const botonCerrarSesion = document.querySelector("#boton-cerrar-sesion");
 const campoContrasena = document.querySelector("#contrasena-acceso");
 const botonMostrarContrasena = document.querySelector("#boton-mostrar-contrasena");
+const tituloAcceso = document.querySelector("#titulo-acceso");
+const subtituloAcceso = document.querySelector("#subtitulo-acceso");
+const campoCorreo = document.querySelector("#correo-acceso");
+const botonRecuperarContrasena = document.querySelector(
+  "#boton-recuperar-contrasena"
+);
+const formularioNuevaContrasena = document.querySelector(
+  "#formulario-nueva-contrasena"
+);
+const campoNuevaContrasena = document.querySelector("#nueva-contrasena");
+const campoConfirmarNuevaContrasena = document.querySelector(
+  "#confirmar-nueva-contrasena"
+);
+const mensajeNuevaContrasena = document.querySelector(
+  "#mensaje-nueva-contrasena"
+);
+const botonGuardarNuevaContrasena = document.querySelector(
+  "#boton-guardar-nueva-contrasena"
+);
+
+const URL_ATEMPO = "https://melpeigon.github.io/atempo/";
+let recuperandoContrasena =
+  window.location.hash.includes("type=recovery") ||
+  new URLSearchParams(window.location.search).get("type") === "recovery";
 
 let familiaActual = null;
 
@@ -21,6 +45,28 @@ function ocultarErrorAcceso() {
   mensajeAcceso.textContent = "";
   mensajeAcceso.classList.remove("mensaje-correcto");
   mensajeAcceso.hidden = true;
+}
+
+function mostrarMensajeNuevaContrasena(mensaje, esError = true) {
+  mensajeNuevaContrasena.textContent = mensaje;
+  mensajeNuevaContrasena.classList.toggle("mensaje-correcto", !esError);
+  mensajeNuevaContrasena.hidden = false;
+}
+
+function ocultarMensajeNuevaContrasena() {
+  mensajeNuevaContrasena.textContent = "";
+  mensajeNuevaContrasena.classList.remove("mensaje-correcto");
+  mensajeNuevaContrasena.hidden = true;
+}
+
+function mostrarFormularioNuevaContrasena() {
+  recuperandoContrasena = true;
+  tituloAcceso.textContent = "Elige una nueva contraseña.";
+  subtituloAcceso.textContent = "Que sea fácil para ti y difícil para los demás.";
+  formularioAcceso.hidden = true;
+  formularioNuevaContrasena.hidden = false;
+  pantallaAcceso.hidden = false;
+  campoNuevaContrasena.focus();
 }
 
 function obtenerMensajeErrorRegistro(error) {
@@ -165,7 +211,7 @@ async function crearCuenta() {
     email: datosFormulario.get("correo"),
     password: datosFormulario.get("contrasena"),
     options: {
-      emailRedirectTo: "https://melpeigon.github.io/atempo/",
+      emailRedirectTo: URL_ATEMPO,
     },
   });
 
@@ -188,6 +234,89 @@ async function crearCuenta() {
   await prepararSesion();
 }
 
+async function solicitarRecuperacionContrasena() {
+  ocultarErrorAcceso();
+
+  if (!campoCorreo.checkValidity()) {
+    campoCorreo.reportValidity();
+    return;
+  }
+
+  botonRecuperarContrasena.disabled = true;
+  botonRecuperarContrasena.textContent = "Enviando…";
+
+  const { error } = await clienteSupabase.auth.resetPasswordForEmail(
+    campoCorreo.value.trim(),
+    { redirectTo: URL_ATEMPO }
+  );
+
+  botonRecuperarContrasena.disabled = false;
+  botonRecuperarContrasena.textContent = "He olvidado mi contraseña";
+
+  if (error) {
+    console.log("No se pudo solicitar el cambio de contraseña:", error);
+
+    if (error.code === "over_email_send_rate_limit") {
+      mostrarMensajeAcceso(
+        "Se han enviado demasiados correos en poco tiempo. Espera un poco y vuelve a intentarlo."
+      );
+      return;
+    }
+
+    mostrarMensajeAcceso(
+      "No hemos podido enviar el correo. Espera un momento y vuelve a intentarlo."
+    );
+    return;
+  }
+
+  mostrarMensajeAcceso(
+    "Si existe una cuenta con ese correo, recibirás un enlace para elegir una contraseña nueva.",
+    false
+  );
+}
+
+async function guardarNuevaContrasena(evento) {
+  evento.preventDefault();
+  ocultarMensajeNuevaContrasena();
+
+  if (campoNuevaContrasena.value !== campoConfirmarNuevaContrasena.value) {
+    mostrarMensajeNuevaContrasena("Las dos contraseñas tienen que coincidir.");
+    return;
+  }
+
+  botonGuardarNuevaContrasena.disabled = true;
+  botonGuardarNuevaContrasena.textContent = "Guardando…";
+
+  const { error } = await clienteSupabase.auth.updateUser({
+    password: campoNuevaContrasena.value,
+  });
+
+  botonGuardarNuevaContrasena.disabled = false;
+  botonGuardarNuevaContrasena.textContent = "Guardar nueva contraseña";
+
+  if (error) {
+    console.log("No se pudo actualizar la contraseña:", error);
+    mostrarMensajeNuevaContrasena(
+      "No hemos podido guardar la contraseña. Solicita un enlace nuevo y vuelve a intentarlo."
+    );
+    return;
+  }
+
+  await clienteSupabase.auth.signOut();
+
+  recuperandoContrasena = false;
+  formularioNuevaContrasena.reset();
+  formularioNuevaContrasena.hidden = true;
+  formularioAcceso.hidden = false;
+  tituloAcceso.textContent = "Hola de nuevo.";
+  subtituloAcceso.textContent = "Tu agenda familiar te espera.";
+  window.history.replaceState({}, "", window.location.pathname);
+  mostrarMensajeAcceso(
+    "Contraseña actualizada. Ya puedes entrar con la nueva.",
+    false
+  );
+}
+
 async function cerrarSesion() {
   await retirarDispositivoAlCerrarSesion();
   await clienteSupabase.auth.signOut();
@@ -199,6 +328,11 @@ async function cerrarSesion() {
 }
 
 async function comprobarSesionInicial() {
+  if (recuperandoContrasena) {
+    mostrarFormularioNuevaContrasena();
+    return;
+  }
+
   const { data, error } = await clienteSupabase.auth.getSession();
 
   if (error || !data.session) {
@@ -213,5 +347,16 @@ formularioAcceso.addEventListener("submit", iniciarSesion);
 botonCrearCuenta.addEventListener("click", crearCuenta);
 botonCerrarSesion.addEventListener("click", cerrarSesion);
 botonMostrarContrasena.addEventListener("click", cambiarVisibilidadContrasena);
+botonRecuperarContrasena.addEventListener(
+  "click",
+  solicitarRecuperacionContrasena
+);
+formularioNuevaContrasena.addEventListener("submit", guardarNuevaContrasena);
+
+clienteSupabase.auth.onAuthStateChange(function (evento) {
+  if (evento === "PASSWORD_RECOVERY") {
+    mostrarFormularioNuevaContrasena();
+  }
+});
 
 comprobarSesionInicial();

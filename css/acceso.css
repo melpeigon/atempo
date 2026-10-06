@@ -115,6 +115,23 @@
   background: transparent;
 }
 
+.formulario-acceso .boton-recuperar-contrasena {
+  min-height: auto;
+  width: fit-content;
+  margin: 3px 0 5px auto;
+  padding: 2px 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.formulario-nueva-contrasena[hidden] {
+  display: none;
+}
+
 .mensaje-acceso {
   margin-top: 10px;
   padding: 10px 12px;

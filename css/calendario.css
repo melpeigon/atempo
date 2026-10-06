@@ -73,6 +73,17 @@
 .numero-dia-calendario {
   display: block;
   font-size: 12px;
+  
+}
+
+.dia-calendario-hoy {
+background: #f1efec;
+}
+
+.dia-calendario-hoy .numero-dia-calendario {
+
+  
+  font-weight: 700;
 }
 
 .iconos-dia-calendario {

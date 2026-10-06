@@ -65,7 +65,7 @@
       <img src="Branding/logos/SVG/logo oscuro.svg" alt="Atempo" />
 
       <h1 id="titulo-acceso">Hola de nuevo.</h1>
-      <p>Tu agenda familiar te espera.</p>
+      <p id="subtitulo-acceso">Tu agenda familiar te espera.</p>
 
       <form class="formulario-acceso" id="formulario-acceso">
         <label for="correo-acceso">Correo electrónico</label>
@@ -84,11 +84,31 @@
           </button>
         </div>
 
+        <button class="boton-recuperar-contrasena" id="boton-recuperar-contrasena" type="button">
+          He olvidado mi contraseña
+        </button>
+
         <p class="mensaje-acceso" id="mensaje-acceso" role="alert" hidden></p>
 
         <button type="submit" id="boton-iniciar-sesion">Entrar</button>
         <button class="boton-crear-cuenta" id="boton-crear-cuenta" type="button">
           Crear una cuenta
+        </button>
+      </form>
+
+      <form class="formulario-acceso formulario-nueva-contrasena" id="formulario-nueva-contrasena" hidden>
+        <label for="nueva-contrasena">Nueva contraseña</label>
+        <input type="password" id="nueva-contrasena" name="nuevaContrasena" autocomplete="new-password"
+          minlength="6" required />
+
+        <label for="confirmar-nueva-contrasena">Repite la nueva contraseña</label>
+        <input type="password" id="confirmar-nueva-contrasena" name="confirmarNuevaContrasena"
+          autocomplete="new-password" minlength="6" required />
+
+        <p class="mensaje-acceso" id="mensaje-nueva-contrasena" role="alert" hidden></p>
+
+        <button type="submit" id="boton-guardar-nueva-contrasena">
+          Guardar nueva contraseña
         </button>
       </form>
     </div>
@@ -105,7 +125,7 @@
 
     <section class="bienvenida" aria-labelledby="bienvenida-titulo">
       <h1 id="bienvenida-titulo">Buenos días.</h1>
-      <p>Vamos a por el día, a tu ritmo.</p>
+      <p id="bienvenida-mensaje">Vamos a por el día, a tu ritmo.</p>
       <time id="fecha-hoy"></time>
     </section>
 
@@ -309,6 +329,9 @@
         </p>
       </section>
     </div>
+        <p class="version-app">
+      Atempo beta · versión 1.2.1
+    </p>
   </section>
 
   <!-- FORMULARIO NUEVA PERSONA -->

@@ -70,3 +70,11 @@
   background: color-mix(in srgb, var(--lila) 14%, var(--crema));
   font-size: 12px;
 }
+
+
+.version-app {
+  margin-top: 8px;
+  color: #8f858e;
+  font-size: 11px;
+  text-align: center;
+}

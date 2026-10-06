@@ -18,6 +18,8 @@ const rutasIconos = {
 // Devolver fecha actual //
 
 const fechaHoy = document.querySelector("#fecha-hoy");
+const tituloBienvenida = document.querySelector("#bienvenida-titulo");
+const mensajeBienvenida = document.querySelector("#bienvenida-mensaje");
 
 
 const ahora = new Date();
@@ -29,6 +31,43 @@ const fechaBonita = ahora.toLocaleDateString("es-ES", {
 
 
 fechaHoy.textContent = fechaBonita;
+
+function mostrarBienvenidaDelDia() {
+  const hora = ahora.getHours();
+  let bienvenidas;
+
+  if (hora < 13) {
+    bienvenidas = [
+      { titulo: "Buenos días.", mensaje: "Vamos a por el día, a tu ritmo." },
+      { titulo: "Hola, familia.", mensaje: "Hoy también, paso a paso." },
+      { titulo: "Empezamos con calma.", mensaje: "Aquí tienes lo importante de hoy." },
+      { titulo: "Un día cada vez.", mensaje: "Echa un vistazo y sigue a tu ritmo." },
+    ];
+  } else if (hora < 20) {
+    bienvenidas = [
+      { titulo: "Buenas tardes.", mensaje: "Seguimos, sin prisa y con lo importante a mano." },
+      { titulo: "Hola de nuevo.", mensaje: "Así va lo que queda del día." },
+      { titulo: "Seguimos a vuestro ritmo.", mensaje: "Un vistazo y a continuar." },
+      { titulo: "La tarde, un poco más clara.", mensaje: "Aquí tienes los planes que quedan." },
+    ];
+  } else {
+    bienvenidas = [
+      { titulo: "Buenas noches.", mensaje: "Un último vistazo y a descansar." },
+      { titulo: "El día va terminando.", mensaje: "Lo de mañana puede esperar un poquito." },
+      { titulo: "Hora de bajar el ritmo.", mensaje: "Aquí sigue todo, cuando lo necesites." },
+      { titulo: "Por hoy, poquito más.", mensaje: "Revisa lo necesario y deja descansar la cabeza." },
+    ];
+  }
+
+  const inicioAno = new Date(ahora.getFullYear(), 0, 0);
+  const numeroDiaAno = Math.floor((ahora - inicioAno) / 86400000);
+  const bienvenidaElegida = bienvenidas[numeroDiaAno % bienvenidas.length];
+
+  tituloBienvenida.textContent = bienvenidaElegida.titulo;
+  mensajeBienvenida.textContent = bienvenidaElegida.mensaje;
+}
+
+mostrarBienvenidaDelDia();
 
 // boton añadir personas //
 
