@@ -154,6 +154,7 @@ async function cargarFamiliaActual(permitirCrearFamilia = true) {
   }
 
   await cargarConfiguracionNotificaciones();
+  await comprobarEstadoNotificacionesAlIniciar();
 
   return true;
 }

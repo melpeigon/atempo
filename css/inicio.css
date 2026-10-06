@@ -30,6 +30,36 @@
   font-weight: 500;
 }
 
+.aviso-notificaciones-desconectadas {
+  margin-top: 14px;
+  padding: 14px 16px;
+  display: grid;
+  gap: 12px;
+  border-left: 4px solid var(--lila);
+  border-radius: 14px;
+  background: var(--white);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.aviso-notificaciones-desconectadas[hidden] {
+  display: none;
+}
+
+.aviso-notificaciones-desconectadas p {
+  margin-top: 3px;
+}
+
+.aviso-notificaciones-desconectadas button {
+  width: fit-content;
+  padding: 7px 13px;
+  border: 1px solid var(--ciruela);
+  border-radius: 999px;
+  background: transparent;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 .agenda {
   margin-top: 24px;
   padding-left: 12px;

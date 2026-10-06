@@ -13,6 +13,12 @@ const campoHoraResumen = document.querySelector("#hora-resumen-diario");
 const mensajeConfiguracion = document.querySelector("#mensaje-configuracion");
 const casillaActivarNotificaciones = document.querySelector("#activar-notificaciones");
 const botonCerrarNotificaciones = document.querySelector("#boton-cerrar-notificaciones");
+const avisoNotificacionesDesconectadas = document.querySelector(
+  "#aviso-notificaciones-desconectadas"
+);
+const botonRevisarNotificaciones = document.querySelector(
+  "#boton-revisar-notificaciones"
+);
 
 const CLAVE_PUBLICA_VAPID = "BMWrMGicHyXmdj6rBAUJzlq501Kk0OUG7kXuhbRyrJj7qnATtGSBDVDj16lsvSKcT_IFhGcvm7P-fiJHCmXodjI";
 
@@ -26,6 +32,10 @@ const configuracionNotificaciones = {
   activasEnDispositivo:
     localStorage.getItem("notificacionesActivasEnDispositivo") === "true" ||
     configuracionAnterior?.activasEnDispositivo === true,
+  deseadasEnDispositivo:
+    localStorage.getItem("notificacionesDeseadasEnDispositivo") === "true" ||
+    localStorage.getItem("notificacionesActivasEnDispositivo") === "true" ||
+    configuracionAnterior?.activasEnDispositivo === true,
 };
 
 localStorage.removeItem("configuracionNotificaciones");
@@ -34,6 +44,13 @@ function guardarEstadoLocalNotificaciones() {
   localStorage.setItem(
     "notificacionesActivasEnDispositivo",
     String(configuracionNotificaciones.activasEnDispositivo)
+  );
+}
+
+function guardarPreferenciaLocalNotificaciones() {
+  localStorage.setItem(
+    "notificacionesDeseadasEnDispositivo",
+    String(configuracionNotificaciones.deseadasEnDispositivo)
   );
 }
 
@@ -87,6 +104,54 @@ async function obtenerSuscripcionPush() {
   return registro.pushManager.getSubscription();
 }
 
+async function comprobarEstadoNotificacionesAlIniciar() {
+  const estabanActivas = configuracionNotificaciones.deseadasEnDispositivo;
+
+  if (!estabanActivas) {
+    avisoNotificacionesDesconectadas.hidden = true;
+    return;
+  }
+
+  if (
+    !("Notification" in window) ||
+    !("serviceWorker" in navigator) ||
+    !("PushManager" in window)
+  ) {
+    avisoNotificacionesDesconectadas.hidden = false;
+    return;
+  }
+
+  if (Notification.permission !== "granted") {
+    configuracionNotificaciones.activasEnDispositivo = false;
+    guardarEstadoLocalNotificaciones();
+    avisoNotificacionesDesconectadas.hidden = false;
+    return;
+  }
+
+  try {
+    const registro = await navigator.serviceWorker.ready;
+    let suscripcion = await registro.pushManager.getSubscription();
+
+    if (!suscripcion) {
+      suscripcion = await registro.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: convertirClaveVapid(CLAVE_PUBLICA_VAPID),
+      });
+    }
+
+    await guardarDispositivoEnSupabase(suscripcion);
+
+    configuracionNotificaciones.activasEnDispositivo = true;
+    guardarEstadoLocalNotificaciones();
+    avisoNotificacionesDesconectadas.hidden = true;
+  } catch (error) {
+    console.log("No se pudieron recuperar las notificaciones:", error);
+    configuracionNotificaciones.activasEnDispositivo = false;
+    guardarEstadoLocalNotificaciones();
+    avisoNotificacionesDesconectadas.hidden = false;
+  }
+}
+
 async function retirarDispositivoAlCerrarSesion() {
   if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
     return;
@@ -110,7 +175,9 @@ async function retirarDispositivoAlCerrarSesion() {
 
   await suscripcion.unsubscribe();
   configuracionNotificaciones.activasEnDispositivo = false;
+  configuracionNotificaciones.deseadasEnDispositivo = false;
   guardarEstadoLocalNotificaciones();
+  guardarPreferenciaLocalNotificaciones();
 }
 
 async function cargarConfiguracionNotificaciones() {
@@ -283,7 +350,10 @@ async function cambiarEstadoNotificaciones() {
     }
 
     configuracionNotificaciones.activasEnDispositivo = false;
+    configuracionNotificaciones.deseadasEnDispositivo = false;
     guardarEstadoLocalNotificaciones();
+    guardarPreferenciaLocalNotificaciones();
+    avisoNotificacionesDesconectadas.hidden = true;
 
     mensajeConfiguracion.textContent = "Notificaciones pausadas en este dispositivo.";
     mensajeConfiguracion.hidden = false;
@@ -326,7 +396,10 @@ async function cambiarEstadoNotificaciones() {
     await guardarDispositivoEnSupabase(suscripcion);
 
     configuracionNotificaciones.activasEnDispositivo = true;
+    configuracionNotificaciones.deseadasEnDispositivo = true;
     guardarEstadoLocalNotificaciones();
+    guardarPreferenciaLocalNotificaciones();
+    avisoNotificacionesDesconectadas.hidden = true;
 
     await registro.showNotification("Atempo", {
       body: "Todo listo. Ya puedo avisarte cuando lo necesites.",
@@ -350,6 +423,10 @@ botonAbrirMenu.addEventListener("click", abrirMenu);
 botonCerrarMenu.addEventListener("click", volverDesdeMenu);
 botonMenuNotificaciones.addEventListener("click", abrirConfiguracionNotificaciones);
 botonCerrarNotificaciones.addEventListener("click", volverAlMenuDesdeNotificaciones);
+botonRevisarNotificaciones.addEventListener(
+  "click",
+  abrirConfiguracionNotificaciones
+);
 selectorModoNotificaciones.addEventListener("change", cambiarOpcionesNotificaciones);
 formularioNotificaciones.addEventListener("submit", guardarConfiguracionNotificaciones);
 casillaActivarNotificaciones.addEventListener("change", cambiarEstadoNotificaciones);
