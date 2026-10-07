@@ -153,6 +153,7 @@ async function cargarFamiliaActual(permitirCrearFamilia = true) {
     return false;
   }
 
+  await registrarAperturaUsuario();
   await cargarConfiguracionNotificaciones();
   await comprobarEstadoNotificacionesAlIniciar();
 

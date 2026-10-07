@@ -175,7 +175,7 @@ button {
 
 .resumen-admin {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
 }
 
@@ -193,10 +193,6 @@ button {
 
 .resumen-admin article:nth-child(3) {
   border-left-color: var(--amarillo);
-}
-
-.resumen-admin article:nth-child(4) {
-  border-left-color: var(--azul-suave);
 }
 
 .resumen-admin article > p:first-child {
