@@ -551,12 +551,20 @@ function eliminarActividadSeleccionada() {
 
       if (error) {
         console.log("No se pudo eliminar la actividad:", error);
+        registrarErrorApp("Eliminar actividad", error);
         mostrarAviso("No se pudo eliminar", "Ha ocurrido un problema al eliminar la actividad. Inténtalo otra vez.");
         return;
       }
 
       if (data.length === 0) {
         console.log("Supabase no permitió eliminar la actividad. Revisa la política RLS de DELETE.");
+        registrarErrorApp(
+          "Eliminar actividad",
+          {
+            message: "Supabase no permitió eliminar la actividad.",
+            code: "SIN_FILAS_AFECTADAS",
+          }
+        );
         mostrarAviso("No se pudo eliminar", "La base de datos no ha permitido eliminar esta actividad.");
         return;
       }

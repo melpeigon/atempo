@@ -402,12 +402,21 @@ function eliminarPersonaSeleccionada() {
 
     if (error) {
       console.log("No se pudo eliminar la persona:", error);
+      registrarErrorApp("Eliminar persona", error);
+
       mostrarAviso("No se pudo eliminar", "Ha ocurrido un problema al eliminar a esta persona. Inténtalo otra vez.");
       return;
     }
 
     if (data.length === 0) {
       console.log("Supabase no permitió eliminar la persona. Revisa la política RLS de DELETE.");
+      registrarErrorApp(
+        "Eliminar persona",
+        {
+          message: "Supabase no permitió eliminar la persona.",
+          code: "SIN_FILAS_AFECTADAS",
+        }
+      );
       mostrarAviso("No se pudo eliminar", "La base de datos no ha permitido eliminar a esta persona.");
       return;
     }
@@ -468,6 +477,7 @@ async function guardarNuevaPersona(evento) {
 
     if (error) {
       console.log("No se pudo editar la persona:", error);
+      registrarErrorApp("Editar persona", error);
       mensajeErrorPersona.textContent = "No hemos podido guardar los cambios. Inténtalo otra vez.";
       mensajeErrorPersona.hidden = false;
       botonGuardarPersona.disabled = false;
@@ -491,6 +501,7 @@ async function guardarNuevaPersona(evento) {
 
     if (error) {
       console.log("No se pudo crear la persona:", error);
+      registrarErrorApp("Crear persona", error);
       mensajeErrorPersona.textContent = "No hemos podido añadir a esta persona. Inténtalo otra vez.";
       mensajeErrorPersona.hidden = false;
       botonGuardarPersona.disabled = false;

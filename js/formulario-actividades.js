@@ -320,6 +320,7 @@ async function guardarNuevaActividad(evento) {
 
     if (error) {
       console.log("No se pudo editar la actividad:", error);
+      registrarErrorApp("Editar actividad", error);
       mostrarErrorActividad("No hemos podido guardar los cambios. Inténtalo otra vez.");
       botonGuardarActividad.disabled = false;
       return;
@@ -335,6 +336,7 @@ async function guardarNuevaActividad(evento) {
 
     if (error) {
       console.log("No se pudo crear la actividad:", error);
+      registrarErrorApp("Crear actividad", error);
       mostrarErrorActividad("No hemos podido añadir la actividad. Inténtalo otra vez.");
       botonGuardarActividad.disabled = false;
       return;

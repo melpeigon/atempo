@@ -22,6 +22,16 @@ const listadoTestersAdmin = document.querySelector(
   "#listado-testers-admin"
 );
 
+const buscarTesterAdmin = document.querySelector("#buscar-tester-admin");
+
+const listadoErroresAdmin = document.querySelector(
+  "#listado-errores-admin"
+);
+
+let testersCargadosAdmin = [];
+
+
+
 function mostrarAccesoDenegado(mensaje) {
   estadoAccesoAdmin.hidden = true;
   panelAdmin.hidden = true;
@@ -77,8 +87,30 @@ function crearCeldaTester(texto) {
   return celda;
 }
 
+function crearCeldaConEtiqueta(texto, clase) {
+  const celda = document.createElement("td");
+  const etiqueta = document.createElement("span");
+
+  etiqueta.classList.add("etiqueta-admin", clase);
+  etiqueta.textContent = texto;
+
+  celda.append(etiqueta);
+
+  return celda;
+}
+
 function mostrarTestersAdmin(testers) {
   listadoTestersAdmin.replaceChildren();
+
+  if (testers.length === 0) {
+    const fila = document.createElement("tr");
+    const celda = crearCeldaTester("No hay testers que coincidan con la búsqueda.");
+
+    celda.colSpan = 6;
+    fila.append(celda);
+    listadoTestersAdmin.append(fila);
+    return;
+  }
 
   testers.forEach(function (tester) {
     const fila = document.createElement("tr");
@@ -87,22 +119,56 @@ function mostrarTestersAdmin(testers) {
       ? `${tester.plataforma} · ${tester.instalada ? "Instalada" : "Navegador"}`
       : "Sin datos";
 
-    const notificaciones = tester.notificaciones_activas > 0
-      ? "Activas"
-      : "Sin activar";
+    const numeroDispositivos =
+      Number(tester.notificaciones_activas) || 0;
+
+    let textoNotificaciones = "Sin dispositivos activos";
+
+    if (numeroDispositivos === 1) {
+      textoNotificaciones = "1 dispositivo activo";
+    }
+
+    if (numeroDispositivos > 1) {
+      textoNotificaciones =
+        `${numeroDispositivos} dispositivos activos`;
+    }
+
+    const claseNotificaciones =
+      numeroDispositivos > 0
+        ? "etiqueta-notificaciones-activas"
+        : "etiqueta-neutra";
+
+    let claseEstado = "etiqueta-neutra";
+
+    if (tester.estado === "Activa") {
+      claseEstado = "etiqueta-activa";
+    } else if (tester.estado === "Pendiente de confirmar") {
+      claseEstado = "etiqueta-pendiente";
+    } else if (tester.estado === "Sin actividad reciente") {
+      claseEstado = "etiqueta-inactiva";
+    }
 
     fila.append(
       crearCeldaTester(tester.correo || "Sin correo"),
       crearCeldaTester(dispositivo),
       crearCeldaTester(tester.version_app || "Sin datos"),
-      crearCeldaTester(formatearUltimaApertura(tester.ultima_apertura)),
-      crearCeldaTester(notificaciones),
-      crearCeldaTester(tester.estado)
+      crearCeldaTester(
+        formatearUltimaApertura(tester.ultima_apertura)
+      ),
+      crearCeldaConEtiqueta(
+        textoNotificaciones,
+        claseNotificaciones
+      ),
+      crearCeldaConEtiqueta(
+        tester.estado || "Sin datos",
+        claseEstado
+      )
     );
 
     listadoTestersAdmin.append(fila);
   });
 }
+
 async function cargarTestersAdmin() {
   const { data, error } = await clienteSupabase.rpc(
     "obtener_testers_admin"
@@ -118,7 +184,106 @@ async function cargarTestersAdmin() {
     return;
   }
 
-  mostrarTestersAdmin(data || []);
+  testersCargadosAdmin = data || [];
+  mostrarTestersAdmin(testersCargadosAdmin);
+}
+
+function mostrarErroresAdmin(errores) {
+  listadoErroresAdmin.replaceChildren();
+
+  if (errores.length === 0) {
+    const mensaje = document.createElement("p");
+    mensaje.textContent = "No se han registrado errores recientes.";
+    listadoErroresAdmin.append(mensaje);
+    return;
+  }
+
+  errores.forEach(function (errorApp) {
+    const errorElemento = document.createElement("article");
+    errorElemento.classList.add("error-admin");
+
+    const cabecera = document.createElement("header");
+
+    const contexto = document.createElement("h3");
+    contexto.textContent = errorApp.contexto;
+
+    const fecha = document.createElement("time");
+    fecha.textContent = formatearUltimaApertura(
+      errorApp.fecha
+    );
+
+    const mensaje = document.createElement("p");
+    mensaje.classList.add("mensaje-error-admin");
+    mensaje.textContent = errorApp.mensaje;
+
+    const detalles = document.createElement("p");
+    detalles.classList.add("detalles-error-admin");
+
+    const datosDetalles = [
+      errorApp.correo || "Usuario desconocido",
+      errorApp.codigo
+        ? `Código: ${errorApp.codigo}`
+        : null,
+      errorApp.version_app
+        ? `Versión ${errorApp.version_app}`
+        : null,
+      errorApp.plataforma || null,
+    ].filter(Boolean);
+
+    detalles.textContent = datosDetalles.join(" · ");
+
+    cabecera.append(contexto, fecha);
+    errorElemento.append(cabecera, mensaje, detalles);
+    listadoErroresAdmin.append(errorElemento);
+  });
+}
+
+async function cargarErroresAdmin() {
+  const { data, error } = await clienteSupabase.rpc(
+    "obtener_errores_admin"
+  );
+
+  if (error) {
+    console.error(
+      "No se pudieron cargar los errores:",
+      error
+    );
+
+    listadoErroresAdmin.innerHTML = `
+      <p>No hemos podido cargar los errores recientes.</p>
+    `;
+
+    return;
+  }
+
+  mostrarErroresAdmin(data || []);
+}
+
+function filtrarTestersAdmin() {
+  const busqueda = buscarTesterAdmin.value
+    .trim()
+    .toLocaleLowerCase("es");
+
+  if (busqueda === "") {
+    mostrarTestersAdmin(testersCargadosAdmin);
+    return;
+  }
+
+  const testersFiltrados = testersCargadosAdmin.filter(function (tester) {
+    const datosBuscables = [
+      tester.correo,
+      tester.plataforma,
+      tester.version_app,
+      tester.estado,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLocaleLowerCase("es");
+
+    return datosBuscables.includes(busqueda);
+  });
+
+  mostrarTestersAdmin(testersFiltrados);
 }
 
 async function comprobarAccesoAdmin() {
@@ -156,6 +321,7 @@ async function comprobarAccesoAdmin() {
   mostrarPanelAdmin(datosUsuario.user);
   await cargarResumenAdmin();
   await cargarTestersAdmin();
+  await cargarErroresAdmin();
 }
 
 async function cerrarSesionAdmin() {
@@ -175,3 +341,5 @@ async function cerrarSesionAdmin() {
 botonCerrarSesionAdmin.addEventListener("click", cerrarSesionAdmin);
 
 comprobarAccesoAdmin();
+
+buscarTesterAdmin.addEventListener("input", filtrarTestersAdmin);

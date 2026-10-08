@@ -56,7 +56,16 @@ async function cargarDatosDeSupabase() {
     .order("created_at", { ascending: true });
 
   if (resultadoPersonas.error) {
-    console.log("No se pudieron cargar las personas:", resultadoPersonas.error);
+    console.log(
+      "No se pudieron cargar las personas:",
+      resultadoPersonas.error
+    );
+
+    registrarErrorApp(
+      "Cargar personas",
+      resultadoPersonas.error
+    );
+
     return false;
   }
 
@@ -75,7 +84,16 @@ async function cargarDatosDeSupabase() {
       .order("hora", { ascending: true });
 
     if (resultadoActividades.error) {
-      console.log("No se pudieron cargar las actividades:", resultadoActividades.error);
+      console.log(
+        "No se pudieron cargar las actividades:",
+        resultadoActividades.error
+      );
+
+      registrarErrorApp(
+        "Cargar actividades",
+        resultadoActividades.error
+      );
+
       return false;
     }
 
