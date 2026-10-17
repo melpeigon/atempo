@@ -42,11 +42,24 @@ export default {
       let avisosEnviados = 0;
 
       for (const configuracion of configuraciones || []) {
-        avisosEnviados += await procesarUsuario(
-          ctx.supabaseAdmin,
-          configuracion,
-          ahora,
-        );
+        try {
+          avisosEnviados += await procesarUsuario(
+            ctx.supabaseAdmin,
+            configuracion,
+            ahora,
+          );
+        } catch (error) {
+          console.log(
+            "No se pudieron procesar los avisos de una usuaria:",
+            error,
+          );
+          await registrarErrorProcesador(
+            ctx.supabaseAdmin,
+            "Procesar avisos de una usuaria",
+            error,
+            configuracion.usuario_id,
+          );
+        }
       }
 
       return Response.json({
@@ -56,6 +69,11 @@ export default {
       });
     } catch (error) {
       console.log("No se pudieron procesar los avisos:", error);
+      await registrarErrorProcesador(
+        ctx.supabaseAdmin,
+        "Procesar avisos automáticos",
+        error,
+      );
 
       return Response.json(
         { error: "No se pudieron procesar los avisos." },
@@ -228,6 +246,7 @@ async function procesarAvisoActividad(
       : informacionActividad;
     const enviadas = await enviarADispositivos(
       supabase,
+      usuarioId,
       dispositivos,
       {
         title: "Toc, toc 💜",
@@ -288,12 +307,17 @@ async function procesarResumen(
     })
     .join("\n");
 
-  const enviadas = await enviarADispositivos(supabase, dispositivos, {
-    title: obtenerTituloResumen(ahora),
-    body: `Hoy tenéis ${actividadesDeHoy.length} ${actividadesDeHoy.length === 1 ? "plan" : "planes"}:\n${resumen}`,
-    url: "./",
-    tag: clave,
-  });
+  const enviadas = await enviarADispositivos(
+    supabase,
+    configuracion.usuario_id,
+    dispositivos,
+    {
+      title: obtenerTituloResumen(ahora),
+      body: `Hoy tenéis ${actividadesDeHoy.length} ${actividadesDeHoy.length === 1 ? "plan" : "planes"}:\n${resumen}`,
+      url: "./",
+      tag: clave,
+    },
+  );
 
   if (enviadas > 0) {
     await registrarAviso(
@@ -405,6 +429,7 @@ async function registrarAviso(
 
 async function enviarADispositivos(
   supabase: any,
+  usuarioId: string,
   dispositivos: any[],
   contenido: { title: string; body: string; url: string; tag: string },
 ) {
@@ -432,17 +457,72 @@ async function enviarADispositivos(
       if (entregada) {
         enviadas++;
       } else {
-        await supabase
+        await registrarErrorProcesador(
+          supabase,
+          "Enviar notificación push",
+          {
+            message: "El servicio push rechazó la notificación.",
+            code: "PUSH_RECHAZADA",
+          },
+          usuarioId,
+        );
+
+        const { error: errorDesactivacion } = await supabase
           .from("dispositivos_notificaciones")
           .update({ activo: false })
           .eq("id", dispositivo.id);
+
+        if (errorDesactivacion) {
+          await registrarErrorProcesador(
+            supabase,
+            "Desactivar dispositivo rechazado",
+            errorDesactivacion,
+            usuarioId,
+          );
+        }
       }
     } catch (error) {
       console.log("Falló el envío a un dispositivo:", error);
+      await registrarErrorProcesador(
+        supabase,
+        "Enviar notificación push",
+        error,
+        usuarioId,
+      );
     }
   }
 
   return enviadas;
+}
+
+async function registrarErrorProcesador(
+  supabase: any,
+  contexto: string,
+  error: any,
+  usuarioId: string | null = null,
+) {
+  try {
+    const mensaje = error?.message || String(error || "Error desconocido");
+    const codigo = error?.code ? String(error.code) : null;
+
+    const { error: errorRegistro } = await supabase
+      .from("errores_app")
+      .insert({
+        usuario_id: usuarioId,
+        origen: "procesador-avisos",
+        contexto: contexto.slice(0, 80),
+        mensaje: mensaje.slice(0, 500),
+        codigo: codigo?.slice(0, 80) || null,
+        plataforma: "Supabase Edge Function",
+        pagina: "procesar-avisos",
+      });
+
+    if (errorRegistro) {
+      console.log("No se pudo registrar el error del procesador:", errorRegistro);
+    }
+  } catch (errorRegistro) {
+    console.log("No se pudo preparar el error del procesador:", errorRegistro);
+  }
 }
 
 function obtenerSecreto(nombre: string) {

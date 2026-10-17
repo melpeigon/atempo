@@ -355,6 +355,10 @@ label[for="buscar-tester-admin"] {
   border-bottom: 0;
 }
 
+.error-admin-revisado {
+  opacity: 0.68;
+}
+
 .error-admin header {
   display: flex;
   align-items: flex-start;
@@ -387,6 +391,34 @@ label[for="buscar-tester-admin"] {
   color: var(--gris-texto);
   font-size: 12px;
   line-height: 1.5;
+}
+
+.acciones-error-admin {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.boton-revisar-error-admin {
+  min-height: auto;
+  padding: 7px 11px;
+  border: 1px solid var(--ciruela);
+  border-radius: 999px;
+  color: var(--ciruela);
+  background: transparent;
+  font-size: 12px;
+}
+
+.boton-revisar-error-admin:hover {
+  color: var(--blanco);
+  background: var(--ciruela);
+}
+
+.boton-revisar-error-admin:disabled {
+  cursor: wait;
+  opacity: 0.55;
 }
 
 #panel-admin > section:last-child {

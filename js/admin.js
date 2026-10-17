@@ -202,6 +202,10 @@ function mostrarErroresAdmin(errores) {
     const errorElemento = document.createElement("article");
     errorElemento.classList.add("error-admin");
 
+    if (errorApp.revisado) {
+      errorElemento.classList.add("error-admin-revisado");
+    }
+
     const cabecera = document.createElement("header");
 
     const contexto = document.createElement("h3");
@@ -220,7 +224,10 @@ function mostrarErroresAdmin(errores) {
     detalles.classList.add("detalles-error-admin");
 
     const datosDetalles = [
-      errorApp.correo || "Usuario desconocido",
+      errorApp.origen === "procesador-avisos"
+        ? "Procesador de avisos"
+        : "Aplicación",
+      errorApp.correo || "Error general",
       errorApp.codigo
         ? `Código: ${errorApp.codigo}`
         : null,
@@ -232,10 +239,57 @@ function mostrarErroresAdmin(errores) {
 
     detalles.textContent = datosDetalles.join(" · ");
 
+    const acciones = document.createElement("div");
+    acciones.classList.add("acciones-error-admin");
+
+    const estado = document.createElement("span");
+    estado.classList.add(
+      "etiqueta-admin",
+      errorApp.revisado ? "etiqueta-activa" : "etiqueta-pendiente"
+    );
+    estado.textContent = errorApp.revisado ? "Revisado" : "Pendiente";
+
+    const botonRevisar = document.createElement("button");
+    botonRevisar.type = "button";
+    botonRevisar.classList.add("boton-revisar-error-admin");
+    botonRevisar.textContent = errorApp.revisado
+      ? "Volver a pendiente"
+      : "Marcar como revisado";
+
+    botonRevisar.addEventListener("click", function () {
+      cambiarEstadoErrorAdmin(
+        errorApp.id,
+        !errorApp.revisado,
+        botonRevisar
+      );
+    });
+
     cabecera.append(contexto, fecha);
-    errorElemento.append(cabecera, mensaje, detalles);
+    acciones.append(estado, botonRevisar);
+    errorElemento.append(cabecera, mensaje, detalles, acciones);
     listadoErroresAdmin.append(errorElemento);
   });
+}
+
+async function cambiarEstadoErrorAdmin(errorId, nuevoEstado, boton) {
+  boton.disabled = true;
+
+  const { data, error } = await clienteSupabase.rpc(
+    "marcar_error_revisado",
+    {
+      error_id_objetivo: errorId,
+      nuevo_estado: nuevoEstado,
+    }
+  );
+
+  if (error || data !== true) {
+    console.error("No se pudo actualizar el error:", error);
+    boton.textContent = "No se pudo actualizar";
+    boton.disabled = false;
+    return;
+  }
+
+  await cargarErroresAdmin();
 }
 
 async function cargarErroresAdmin() {

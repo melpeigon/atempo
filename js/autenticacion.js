@@ -103,6 +103,7 @@ async function crearFamiliaInicial() {
 
   if (error) {
     console.log("No se pudo crear la familia:", error);
+    registrarErrorApp("Crear familia inicial", error);
     return false;
   }
 
@@ -118,6 +119,7 @@ async function cargarFamiliaActual(permitirCrearFamilia = true) {
 
   if (error) {
     console.log("No se pudo cargar la familia:", error);
+    registrarErrorApp("Cargar familia", error);
     mostrarMensajeAcceso("No hemos podido cargar tu familia.");
     pantallaAcceso.hidden = false;
     return false;

@@ -1,6 +1,6 @@
 # Pendientes de Atempo
 
-Última revisión: 6 de octubre de 2026.
+Última revisión: 17 de octubre de 2026.
 
 Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar primero el funcionamiento principal de la aplicación y dejar las mejoras más grandes para después.
 
@@ -110,8 +110,8 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Solicitar permiso para las notificaciones solamente cuando la persona active su casilla.
 - [x] Convertir Atempo en una aplicación web instalable (PWA), con manifiesto e iconos.
 - [x] Registrar un `service worker` y comprobar que puede mostrar notificaciones en un móvil.
-- [ ] Guardar las actividades y las suscripciones a notificaciones en una base de datos.
-- [ ] Programar desde el servidor el envío de cada aviso, incluso cuando Atempo esté cerrada.
+- [x] Guardar las actividades y las suscripciones a notificaciones en una base de datos.
+- [x] Programar desde el servidor el envío de cada aviso, incluso cuando Atempo esté cerrada.
 - [x] Probar las notificaciones con la aplicación instalada en un móvil real.
 - [ ] Probar en un iPhone real la instalación y las notificaciones programadas cuando esté conectado el servidor de avisos.
 - [ ] Explicar en la guía cómo instalar Atempo, activar los avisos y modificar sus permisos.
@@ -119,8 +119,8 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 ## Datos y publicación
 
 - [x] Guardar personas y actividades localmente con `localStorage` durante el desarrollo.
-- [ ] Diseñar los usuarios y la sincronización entre dispositivos necesarios para las notificaciones.
-- [ ] Configurar una base de datos y autenticación, por ejemplo con Supabase.
+- [x] Diseñar los usuarios y la sincronización entre dispositivos necesarios para las notificaciones.
+- [x] Configurar una base de datos y autenticación con Supabase.
 - [ ] Preparar los datos existentes para poder migrarlos desde `localStorage`.
 - [x] Publicar una primera versión de prueba en GitHub Pages.
 - [x] Probar la instalación como aplicación web en el móvil.
@@ -168,8 +168,8 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 
 ### Documentación del proyecto
 
-- [ ] Crear `README.md` con la presentación, instalación, funciones, tecnologías, estado del proyecto y enlace de prueba.
-- [ ] Crear `CHANGELOG.md` para conservar el historial de novedades de cada versión junto con las Releases de GitHub.
+- [x] Crear `README.md` con la presentación, instalación, funciones, tecnologías, estado del proyecto y enlace de prueba.
+- [x] Crear `CHANGELOG.md` para conservar el historial de novedades de cada versión junto con las Releases de GitHub.
 - [ ] Decidir si el código será privado, de uso reservado o de código abierto antes de escoger una licencia.
 - [ ] Añadir el archivo `LICENSE` que corresponda a la decisión anterior.
 - [ ] Documentar cómo se guardan, exportan y eliminan los datos.
@@ -190,12 +190,12 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 ## Ideas para versiones futuras
 
 - [x] Mostrar al final de la guía la versión instalada de Atempo para facilitar las comprobaciones con testers.
-- [ ] Crear un panel de administración privado para consultar testers, versión utilizada, última apertura y estado general de la cuenta.
-- [ ] Registrar la versión y la última apertura de forma independiente a las notificaciones, porque una persona puede usar Atempo sin activarlas.
-- [ ] Mostrar en el panel la última apertura de cada tester para comprobar si sigue utilizando Atempo, diferenciándola del último inicio de sesión.
-- [ ] Crear un registro seguro de errores de la aplicación para mostrarlo en el panel de administración.
-- [ ] Registrar el tipo de error, fecha, versión, plataforma, instalación y usuario cuando ya esté identificado.
-- [ ] Diferenciar en el panel los errores esperados de acceso o conexión de los fallos reales de JavaScript, base de datos y notificaciones.
+- [x] Crear un panel de administración privado para consultar testers, versión utilizada, última apertura y estado general de la cuenta.
+- [x] Registrar la versión y la última apertura de forma independiente a las notificaciones, porque una persona puede usar Atempo sin activarlas.
+- [x] Mostrar en el panel la última apertura de cada tester para comprobar si sigue utilizando Atempo, diferenciándola del último inicio de sesión.
+- [x] Crear un registro seguro de errores de la aplicación para mostrarlo en el panel de administración.
+- [x] Registrar el tipo de error, fecha, versión, plataforma, instalación y usuario cuando ya esté identificado.
+- [x] Diferenciar en el panel los errores de la aplicación y del procesador de notificaciones.
 - [ ] Permitir filtrar los errores por tester, versión, plataforma, tipo y fecha.
 - [ ] No guardar contraseñas, contenido de actividades ni otros datos privados dentro de los registros de errores.
 - [ ] Permitir redactar y enviar desde el panel avisos generales sobre novedades, actualizaciones o incidencias.
@@ -208,7 +208,7 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [ ] No mostrar ese aviso de recuperación a quienes nunca hayan elegido activar las notificaciones.
 - [ ] Permitir volver a conectar los avisos con una acción clara, solicitando permiso solamente cuando sea necesario.
 - [ ] Proteger los envíos generales mediante el rol de administradora, confirmación previa y control de duplicados.
-- [ ] Proteger el panel mediante un rol de administradora y políticas de seguridad; nunca incluir una clave secreta de Supabase en el navegador.
+- [x] Proteger el panel mediante un rol de administradora y políticas de seguridad; nunca incluir una clave secreta de Supabase en el navegador.
 - [ ] Limitar el panel a los datos necesarios para soporte y pruebas, evitando mostrar agendas familiares o información personal innecesaria.
 - [ ] Crear un panel de configuración familiar desde el que gestionar personas, miembros de la familia y categorías de actividades.
 - [ ] Permitir que cada familia cree sus propias categorías de actividad, con nombre e icono, además de las categorías incluidas en Atempo.

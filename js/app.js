@@ -605,6 +605,7 @@ if ("serviceWorker" in navigator) {
       })
       .catch(function (error) {
         console.log("No se pudo registrar el service worker:", error);
+        registrarErrorApp("Registrar service worker", error);
       });
   });
 }

@@ -41,6 +41,7 @@ async function registrarAperturaUsuario() {
 
   if (error) {
     console.log("No se pudo registrar la apertura de Atempo:", error);
+    registrarErrorApp("Registrar apertura de Atempo", error);
     return false;
   }
 

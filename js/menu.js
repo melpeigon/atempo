@@ -146,6 +146,7 @@ async function comprobarEstadoNotificacionesAlIniciar() {
     avisoNotificacionesDesconectadas.hidden = true;
   } catch (error) {
     console.log("No se pudieron recuperar las notificaciones:", error);
+    registrarErrorApp("Recuperar notificaciones", error);
     configuracionNotificaciones.activasEnDispositivo = false;
     guardarEstadoLocalNotificaciones();
     avisoNotificacionesDesconectadas.hidden = false;
@@ -157,7 +158,15 @@ async function retirarDispositivoAlCerrarSesion() {
     return;
   }
 
-  const suscripcion = await obtenerSuscripcionPush();
+  let suscripcion = null;
+
+  try {
+    suscripcion = await obtenerSuscripcionPush();
+  } catch (error) {
+    console.log("No se pudo consultar el dispositivo al cerrar sesión:", error);
+    registrarErrorApp("Consultar dispositivo al cerrar sesión", error);
+    return;
+  }
 
   if (!suscripcion) {
     return;
@@ -170,10 +179,17 @@ async function retirarDispositivoAlCerrarSesion() {
 
   if (error) {
     console.log("No se pudo retirar el dispositivo:", error);
+    registrarErrorApp("Retirar dispositivo de notificaciones", error);
     return;
   }
 
-  await suscripcion.unsubscribe();
+  try {
+    await suscripcion.unsubscribe();
+  } catch (error) {
+    console.log("No se pudo cancelar la suscripción push:", error);
+    registrarErrorApp("Cancelar suscripción push", error);
+    return;
+  }
   configuracionNotificaciones.activasEnDispositivo = false;
   configuracionNotificaciones.deseadasEnDispositivo = false;
   guardarEstadoLocalNotificaciones();
@@ -197,6 +213,7 @@ async function cargarConfiguracionNotificaciones() {
 
   if (error) {
     console.log("No se pudo cargar la configuración de notificaciones:", error);
+    registrarErrorApp("Cargar configuración de notificaciones", error);
     return false;
   }
 
@@ -210,6 +227,10 @@ async function cargarConfiguracionNotificaciones() {
 
     if (errorCreacion) {
       console.log("No se pudo crear la configuración de notificaciones:", errorCreacion);
+      registrarErrorApp(
+        "Crear configuración de notificaciones",
+        errorCreacion
+      );
       return false;
     }
 
@@ -252,7 +273,12 @@ async function abrirConfiguracionNotificaciones() {
   let suscripcion = null;
 
   if ("serviceWorker" in navigator && "PushManager" in window) {
-    suscripcion = await obtenerSuscripcionPush();
+    try {
+      suscripcion = await obtenerSuscripcionPush();
+    } catch (error) {
+      console.log("No se pudo consultar la suscripción del dispositivo:", error);
+      registrarErrorApp("Consultar suscripción de notificaciones", error);
+    }
   }
 
   configuracionNotificaciones.activasEnDispositivo =
@@ -308,12 +334,20 @@ async function guardarConfiguracionNotificaciones(evento) {
 
   if (error) {
     console.log("No se pudo guardar la configuración de notificaciones:", error);
+    registrarErrorApp("Guardar configuración de notificaciones", error);
     mensajeConfiguracion.textContent = "No hemos podido guardar las preferencias.";
     mensajeConfiguracion.hidden = false;
     return;
   }
 
   if (!data) {
+    registrarErrorApp(
+      "Guardar configuración de notificaciones",
+      {
+        message: "Supabase no permitió guardar las preferencias.",
+        code: "SIN_FILAS_AFECTADAS",
+      }
+    );
     mensajeConfiguracion.textContent = "La base de datos no ha permitido guardar las preferencias.";
     mensajeConfiguracion.hidden = false;
     return;
@@ -331,7 +365,16 @@ async function cambiarEstadoNotificaciones() {
     let suscripcion = null;
 
     if ("serviceWorker" in navigator && "PushManager" in window) {
-      suscripcion = await obtenerSuscripcionPush();
+      try {
+        suscripcion = await obtenerSuscripcionPush();
+      } catch (error) {
+        console.log("No se pudo consultar el dispositivo para pausar los avisos:", error);
+        registrarErrorApp("Consultar dispositivo para pausar avisos", error);
+        casillaActivarNotificaciones.checked = true;
+        mensajeConfiguracion.textContent = "No hemos podido pausar las notificaciones.";
+        mensajeConfiguracion.hidden = false;
+        return;
+      }
     }
 
     if (suscripcion) {
@@ -342,6 +385,7 @@ async function cambiarEstadoNotificaciones() {
 
       if (error) {
         console.log("No se pudo pausar el dispositivo:", error);
+        registrarErrorApp("Pausar notificaciones", error);
         casillaActivarNotificaciones.checked = true;
         mensajeConfiguracion.textContent = "No hemos podido pausar las notificaciones.";
         mensajeConfiguracion.hidden = false;
@@ -414,6 +458,7 @@ async function cambiarEstadoNotificaciones() {
     configuracionNotificaciones.activasEnDispositivo = false;
     guardarEstadoLocalNotificaciones();
     console.log("No se pudo mostrar la notificación de prueba:", error);
+    registrarErrorApp("Activar notificaciones", error);
     mensajeConfiguracion.textContent = "No se pudo mostrar la notificación de prueba.";
     mensajeConfiguracion.hidden = false;
   }
