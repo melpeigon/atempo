@@ -4,7 +4,7 @@ Este archivo recoge las novedades principales de cada versión. Las Releases de
 GitHub conservan el punto exacto del código publicado; este documento explica
 qué cambió entre versiones.
 
-## Próxima versión
+## 1.2.2 — 17 de octubre de 2026
 
 ### Añadido
 
@@ -13,6 +13,11 @@ qué cambió entre versiones.
 - Distinción entre errores de la aplicación y del servidor.
 - Estados «Pendiente» y «Revisado» para gestionar errores desde el panel.
 - Documentación inicial del proyecto, panel y sistema de notificaciones.
+- Orientación breve para distinguir avisos individuales y resumen diario.
+- Selección de cualquier día del calendario, incluso cuando no tiene planes.
+- Listado de actividades correspondiente al día seleccionado.
+- Creación de actividades desde el calendario con la fecha ya rellenada.
+- Mensajes cariñosos para los días sin planes.
 
 ### Mejorado
 
@@ -20,6 +25,8 @@ qué cambió entre versiones.
   del resto de cuentas.
 - Los dispositivos rechazados por el servicio push se desactivan y dejan un
   registro técnico para soporte.
+- El día seleccionado se distingue con claridad del día actual y de los
+  colores asignados a cada persona.
 
 ## 1.2.1 — 8 de octubre de 2026
 

@@ -126,7 +126,7 @@ function marcarDiaDeFechaInicio() {
   }
 }
 
-function abrirEmergenteNuevaActividad(idPersona = null) {
+function abrirEmergenteNuevaActividad(idPersona = null, fechaPreseleccionada = null) {
   idActividadEnEdicion = null;
 
   formularioActividad.reset();
@@ -146,6 +146,10 @@ function abrirEmergenteNuevaActividad(idPersona = null) {
 
   if (idPersona !== null) {
     selectorPersonaActividad.value = idPersona;
+  }
+
+  if (fechaPreseleccionada !== null) {
+    campoFechaActividad.value = fechaPreseleccionada;
   }
 
   emergenteNuevaActividad.showModal();

@@ -63,6 +63,22 @@
   padding: 5px;
   border-right: 1px solid var(--gris);
   border-bottom: 1px solid var(--gris);
+  cursor: pointer;
+  transition: background-color 160ms ease, box-shadow 160ms ease;
+}
+
+.dia-calendario:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--ciruela);
+  outline-offset: -3px;
+}
+
+.dia-calendario-seleccionado {
+  position: relative;
+  z-index: 1;
+  background: #eee5f0;
+  box-shadow: inset 0 0 0 2px var(--ciruela);
 }
 
 .casilla-vacia-calendario {
@@ -129,6 +145,28 @@ background: #f1efec;
   scroll-margin-top: 20px;
 }
 
+.mensaje-inicial-calendario,
+.mensaje-dia-vacio {
+  color: var(--ciruela);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.mensaje-inicial-calendario {
+  margin-top: 4px;
+  text-align: center;
+}
+
+.mensaje-inicial-calendario[hidden] {
+  display: none;
+}
+
+.mensaje-dia-vacio {
+  padding: 14px 16px;
+  border-radius: 13px;
+  background: var(--white);
+}
+
 .actividades-dia-calendario[hidden] {
   display: none;
 }
@@ -181,4 +219,23 @@ background: #f1efec;
 .datos-actividad-dia {
   margin-top: 2px;
   font-size: 12px;
+}
+
+.boton-anadir-actividad-dia {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 14px;
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--ciruela);
+  background: var(--degradado);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.boton-anadir-actividad-dia:active {
+  transform: scale(0.98);
 }

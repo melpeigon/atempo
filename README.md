@@ -5,7 +5,7 @@ horarios, actividades y avisos. Cada persona tiene un color propio, y sus planes
 se muestran en la agenda diaria y en el calendario.
 
 La aplicación está actualmente en fase de pruebas con testers. La versión
-configurada en el código es la **1.2.1**.
+configurada en el código es la **1.2.2**.
 
 ## Funciones principales
 

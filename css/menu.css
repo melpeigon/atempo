@@ -93,6 +93,17 @@
   gap: 10px;
 }
 
+.ayuda-notificaciones {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border-left: 3px solid var(--lila);
+  border-radius: 12px;
+  color: var(--ciruela);
+  background: color-mix(in srgb, var(--lila) 16%, var(--white));
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 .opcion-activar-notificaciones {
   min-height: 48px;
   margin-top: 18px;

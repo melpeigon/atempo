@@ -10,9 +10,33 @@ const botonMesSiguiente = document.querySelector("#boton-mes-siguiente");
 const seccionActividadesDia = document.querySelector("#actividades-dia-calendario");
 const tituloActividadesDia = document.querySelector("#titulo-actividades-dia");
 const listaActividadesDia = document.querySelector("#lista-actividades-dia");
+const botonAnadirActividadDia = document.querySelector("#boton-anadir-actividad-dia");
+const mensajeInicialCalendario = document.querySelector("#mensaje-inicial-calendario");
+
+const mensajesDiaSinPlanes = [
+  "Hoy no hay planes. Quizá sea un buen día para darte un capricho 💜",
+  "Un día sin planes… suena a un ratito para ti 💜",
+  "La agenda está tranquila. Hazle sitio a algo que te haga feliz 💜",
+];
 
 const fechaCalendario = new Date();
 fechaCalendario.setDate(1);
+let fechaSeleccionadaCalendario = null;
+
+function seleccionarDiaCalendario(casillaDia, fechaDia) {
+  const casillaSeleccionadaAnterior = cuadriculaCalendario.querySelector(
+    ".dia-calendario-seleccionado"
+  );
+
+  if (casillaSeleccionadaAnterior) {
+    casillaSeleccionadaAnterior.classList.remove("dia-calendario-seleccionado");
+    casillaSeleccionadaAnterior.setAttribute("aria-pressed", "false");
+  }
+
+  fechaSeleccionadaCalendario = convertirFechaAFormatoInput(fechaDia);
+  casillaDia.classList.add("dia-calendario-seleccionado");
+  casillaDia.setAttribute("aria-pressed", "true");
+}
 
 function mostrarMes() {
   ocultarActividadesDelDia();
@@ -53,6 +77,34 @@ function mostrarMes() {
 
     const fechaDia = new Date(ano, mes, numeroDia);
 
+    casillaDia.setAttribute("role", "button");
+    casillaDia.setAttribute("tabindex", "0");
+    casillaDia.setAttribute("aria-label", fechaDia.toLocaleDateString("es-ES", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }));
+    casillaDia.setAttribute("aria-pressed", "false");
+
+    if (fechaSeleccionadaCalendario === convertirFechaAFormatoInput(fechaDia)) {
+      casillaDia.classList.add("dia-calendario-seleccionado");
+      casillaDia.setAttribute("aria-pressed", "true");
+    }
+
+    casillaDia.addEventListener("click", function () {
+      seleccionarDiaCalendario(casillaDia, fechaDia);
+      mostrarActividadesDelDia(fechaDia, actividadesDelDia);
+    });
+
+    casillaDia.addEventListener("keydown", function (evento) {
+      if (evento.key === "Enter" || evento.key === " ") {
+        evento.preventDefault();
+        seleccionarDiaCalendario(casillaDia, fechaDia);
+        mostrarActividadesDelDia(fechaDia, actividadesDelDia);
+      }
+    });
+
     if (
       numeroDia === hoy.getDate() &&
       mes === hoy.getMonth() &&
@@ -92,7 +144,8 @@ function mostrarMes() {
 
       botonActividad.append(imagenActividad);
 
-      botonActividad.addEventListener("click", function () {
+      botonActividad.addEventListener("click", function (evento) {
+        evento.stopPropagation();
         pantallaCalendario.hidden = true;
         abrirFichaActividad(
           actividad.id,
@@ -113,7 +166,9 @@ function mostrarMes() {
       indicadorMasActividades.type = "button";
       indicadorMasActividades.textContent = `+${numeroActividadesOcultas}`;
 
-      indicadorMasActividades.addEventListener("click", function () {
+      indicadorMasActividades.addEventListener("click", function (evento) {
+        evento.stopPropagation();
+        seleccionarDiaCalendario(casillaDia, fechaDia);
         mostrarActividadesDelDia(fechaDia, actividadesDelDia);
       });
 
@@ -127,12 +182,21 @@ function mostrarMes() {
 
 function mostrarActividadesDelDia(fechaDia, actividadesDelDia) {
   listaActividadesDia.replaceChildren();
+  mensajeInicialCalendario.hidden = true;
 
   tituloActividadesDia.textContent = fechaDia.toLocaleDateString("es-ES", {
     weekday: "long",
     day: "numeric",
     month: "long",
   });
+
+  if (actividadesDelDia.length === 0) {
+    const mensajeDiaVacio = document.createElement("p");
+    mensajeDiaVacio.classList.add("mensaje-dia-vacio");
+    mensajeDiaVacio.textContent =
+      mensajesDiaSinPlanes[Math.floor(Math.random() * mensajesDiaSinPlanes.length)];
+    listaActividadesDia.append(mensajeDiaVacio);
+  }
 
   for (const actividad of actividadesDelDia) {
     const personaActividad = personas.find(function (persona) {
@@ -219,5 +283,12 @@ botonVerCalendario.addEventListener("click", abrirCalendario);
 botonVolverCalendario.addEventListener("click", volverInicioDesdeCalendario);
 botonMesAnterior.addEventListener("click", mostrarMesAnterior);
 botonMesSiguiente.addEventListener("click", mostrarMesSiguiente);
+botonAnadirActividadDia.addEventListener("click", function () {
+  if (fechaSeleccionadaCalendario === null) {
+    return;
+  }
+
+  abrirEmergenteNuevaActividad(null, fechaSeleccionadaCalendario);
+});
 
 mostrarMes();

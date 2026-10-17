@@ -260,10 +260,17 @@
       <div class="cuadricula-calendario" id="cuadricula-calendario" aria-labelledby="mes-calendario"></div>
     </div>
 
+    <p class="mensaje-inicial-calendario" id="mensaje-inicial-calendario">
+      Toca un día y descubre qué planes os esperan.
+    </p>
+
     <section class="actividades-dia-calendario" id="actividades-dia-calendario" aria-labelledby="titulo-actividades-dia"
       hidden>
       <h2 id="titulo-actividades-dia"></h2>
       <div class="lista-actividades-dia" id="lista-actividades-dia"></div>
+      <button class="boton-anadir-actividad-dia" id="boton-anadir-actividad-dia" type="button">
+        Añadir actividad
+      </button>
     </section>
   </section>
 
@@ -338,7 +345,7 @@
       </section>
     </div>
         <p class="version-app">
-      Atempo beta · versión 1.2.1
+      Atempo beta · versión 1.2.2
     </p>
   </section>
 
@@ -540,6 +547,12 @@
 
   <dialog class="emergente-notificaciones" id="emergente-notificaciones" aria-labelledby="titulo-notificaciones">
     <h2 id="titulo-notificaciones">Notificaciones</h2>
+
+    <p class="ayuda-notificaciones">
+      Los avisos individuales llegan cuando los programes en cada actividad.
+      El resumen reúne los planes del día en un solo mensaje. Puedes elegir
+      uno, otro o ambos.
+    </p>
 
     <label class="opcion-activar-notificaciones" for="activar-notificaciones">
       <input type="checkbox" id="activar-notificaciones" />

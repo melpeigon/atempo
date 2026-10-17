@@ -14,6 +14,9 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 
 ## Formulario de actividades
 
+- [ ] Diseñar las actividades para que puedan ser muy completas sin obligar a rellenar formularios largos: pedir primero solo lo imprescindible y mostrar las opciones avanzadas cuando se necesiten.
+- [ ] Explorar una creación rápida por voz, por ejemplo: «Añade fútbol a Leo el martes a las cinco», siempre orientada a reducir carga mental y pasos manuales.
+
 - [x] Abrir y cerrar el formulario emergente.
 - [x] Cargar automáticamente las personas en el selector.
 - [x] Limitar la fecha para que no permita fechas anteriores a hoy.
@@ -46,12 +49,12 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Permitir navegar entre meses.
 - [x] Limitar los iconos visibles por día y mostrar un indicador cuando existan más actividades.
 - [x] Mostrar la lista completa de un día desde su indicador y abrir sus fichas.
-- [ ] Permitir seleccionar cualquier número del calendario, tenga o no actividades.
-- [ ] Destacar visualmente el día seleccionado para que se vea con claridad qué fecha se está consultando.
-- [ ] Mostrar debajo del calendario la fecha seleccionada y la lista de actividades de ese día.
-- [ ] Mostrar un estado vacío cariñoso cuando el día seleccionado no tenga actividades.
-- [ ] Añadir debajo de la lista un botón «Añadir actividad» con la fecha seleccionada ya rellenada.
-- [ ] Mientras no se haya seleccionado ningún día, mostrar el mensaje: «Toca un día y descubre qué planes os esperan».
+- [x] Permitir seleccionar cualquier número del calendario, tenga o no actividades.
+- [x] Destacar visualmente el día seleccionado para que se vea con claridad qué fecha se está consultando.
+- [x] Mostrar debajo del calendario la fecha seleccionada y la lista de actividades de ese día.
+- [x] Mostrar un estado vacío cariñoso cuando el día seleccionado no tenga actividades.
+- [x] Añadir debajo de la lista un botón «Añadir actividad» con la fecha seleccionada ya rellenada.
+- [x] Mientras no se haya seleccionado ningún día, mostrar el mensaje: «Toca un día y descubre qué planes os esperan».
 
 ## Personas
 
@@ -163,7 +166,7 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Mantener las actividades sin hora fuera de esta diferenciación automática.
 - [x] No pedir que se marquen manualmente como realizadas: el paso del tiempo debe actualizar su estado visual.
 - [x] Al cambiar de día, retirarlas de la agenda de hoy sin borrarlas del calendario ni de la base de datos.
-- [ ] Añadir una pequeña orientación inicial para configurar las notificaciones.
+- [x] Añadir una pequeña orientación inicial para configurar las notificaciones.
 - [ ] Organizar las actividades por categorías.
 
 ### Documentación del proyecto
