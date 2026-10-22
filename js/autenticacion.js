@@ -169,6 +169,7 @@ async function prepararSesion() {
 
   if (familiaCargada) {
     pantallaAcceso.hidden = true;
+    await comprobarNovedadPendiente();
   }
 }
 

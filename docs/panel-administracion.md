@@ -1,6 +1,6 @@
 # Panel de administración de Atempo
 
-Última revisión: 17 de octubre de 2026.
+Última revisión: 22 de octubre de 2026.
 
 El panel es una herramienta privada de soporte durante las pruebas de Atempo.
 Se abre desde `admin.html` y no forma parte de la navegación normal de las
@@ -40,6 +40,7 @@ La tabla muestra únicamente información necesaria para pruebas y soporte:
 - Versión registrada.
 - Última apertura.
 - Número de dispositivos activos para notificaciones.
+- Confirmación de las novedades de la versión actual.
 - Estado de actividad.
 
 No muestra personas, actividades, recordatorios ni contenido de las agendas.
@@ -67,19 +68,35 @@ Los errores nuevos aparecen como **Pendientes**. Una administradora puede
 marcarlos como **Revisados** sin eliminarlos y devolverlos a pendiente si fuera
 necesario. Los pendientes se muestran primero.
 
+## Comunicaciones
+
+El formulario de Comunicaciones permite publicar las novedades de una versión
+sin escribir SQL. Cada línea del campo Novedades se guarda como un elemento del
+array `cambios` de `public.novedades_app`.
+
+Al abrir esa versión, Atempo muestra el aviso a cada cuenta que todavía no lo
+haya confirmado. El botón **Entendido** crea una fila en
+`public.novedades_leidas`; no se vuelve a mostrar el mismo aviso a esa cuenta,
+aunque utilice otro dispositivo.
+
+La columna **Novedades** del listado indica **Informada** o **No informada**
+para la versión configurada en `VERSION_ATEMPO`. Cada nueva comunicación debe
+usar un número de versión nuevo.
+
 ## Archivos relacionados
 
 - `admin.html`: estructura del panel.
 - `css/admin.css`: aspecto visual.
 - `js/admin.js`: acceso, carga y acciones del panel.
 - `js/seguimiento.js`: registro de errores desde Atempo.
-- `sql/014` a `sql/023`: administradoras, métricas, testers y errores.
+- `sql/014` a `sql/028`: administradoras, métricas, testers, errores y novedades.
 - `supabase/functions/procesar-avisos/index.ts`: errores del servidor.
 
 ## Funciones SQL utilizadas
 
 - `obtener_resumen_admin(version_actual)`
-- `obtener_testers_admin()`
+- `obtener_testers_admin(version_actual)`
+- `obtener_testers_admin()` como compatibilidad para paneles anteriores.
 - `obtener_errores_admin()`
 - `marcar_error_revisado(error_id_objetivo, nuevo_estado)`
 
@@ -90,6 +107,6 @@ seguridad.
 
 - Filtros de errores por cuenta, versión, origen y fecha.
 - Contador de errores pendientes.
-- Comunicaciones por correo con consentimiento y registro de envíos.
-- Avisos importantes dentro de Atempo.
+- Comunicaciones por correo con consentimiento y registro de envíos, solo
+  cuando un aviso interno no sea suficiente.
 

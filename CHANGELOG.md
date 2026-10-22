@@ -4,6 +4,20 @@ Este archivo recoge las novedades principales de cada versión. Las Releases de
 GitHub conservan el punto exacto del código publicado; este documento explica
 qué cambió entre versiones.
 
+## 1.2.3 — 22 de octubre de 2026
+
+### Añadido
+
+- Aviso dentro de Atempo con las novedades de cada versión.
+- Confirmación «Entendido» guardada una sola vez por cuenta y versión.
+- Estado «Informada» o «No informada» en la tabla de testers.
+- Formulario seguro para publicar novedades desde el panel de administración.
+
+### Mejorado
+
+- Las comunicaciones de las versiones beta pueden mostrarse dentro de Atempo
+  sin depender del correo electrónico ni de las notificaciones push.
+
 ## 1.2.2 — 17 de octubre de 2026
 
 ### Añadido

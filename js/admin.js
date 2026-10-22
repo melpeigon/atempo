@@ -27,9 +27,29 @@ const buscarTesterAdmin = document.querySelector("#buscar-tester-admin");
 const listadoErroresAdmin = document.querySelector(
   "#listado-errores-admin"
 );
+const formularioComunicacionAdmin = document.querySelector(
+  "#formulario-comunicacion-admin"
+);
+const campoVersionComunicacionAdmin = document.querySelector(
+  "#version-comunicacion-admin"
+);
+const campoTituloComunicacionAdmin = document.querySelector(
+  "#titulo-comunicacion-admin"
+);
+const campoCambiosComunicacionAdmin = document.querySelector(
+  "#cambios-comunicacion-admin"
+);
+const mensajeComunicacionAdmin = document.querySelector(
+  "#mensaje-comunicacion-admin"
+);
+const botonPublicarComunicacionAdmin = document.querySelector(
+  "#boton-publicar-comunicacion-admin"
+);
 
 let testersCargadosAdmin = [];
 
+campoVersionComunicacionAdmin.value = VERSION_ATEMPO;
+campoTituloComunicacionAdmin.value = "Atempo tiene cositas nuevas ✨";
 
 
 function mostrarAccesoDenegado(mensaje) {
@@ -106,7 +126,7 @@ function mostrarTestersAdmin(testers) {
     const fila = document.createElement("tr");
     const celda = crearCeldaTester("No hay testers que coincidan con la búsqueda.");
 
-    celda.colSpan = 6;
+    celda.colSpan = 7;
     fila.append(celda);
     listadoTestersAdmin.append(fila);
     return;
@@ -138,6 +158,14 @@ function mostrarTestersAdmin(testers) {
         ? "etiqueta-notificaciones-activas"
         : "etiqueta-neutra";
 
+    const textoNovedades = tester.novedades_informadas
+      ? "Informada"
+      : "No informada";
+
+    const claseNovedades = tester.novedades_informadas
+      ? "etiqueta-activa"
+      : "etiqueta-pendiente";
+
     let claseEstado = "etiqueta-neutra";
 
     if (tester.estado === "Activa") {
@@ -152,6 +180,7 @@ function mostrarTestersAdmin(testers) {
       crearCeldaTester(tester.correo || "Sin correo"),
       crearCeldaTester(dispositivo),
       crearCeldaTester(tester.version_app || "Sin datos"),
+      crearCeldaConEtiqueta(textoNovedades, claseNovedades),
       crearCeldaTester(
         formatearUltimaApertura(tester.ultima_apertura)
       ),
@@ -171,14 +200,17 @@ function mostrarTestersAdmin(testers) {
 
 async function cargarTestersAdmin() {
   const { data, error } = await clienteSupabase.rpc(
-    "obtener_testers_admin"
+    "obtener_testers_admin",
+    {
+      version_actual: VERSION_ATEMPO,
+    }
   );
 
   if (error) {
     console.error("No se pudo cargar el listado de testers:", error);
     listadoTestersAdmin.innerHTML = `
       <tr>
-        <td colspan="6">No hemos podido cargar los testers.</td>
+        <td colspan="7">No hemos podido cargar los testers.</td>
       </tr>
     `;
     return;
@@ -392,8 +424,84 @@ async function cerrarSesionAdmin() {
   window.location.replace("index.html");
 }
 
+function mostrarMensajeComunicacionAdmin(mensaje, esError = false) {
+  mensajeComunicacionAdmin.textContent = mensaje;
+  mensajeComunicacionAdmin.classList.toggle(
+    "mensaje-comunicacion-error",
+    esError
+  );
+  mensajeComunicacionAdmin.hidden = false;
+}
+
+async function publicarComunicacionAdmin(evento) {
+  evento.preventDefault();
+  mensajeComunicacionAdmin.hidden = true;
+
+  if (!formularioComunicacionAdmin.reportValidity()) {
+    return;
+  }
+
+  const cambios = campoCambiosComunicacionAdmin.value
+    .split("\n")
+    .map(function (cambio) {
+      return cambio.trim();
+    })
+    .filter(Boolean);
+
+  if (cambios.length === 0 || cambios.length > 10) {
+    mostrarMensajeComunicacionAdmin(
+      "Escribe entre 1 y 10 novedades, una en cada línea.",
+      true
+    );
+    return;
+  }
+
+  botonPublicarComunicacionAdmin.disabled = true;
+  botonPublicarComunicacionAdmin.textContent = "Publicando…";
+
+  const version = campoVersionComunicacionAdmin.value.trim();
+
+  const { error } = await clienteSupabase.from("novedades_app").insert({
+    version,
+    titulo: campoTituloComunicacionAdmin.value.trim(),
+    cambios,
+    activa: true,
+  });
+
+  botonPublicarComunicacionAdmin.disabled = false;
+  botonPublicarComunicacionAdmin.textContent = "Publicar novedades";
+
+  if (error) {
+    console.error("No se pudieron publicar las novedades:", error);
+
+    if (error.code === "23505") {
+      mostrarMensajeComunicacionAdmin(
+        `Ya existe un aviso para la versión ${version}. Usa una versión nueva.`,
+        true
+      );
+      return;
+    }
+
+    mostrarMensajeComunicacionAdmin(
+      "No hemos podido publicar las novedades. Inténtalo de nuevo.",
+      true
+    );
+    return;
+  }
+
+  mostrarMensajeComunicacionAdmin(
+    `Novedades de la versión ${version} publicadas correctamente.`
+  );
+  campoCambiosComunicacionAdmin.value = "";
+  await cargarTestersAdmin();
+}
+
 botonCerrarSesionAdmin.addEventListener("click", cerrarSesionAdmin);
 
 comprobarAccesoAdmin();
 
 buscarTesterAdmin.addEventListener("input", filtrarTestersAdmin);
+formularioComunicacionAdmin.addEventListener(
+  "submit",
+  publicarComunicacionAdmin
+);

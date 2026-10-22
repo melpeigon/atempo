@@ -201,7 +201,13 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Diferenciar en el panel los errores de la aplicación y del procesador de notificaciones.
 - [ ] Permitir filtrar los errores por tester, versión, plataforma, tipo y fecha.
 - [ ] No guardar contraseñas, contenido de actividades ni otros datos privados dentro de los registros de errores.
-- [ ] Permitir redactar y enviar desde el panel avisos generales sobre novedades, actualizaciones o incidencias.
+- [x] Permitir redactar y publicar desde el panel los avisos internos con las novedades de cada versión.
+- [ ] Ampliar las comunicaciones del panel a incidencias generales que no estén asociadas a una versión.
+- [x] Mostrar dentro de Atempo un aviso la primera vez que cada usuaria abra una nueva versión, con el número de versión, un resumen breve de novedades y un botón «Entendido».
+- [x] Guardar en Supabase qué usuaria ha confirmado cada aviso de actualización y cuándo lo hizo, sin interpretar la confirmación como garantía de que leyó todo el contenido.
+- [x] Mostrar en la tabla de testers una columna «Novedades» con las etiquetas «Informada» y «No informada» para la versión actual.
+- [x] Evitar repetir un aviso ya confirmado por la misma cuenta, aunque acceda desde otro dispositivo.
+- [x] Utilizar estos avisos internos como canal principal durante la beta y reservar el correo para comunicaciones que realmente lo necesiten.
 - [ ] Enviar avisos push solamente a dispositivos con una suscripción activa y registrar los envíos correctos y fallidos.
 - [ ] Publicar también los avisos importantes dentro de Atempo para llegar a quienes tengan las notificaciones desactivadas.
 - [ ] Añadir a los avisos de actualización un acceso directo para revisar la configuración de notificaciones.

@@ -139,8 +139,7 @@ button {
   white-space: nowrap;
 }
 
-.sesion-admin button,
-#boton-nueva-comunicacion-admin {
+.sesion-admin button {
   min-height: 42px;
   padding: 10px 18px;
   border: 1px solid var(--ciruela);
@@ -148,6 +147,94 @@ button {
   background: transparent;
   font-weight: 700;
   cursor: pointer;
+}
+
+.ayuda-comunicacion-admin {
+  max-width: 680px;
+  color: var(--gris-texto);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.formulario-comunicacion-admin {
+  max-width: 760px;
+  margin-top: 20px;
+  display: grid;
+  gap: 16px;
+}
+
+.campos-cabecera-comunicacion {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.35fr) minmax(220px, 1fr);
+  gap: 14px;
+}
+
+.formulario-comunicacion-admin label {
+  display: grid;
+  gap: 7px;
+  color: var(--ciruela);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.formulario-comunicacion-admin input,
+.formulario-comunicacion-admin textarea {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--gris);
+  border-radius: 12px;
+  color: var(--ciruela);
+  background: var(--blanco);
+  font: inherit;
+}
+
+.formulario-comunicacion-admin input {
+  min-height: 44px;
+}
+
+.formulario-comunicacion-admin textarea {
+  min-height: 150px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.boton-publicar-comunicacion-admin {
+  width: fit-content;
+  min-height: 44px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--degradado);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.boton-publicar-comunicacion-admin:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.mensaje-comunicacion-admin {
+  padding: 10px 12px;
+  border-left: 3px solid var(--azul-suave);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--azul-suave) 22%, var(--blanco));
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.mensaje-comunicacion-error {
+  border-left-color: var(--melocoton);
+  background: color-mix(in srgb, var(--melocoton) 25%, var(--blanco));
+}
+
+@media (max-width: 620px) {
+  .campos-cabecera-comunicacion {
+    grid-template-columns: 1fr;
+  }
+
+  .boton-publicar-comunicacion-admin {
+    width: 100%;
+  }
 }
 
 .sesion-admin button:hover {

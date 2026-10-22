@@ -117,6 +117,15 @@ Estos datos pertenecen al dispositivo y no necesitan guardarse en la base de dat
 - Mes visible del calendario.
 - Estados visuales temporales.
 
+## Novedades de la aplicación
+
+`novedades_app` guarda un comunicado por versión, con su título, una lista de
+cambios, su estado de publicación y sus fechas.
+
+`novedades_leidas` relaciona cada comunicado con la cuenta que pulsó
+**Entendido**. La combinación de novedad y usuaria es única para evitar que el
+mismo aviso vuelva a aparecer al utilizar otro dispositivo.
+
 ## Decisiones pendientes
 
 - Elegir el proveedor y crear el proyecto de base de datos.
