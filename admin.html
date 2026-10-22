@@ -109,6 +109,7 @@
                 <th scope="col">Tester</th>
                 <th scope="col">Dispositivo</th>
                 <th scope="col">Versión</th>
+                <th scope="col">Novedades</th>
                 <th scope="col">Última apertura</th>
                 <th scope="col">Notificaciones</th>
                 <th scope="col">Estado</th>
@@ -117,7 +118,7 @@
 
             <tbody id="listado-testers-admin">
               <tr id="estado-sin-testers-admin">
-                <td colspan="6">Todavía no hemos cargado los datos de los testers.</td>
+                <td colspan="7">Todavía no hemos cargado los datos de los testers.</td>
               </tr>
             </tbody>
           </table>
@@ -143,15 +144,38 @@
           <h2 id="titulo-comunicaciones-admin">Comunicaciones</h2>
         </header>
 
-        <p>
-          Aquí podremos avisar de novedades, nuevas versiones o revisiones importantes
-          a las testers de Atempo.
+        <p class="ayuda-comunicacion-admin">
+          Publica aquí el aviso que aparecerá una sola vez al abrir esa versión de Atempo.
+          Escribe una novedad por línea.
         </p>
 
-        <button id="boton-nueva-comunicacion-admin" type="button" disabled>
-          Preparar una comunicación
-        </button>
-        <p>Activaremos esta opción cuando conectemos el panel de forma segura.</p>
+        <form class="formulario-comunicacion-admin" id="formulario-comunicacion-admin">
+          <div class="campos-cabecera-comunicacion">
+            <label for="version-comunicacion-admin">
+              Versión
+              <input id="version-comunicacion-admin" name="version" type="text" maxlength="30"
+                pattern="[0-9]+\.[0-9]+\.[0-9]+" required>
+            </label>
+
+            <label for="titulo-comunicacion-admin">
+              Título
+              <input id="titulo-comunicacion-admin" name="titulo" type="text" maxlength="100" required>
+            </label>
+          </div>
+
+          <label for="cambios-comunicacion-admin">
+            Novedades
+            <textarea id="cambios-comunicacion-admin" name="cambios" rows="6" maxlength="1200"
+              placeholder="Elige cualquier día del calendario para ver sus planes.&#10;Añade una actividad con la fecha ya preparada."
+              required></textarea>
+          </label>
+
+          <p class="mensaje-comunicacion-admin" id="mensaje-comunicacion-admin" role="status" hidden></p>
+
+          <button class="boton-publicar-comunicacion-admin" id="boton-publicar-comunicacion-admin" type="submit">
+            Publicar novedades
+          </button>
+        </form>
       </section>
     </main>
 
