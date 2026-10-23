@@ -1,4 +1,4 @@
-const NOMBRE_CACHE = "atempo-v43";
+const NOMBRE_CACHE = "atempo-v44";
 
 const ARCHIVOS_PRINCIPALES = [
   "./",
@@ -59,7 +59,24 @@ const ARCHIVOS_PRINCIPALES = [
   "./Branding/iconos/SVG/ni%C3%B1a.svg",
   "./Branding/iconos/SVG/abuela.svg",
   "./Branding/iconos/SVG/abuelo.svg",
-  "./Branding/iconos/SVG/beba.svg"
+  "./Branding/iconos/SVG/beba.svg",
+  "./Branding/iconos/SVG/baile.svg",
+  "./Branding/iconos/SVG/baloncesto.svg",
+  "./Branding/iconos/SVG/celebraci%C3%B3n.svg",
+  "./Branding/iconos/SVG/dibujo.svg",
+  "./Branding/iconos/SVG/entrega.svg",
+  "./Branding/iconos/SVG/estetica.svg",
+  "./Branding/iconos/SVG/examen.svg",
+  "./Branding/iconos/SVG/excursion.svg",
+  "./Branding/iconos/SVG/festival.svg",
+  "./Branding/iconos/SVG/idiomas.svg",
+  "./Branding/iconos/SVG/nadar.svg",
+  "./Branding/iconos/SVG/reunion.svg",
+  "./Branding/iconos/SVG/running.svg",
+  "./Branding/iconos/SVG/teatro.svg",
+  "./Branding/iconos/SVG/terapia.svg",
+  "./Branding/iconos/SVG/vacuna.svg",
+  "./Branding/iconos/SVG/yoga.svg"
 ];
 
 self.addEventListener("install", function (evento) {

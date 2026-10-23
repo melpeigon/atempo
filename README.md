@@ -67,6 +67,7 @@ RLS aíslan los datos de cada familia.
 Más información:
 
 - [Diseño de la base de datos](docs/diseno-base-datos.md)
+- [Permisos y privacidad](docs/permisos-y-privacidad.md)
 - [Panel de administración](docs/panel-administracion.md)
 - [Sistema de notificaciones](docs/notificaciones.md)
 - [Historial de cambios](CHANGELOG.md)

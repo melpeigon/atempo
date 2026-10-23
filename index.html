@@ -414,21 +414,23 @@
 
       </select>
 
-      <label for="elige-actividad">Actividad </label>
-      <select id="elige-actividad" name="actividad" required>
-        <option value="" selected disabled>Elige una actividad</option>
-        <option value="musica">Música</option>
-        <option value="catequesis">Catequesis</option>
-        <option value="futbol">Fútbol</option>
-        <option value="cumple">Cumpleaños</option>
-        <option value="peluqueria">Peluquería</option>
-        <option value="dentista">Dentista</option>
-        <option value="ingles">Inglés</option>
-        <option value="padel">Pádel</option>
-        <option value="gym">Gym</option>
-        <option value="medico">Médico</option>
-        <option value="personalizada">Personalizada</option>
-      </select>
+      <label for="boton-elegir-actividad">Actividad</label>
+      <button class="boton-elegir-actividad" id="boton-elegir-actividad" type="button"
+        aria-expanded="false" aria-controls="menu-actividades">
+        Elige una actividad
+      </button>
+
+      <div class="menu-actividades" id="menu-actividades" hidden>
+        <label for="buscar-actividad">Buscar actividad</label>
+        <input type="search" id="buscar-actividad" placeholder="Por ejemplo, fútbol o dentista"
+          autocomplete="off" />
+        <p class="ayuda-formulario" id="ayuda-buscar-actividad" aria-live="polite">
+          Explora las categorías o escribe para encontrarla más rápido.
+        </p>
+        <div class="lista-categorias-actividad" id="lista-categorias-actividad"></div>
+      </div>
+
+      <input type="hidden" id="elige-actividad" name="actividad" />
 
       <div class="opciones-actividad-personalizada" id="opciones-actividad-personalizada" hidden>
         <label for="nombre-actividad-personalizada">Nombre de la actividad</label>

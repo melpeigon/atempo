@@ -1,32 +1,91 @@
 // Datos compartidos de las actividades
 
-const rutasIconosActividades = {
-  musica: "Branding/iconos/SVG/musica.svg",
-  catequesis: "Branding/iconos/SVG/catequesis.svg",
-  futbol: "Branding/iconos/SVG/futbol.svg",
-  cumple: "Branding/iconos/SVG/cumplea%C3%B1os.svg",
-  peluqueria: "Branding/iconos/SVG/peluqueria.svg",
-  dentista: "Branding/iconos/SVG/dentista.svg",
-  ingles: "Branding/iconos/SVG/tarea.svg",
-  padel: "Branding/iconos/SVG/pael.svg",
-  gym: "Branding/iconos/SVG/gym.svg",
-  medico: "Branding/iconos/SVG/medico.svg",
-  personalizada: "Branding/iconos/SVG/personalizado.svg",
-};
+const catalogoCategoriasActividad = [
+  {
+    categoria: "Deporte",
+    actividades: [
+      { id: "futbol", nombre: "Fútbol", icono: "futbol.svg" },
+      { id: "baloncesto", nombre: "Baloncesto", icono: "baloncesto.svg" },
+      { id: "natacion", nombre: "Natación", icono: "nadar.svg" },
+      { id: "padel", nombre: "Pádel / tenis", icono: "pael.svg" },
+      { id: "gym", nombre: "Gym", icono: "gym.svg" },
+      { id: "running", nombre: "Running", icono: "running.svg" },
+      { id: "pilates-yoga", nombre: "Pilates / yoga", icono: "yoga.svg" },
+    ],
+  },
+  {
+    categoria: "Clases",
+    actividades: [
+      { id: "musica", nombre: "Música", icono: "musica.svg" },
+      { id: "idiomas", nombre: "Idiomas", icono: "idiomas.svg", busqueda: ["inglés"] },
+      { id: "baile", nombre: "Baile", icono: "baile.svg" },
+      { id: "teatro", nombre: "Teatro", icono: "teatro.svg" },
+      { id: "catequesis", nombre: "Catequesis", icono: "catequesis.svg" },
+      { id: "dibujo", nombre: "Dibujo", icono: "dibujo.svg" },
+      { id: "apoyo-escolar", nombre: "Apoyo escolar", icono: "tarea.svg" },
+    ],
+  },
+  {
+    categoria: "Salud",
+    actividades: [
+      { id: "medico", nombre: "Médico", icono: "medico.svg" },
+      { id: "dentista", nombre: "Dentista", icono: "dentista.svg" },
+      { id: "vacuna", nombre: "Vacuna", icono: "vacuna.svg" },
+      { id: "terapia", nombre: "Terapia", icono: "terapia.svg" },
+    ],
+  },
+  {
+    categoria: "Colegio",
+    actividades: [
+      { id: "reunion", nombre: "Reunión / tutoría", icono: "reunion.svg" },
+      { id: "excursion", nombre: "Excursión", icono: "excursion.svg" },
+      { id: "festival", nombre: "Festival", icono: "festival.svg" },
+      { id: "entrega-trabajo", nombre: "Entrega de trabajo", icono: "entrega.svg" },
+      { id: "examen", nombre: "Examen", icono: "examen.svg" },
+    ],
+  },
+  {
+    categoria: "Familia y ocio",
+    actividades: [
+      { id: "cumple", nombre: "Cumpleaños", icono: "cumpleaños.svg" },
+      { id: "celebracion", nombre: "Celebración", icono: "celebración.svg" },
+    ],
+  },
+  {
+    categoria: "Cuidado personal",
+    actividades: [
+      { id: "peluqueria", nombre: "Peluquería", icono: "peluqueria.svg" },
+      { id: "estetica", nombre: "Estética", icono: "estetica.svg" },
+    ],
+  },
+  {
+    categoria: "Otra actividad",
+    actividades: [
+      { id: "personalizada", nombre: "Personalizada", icono: "personalizado.svg" },
+    ],
+  },
+];
 
-const nombresActividades = {
-  musica: "Música",
-  catequesis: "Catequesis",
-  futbol: "Fútbol",
-  cumple: "Cumpleaños",
-  peluqueria: "Peluquería",
-  dentista: "Dentista",
-  ingles: "Inglés",
-  padel: "Pádel",
-  gym: "Gym",
-  medico: "Médico",
-  personalizada: "Personalizada",
-};
+const rutaIconosActividades = "Branding/iconos/SVG/";
+const catalogoPlanoActividades = catalogoCategoriasActividad.flatMap(function (grupo) {
+  return grupo.actividades;
+});
+
+const rutasIconosActividades = Object.fromEntries(
+  catalogoPlanoActividades.map(function (actividad) {
+    return [actividad.id, `${rutaIconosActividades}${encodeURIComponent(actividad.icono)}`];
+  })
+);
+
+const nombresActividades = Object.fromEntries(
+  catalogoPlanoActividades.map(function (actividad) {
+    return [actividad.id, actividad.nombre];
+  })
+);
+
+// Conserva la lectura de las actividades antiguas guardadas como «ingles».
+rutasIconosActividades.ingles = rutasIconosActividades.idiomas;
+nombresActividades.ingles = "Idiomas";
 
 function obtenerNombreActividad(actividad) {
   if (actividad.actividad === "personalizada") {

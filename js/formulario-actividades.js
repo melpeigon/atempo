@@ -8,6 +8,11 @@ const emergenteNuevaActividad = document.querySelector("#emergente-nueva-activid
 const formularioActividad = document.querySelector("#form-anadir-actividad");
 const selectorPersonaActividad = document.querySelector("#elige-persona");
 const selectorTipoActividad = document.querySelector("#elige-actividad");
+const botonElegirActividad = document.querySelector("#boton-elegir-actividad");
+const menuActividades = document.querySelector("#menu-actividades");
+const campoBuscarActividad = document.querySelector("#buscar-actividad");
+const ayudaBuscarActividad = document.querySelector("#ayuda-buscar-actividad");
+const listaCategoriasActividad = document.querySelector("#lista-categorias-actividad");
 const contenedorActividadPersonalizada = document.querySelector("#opciones-actividad-personalizada");
 const campoNombreActividadPersonalizada = document.querySelector("#nombre-actividad-personalizada");
 const selectorRecurrencia = document.querySelector("#elige-recurrencia");
@@ -22,6 +27,116 @@ const tituloEmergenteActividad = document.querySelector("#titulo-emergente-nueva
 const botonGuardarActividad = document.querySelector("#boton-guardar-actividad");
 
 let idActividadEnEdicion = null;
+
+function normalizarTextoActividad(texto) {
+  return texto
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("es");
+}
+
+function mostrarOpcionesActividad(busqueda = "") {
+  const termino = normalizarTextoActividad(busqueda.trim());
+  const fragmento = document.createDocumentFragment();
+  let totalOpciones = 0;
+
+  for (const grupo of catalogoCategoriasActividad) {
+    const coincideCategoria = termino !== "" &&
+      normalizarTextoActividad(grupo.categoria).includes(termino);
+    const opcionesFiltradas = grupo.actividades.filter(function (actividad) {
+      const textoActividad = [actividad.nombre, ...(actividad.busqueda || [])].join(" ");
+
+      return coincideCategoria || normalizarTextoActividad(textoActividad).includes(termino);
+    });
+
+    if (opcionesFiltradas.length === 0) {
+      continue;
+    }
+
+    const desplegableCategoria = document.createElement("details");
+    const tituloCategoria = document.createElement("summary");
+    const opcionesCategoria = document.createElement("div");
+
+    tituloCategoria.textContent = grupo.categoria;
+    opcionesCategoria.className = "opciones-categoria-actividad";
+    desplegableCategoria.append(tituloCategoria, opcionesCategoria);
+
+    if (termino !== "") {
+      desplegableCategoria.open = true;
+    }
+
+    for (const actividad of opcionesFiltradas) {
+      const opcion = document.createElement("button");
+      const icono = document.createElement("img");
+      const nombre = document.createElement("span");
+
+      opcion.className = "opcion-actividad-menu";
+      opcion.type = "button";
+      opcion.dataset.actividad = actividad.id;
+      icono.src = rutasIconosActividades[actividad.id];
+      icono.alt = "";
+      nombre.textContent = actividad.nombre;
+      opcion.append(icono, nombre);
+      opcion.addEventListener("click", function () {
+        seleccionarActividad(actividad.id);
+      });
+      opcionesCategoria.append(opcion);
+      totalOpciones += 1;
+    }
+
+    fragmento.append(desplegableCategoria);
+  }
+
+  listaCategoriasActividad.replaceChildren(fragmento);
+
+  ayudaBuscarActividad.textContent = totalOpciones > 0
+    ? "Explora las categorías o escribe para encontrarla más rápido."
+    : "No encontramos ninguna actividad con ese nombre. Prueba con otra palabra.";
+}
+
+function actualizarBotonActividad(actividadId) {
+  botonElegirActividad.replaceChildren();
+
+  const actividad = catalogoPlanoActividades.find(function (opcion) {
+    return opcion.id === actividadId;
+  });
+
+  if (!actividad) {
+    botonElegirActividad.textContent = "Elige una actividad";
+    return;
+  }
+
+  const icono = document.createElement("img");
+  const nombre = document.createElement("span");
+
+  icono.src = rutasIconosActividades[actividad.id];
+  icono.alt = "";
+  nombre.textContent = actividad.nombre;
+  botonElegirActividad.append(icono, nombre);
+}
+
+function seleccionarActividad(actividadId) {
+  selectorTipoActividad.value = actividadId;
+  selectorTipoActividad.dispatchEvent(new Event("change", { bubbles: true }));
+  actualizarBotonActividad(actividadId);
+  menuActividades.hidden = true;
+  botonElegirActividad.setAttribute("aria-expanded", "false");
+  campoBuscarActividad.value = "";
+  mostrarOpcionesActividad();
+}
+
+function alternarMenuActividades() {
+  const seVaAMostrar = menuActividades.hidden;
+
+  menuActividades.hidden = !seVaAMostrar;
+  botonElegirActividad.setAttribute("aria-expanded", String(seVaAMostrar));
+
+  if (seVaAMostrar) {
+    campoBuscarActividad.value = "";
+    mostrarOpcionesActividad();
+    campoBuscarActividad.focus();
+  }
+}
 
 campoFechaActividad.min = `${anoActual}-${mesActual}-${diaActual}`;
 
@@ -130,6 +245,12 @@ function abrirEmergenteNuevaActividad(idPersona = null, fechaPreseleccionada = n
   idActividadEnEdicion = null;
 
   formularioActividad.reset();
+  selectorTipoActividad.value = "";
+  actualizarBotonActividad("");
+  menuActividades.hidden = true;
+  botonElegirActividad.setAttribute("aria-expanded", "false");
+  campoBuscarActividad.value = "";
+  mostrarOpcionesActividad();
   contenedorDias.hidden = true;
   contenedorActividadPersonalizada.hidden = true;
   campoNombreActividadPersonalizada.required = false;
@@ -181,6 +302,10 @@ function editarActividadSeleccionada() {
   idActividadEnEdicion = actividadSeleccionada.id;
 
   formularioActividad.reset();
+  selectorTipoActividad.value = "";
+  actualizarBotonActividad("");
+  campoBuscarActividad.value = "";
+  mostrarOpcionesActividad();
   campoFechaActividad.removeAttribute("min");
   ocultarErrorActividad();
   mostrarPersonasEnFormulario();
@@ -188,8 +313,11 @@ function editarActividadSeleccionada() {
   formularioActividad.elements.persona.value =
     actividadSeleccionada.personaId;
 
-  formularioActividad.elements.actividad.value =
-    actividadSeleccionada.actividad;
+  const tipoActividad = actividadSeleccionada.actividad === "ingles"
+    ? "idiomas"
+    : actividadSeleccionada.actividad;
+
+  seleccionarActividad(tipoActividad);
 
   formularioActividad.elements.nombrePersonalizado.value =
     actividadSeleccionada.nombrePersonalizado || "";
@@ -249,6 +377,14 @@ async function guardarNuevaActividad(evento) {
   evento.preventDefault();
 
   ocultarErrorActividad();
+
+  if (!selectorTipoActividad.value) {
+    mostrarErrorActividad("Elige una actividad para continuar.");
+    menuActividades.hidden = false;
+    botonElegirActividad.setAttribute("aria-expanded", "true");
+    botonElegirActividad.focus();
+    return;
+  }
 
   const datosFormulario = new FormData(formularioActividad);
   const recurrenciaElegida = datosFormulario.get("recurrencia");
@@ -361,6 +497,12 @@ async function guardarNuevaActividad(evento) {
   }
 
   formularioActividad.reset();
+  selectorTipoActividad.value = "";
+  actualizarBotonActividad("");
+  menuActividades.hidden = true;
+  botonElegirActividad.setAttribute("aria-expanded", "false");
+  campoBuscarActividad.value = "";
+  mostrarOpcionesActividad();
   contenedorDias.hidden = true;
   contenedorActividadPersonalizada.hidden = true;
   campoNombreActividadPersonalizada.required = false;
@@ -393,7 +535,20 @@ botonCerrarActividad.addEventListener("click", cerrarEmergenteNuevaActividad);
 formularioActividad.addEventListener("submit", guardarNuevaActividad);
 selectorRecurrencia.addEventListener("change", cambiarOpcionesRecurrencia);
 selectorTipoActividad.addEventListener("change", cambiarOpcionesActividad);
+botonElegirActividad.addEventListener("click", alternarMenuActividades);
+campoBuscarActividad.addEventListener("input", function () {
+  mostrarOpcionesActividad(campoBuscarActividad.value);
+});
+campoBuscarActividad.addEventListener("keydown", function (evento) {
+  if (evento.key === "Escape") {
+    menuActividades.hidden = true;
+    botonElegirActividad.setAttribute("aria-expanded", "false");
+    botonElegirActividad.focus();
+  }
+});
 selectorAviso.addEventListener("change", cambiarOpcionesAviso);
 campoFechaActividad.addEventListener("change", marcarDiaDeFechaInicio);
 campoFechaActividad.addEventListener("change", mostrarAvisoRecurrenciaMensual);
 botonEditarActividad.addEventListener("click", editarActividadSeleccionada);
+
+mostrarOpcionesActividad();

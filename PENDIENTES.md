@@ -161,13 +161,17 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Aumentar la legibilidad de la fecha en la bienvenida de Inicio.
 - [x] Variar diariamente el saludo de Inicio según la franja horaria, manteniéndolo estable durante el día.
 - [x] Permitir configurar un aviso 1 día antes, a la misma hora de la actividad.
+- [ ] Permitir elegir la hora del aviso cuando se selecciona «1 día antes».
+- [ ] Mostrar el campo de hora solo para «A una hora concreta» y «1 día antes», adaptando su texto a cada opción.
+- [ ] Mantener para las actividades antiguas el aviso 1 día antes a la misma hora de la actividad cuando no tengan una hora específica guardada.
+- [ ] Actualizar el procesador de avisos para enviar el recordatorio el día anterior a la hora elegida.
 - [x] Separar automáticamente en la agenda de hoy las actividades próximas de aquellas cuya hora ya ha pasado.
 - [x] Mostrar las actividades pasadas después de las próximas, con colores más suaves y sin ocultarlas durante ese día.
 - [x] Mantener las actividades sin hora fuera de esta diferenciación automática.
 - [x] No pedir que se marquen manualmente como realizadas: el paso del tiempo debe actualizar su estado visual.
 - [x] Al cambiar de día, retirarlas de la agenda de hoy sin borrarlas del calendario ni de la base de datos.
 - [x] Añadir una pequeña orientación inicial para configurar las notificaciones.
-- [ ] Organizar las actividades por categorías.
+- [x] Organizar las actividades por categorías y añadir búsqueda rápida por nombre.
 
 ### Documentación del proyecto
 
