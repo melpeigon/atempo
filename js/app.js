@@ -263,7 +263,9 @@ function abrirFichaPersona(idPersona, guardarEnHistorial = true) {
           weekday: "short",
           day: "numeric",
           month: "short",
-        })} · ${proximaActividad.actividad.hora}`;
+        })} · ${proximaActividad.actividad.horaFin
+          ? `${proximaActividad.actividad.hora}–${proximaActividad.actividad.horaFin}`
+          : proximaActividad.actividad.hora}`;
 
       iconoProximaActividad.append(imagenProximaActividad);
       informacionProximaActividad.append(

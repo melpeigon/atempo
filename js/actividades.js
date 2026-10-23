@@ -388,7 +388,9 @@ function abrirFichaActividad(
 
   const horaFichaActividad = crearDatoFichaActividad(
     "Branding/iconos/SVG/hora.svg",
-    actividadSeleccionada.hora,
+    actividadSeleccionada.horaFin
+      ? `${actividadSeleccionada.hora}–${actividadSeleccionada.horaFin}`
+      : actividadSeleccionada.hora,
     "hora-ficha-actividad"
   );
 
@@ -540,7 +542,9 @@ function renderizarActividadesDeHoy() {
     const horaActividad = document.createElement("time");
     horaActividad.classList.add("hora-actividad");
     horaActividad.dateTime = actividad.hora;
-    horaActividad.textContent = actividad.hora;
+    horaActividad.textContent = actividad.horaFin
+      ? `${actividad.hora}–${actividad.horaFin}`
+      : actividad.hora;
 
     const nombrePersonaActividad = document.createElement("span");
     nombrePersonaActividad.classList.add("nombre-persona-actividad");

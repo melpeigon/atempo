@@ -22,6 +22,7 @@ const avisoRecurrenciaMensual = document.querySelector("#aviso-recurrencia-mensu
 const selectorAviso = document.querySelector("#elige-aviso");
 const contenedorHoraAviso = document.querySelector("#opciones-hora-aviso");
 const campoHoraAviso = document.querySelector("#hora-aviso");
+const etiquetaHoraAviso = document.querySelector("#etiqueta-hora-aviso");
 const mensajeErrorActividad = document.querySelector("#mensaje-error-actividad");
 const tituloEmergenteActividad = document.querySelector("#titulo-emergente-nueva-actividad");
 const botonGuardarActividad = document.querySelector("#boton-guardar-actividad");
@@ -185,13 +186,21 @@ function mostrarAvisoRecurrenciaMensual() {
 }
 
 function cambiarOpcionesAviso() {
-  const usaHoraConcreta = selectorAviso.value === "hora-concreta";
+  const requiereHoraAviso = ["hora-concreta", "un-dia-antes"].includes(
+    selectorAviso.value
+  );
+  const esUnDiaAntes = selectorAviso.value === "un-dia-antes";
 
-  contenedorHoraAviso.hidden = !usaHoraConcreta;
-  campoHoraAviso.required = usaHoraConcreta;
+  contenedorHoraAviso.hidden = !requiereHoraAviso;
+  campoHoraAviso.required = requiereHoraAviso;
+  etiquetaHoraAviso.textContent = esUnDiaAntes
+    ? "Hora del aviso (el día anterior)"
+    : "Hora del aviso";
 
-  if (!usaHoraConcreta) {
+  if (!requiereHoraAviso) {
     campoHoraAviso.value = "";
+  } else if (esUnDiaAntes && campoHoraAviso.value === "") {
+    campoHoraAviso.value = formularioActividad.elements.hora.value;
   }
 }
 
@@ -330,6 +339,9 @@ function editarActividadSeleccionada() {
   formularioActividad.elements.hora.value =
     actividadSeleccionada.hora;
 
+  formularioActividad.elements.horaFin.value =
+    actividadSeleccionada.horaFin || "";
+
   formularioActividad.elements.recurrencia.value =
     actividadSeleccionada.recurrencia;
 
@@ -391,9 +403,16 @@ async function guardarNuevaActividad(evento) {
   const diasElegidos = datosFormulario.getAll("dias");
   const avisoElegido = datosFormulario.get("aviso");
   const horaAvisoElegida = datosFormulario.get("horaAviso");
+  const horaInicioElegida = datosFormulario.get("hora");
+  const horaFinElegida = datosFormulario.get("horaFin");
   const idDeActividadEditada = idActividadEnEdicion;
 
-  if (avisoElegido === "hora-concreta" && horaAvisoElegida === "") {
+  if (horaFinElegida && horaFinElegida <= horaInicioElegida) {
+    mostrarErrorActividad("La hora de fin debe ser posterior a la hora de inicio.");
+    return;
+  }
+
+  if (["hora-concreta", "un-dia-antes"].includes(avisoElegido) && horaAvisoElegida === "") {
     mostrarErrorActividad("Elige la hora a la que quieres recibir el aviso.");
     return;
   }
@@ -429,7 +448,8 @@ async function guardarNuevaActividad(evento) {
     actividad: datosFormulario.get("actividad"),
     nombrePersonalizado: datosFormulario.get("nombrePersonalizado").trim(),
     fecha: datosFormulario.get("fecha"),
-    hora: datosFormulario.get("hora"),
+    hora: horaInicioElegida,
+    horaFin: horaFinElegida,
     recurrencia: recurrenciaElegida,
     dias: diasElegidos,
     aviso: avisoElegido,

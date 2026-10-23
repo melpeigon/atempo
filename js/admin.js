@@ -159,8 +159,8 @@ function mostrarTestersAdmin(testers) {
         : "etiqueta-neutra";
 
     const textoNovedades = tester.novedades_informadas
-      ? "Informada"
-      : "No informada";
+      ? "Al día"
+      : "Pendientes";
 
     const claseNovedades = tester.novedades_informadas
       ? "etiqueta-activa"

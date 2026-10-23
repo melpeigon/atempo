@@ -224,7 +224,11 @@ async function procesarAvisoActividad(
     return 0;
   }
 
-  const fechasCandidatas = [ahora.startOf("day"), ahora.plus({ days: 1 }).startOf("day")];
+  const fechasCandidatas = [
+    ahora.startOf("day"),
+    ahora.plus({ days: 1 }).startOf("day"),
+    ahora.plus({ days: 2 }).startOf("day"),
+  ];
 
   for (const fecha of fechasCandidatas) {
     if (!actividadOcurreEnFecha(actividad, fecha)) {
@@ -237,7 +241,9 @@ async function procesarAvisoActividad(
     if (actividad.tipo_aviso === "una-hora-antes") {
       momentoAviso = momentoActividad.minus({ hours: 1 });
     } else if (actividad.tipo_aviso === "un-dia-antes") {
-      momentoAviso = momentoActividad.minus({ days: 1 });
+      momentoAviso = actividad.hora_aviso
+        ? crearMomento(fecha.minus({ days: 1 }), actividad.hora_aviso)
+        : momentoActividad.minus({ days: 1 });
     } else {
       momentoAviso = crearMomento(fecha, actividad.hora_aviso);
     }
@@ -321,7 +327,10 @@ async function procesarResumen(
   const resumen = actividadesDeHoy
     .sort((primera, segunda) => primera.hora.localeCompare(segunda.hora))
     .map(function (actividad) {
-      return `${actividad.hora.slice(0, 5)} · ${actividad.nombre_persona} · ${obtenerNombreActividad(actividad)}`;
+      const horario = actividad.hora_fin
+        ? `${actividad.hora.slice(0, 5)}–${actividad.hora_fin.slice(0, 5)}`
+        : actividad.hora.slice(0, 5);
+      return `${horario} · ${actividad.nombre_persona} · ${obtenerNombreActividad(actividad)}`;
     })
     .join("\n");
 

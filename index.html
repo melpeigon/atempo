@@ -469,8 +469,17 @@
           <label><input type="checkbox" name="dias" value="domingo" /> Domingo</label>
         </div>
       </div>
-      <label for="elige-hora">Hora</label>
-      <input type="time" id="elige-hora" name="hora" required />
+      <div class="fila-horario-actividad">
+        <div class="campo-horario-actividad">
+          <label for="elige-hora">Inicio</label>
+          <input type="time" id="elige-hora" name="hora" required />
+        </div>
+
+        <div class="campo-horario-actividad">
+          <label for="elige-hora-fin">Fin (opcional)</label>
+          <input type="time" id="elige-hora-fin" name="horaFin" />
+        </div>
+      </div>
 
       <label for="elige-aviso">Avisarme</label>
       <select id="elige-aviso" name="aviso" required>
@@ -481,7 +490,7 @@
       </select>
 
       <div class="opciones-hora-aviso" id="opciones-hora-aviso" hidden>
-        <label for="hora-aviso">Hora del aviso</label>
+        <label for="hora-aviso" id="etiqueta-hora-aviso">Hora del aviso</label>
         <input type="time" id="hora-aviso" name="horaAviso" />
       </div>
 

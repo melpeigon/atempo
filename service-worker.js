@@ -1,4 +1,4 @@
-const NOMBRE_CACHE = "atempo-v44";
+const NOMBRE_CACHE = "atempo-v47";
 
 const ARCHIVOS_PRINCIPALES = [
   "./",

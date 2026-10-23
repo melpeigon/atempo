@@ -227,7 +227,10 @@ function mostrarActividadesDelDia(fechaDia, actividadesDelDia) {
 
     const datosActividad = document.createElement("p");
     datosActividad.classList.add("datos-actividad-dia");
-    datosActividad.textContent = `${actividad.hora} · ${personaActividad.nombre}`;
+    const horarioActividad = actividad.horaFin
+      ? `${actividad.hora}–${actividad.horaFin}`
+      : actividad.hora;
+    datosActividad.textContent = `${horarioActividad} · ${personaActividad.nombre}`;
 
     iconoActividad.append(imagenActividad);
     informacionActividad.append(nombreActividad, datosActividad);

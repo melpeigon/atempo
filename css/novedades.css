@@ -44,6 +44,18 @@
   color: var(--lila);
 }
 
+.lista-novedades > li > strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.cambios-version-novedad {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+}
+
 .boton-entendido-novedades {
   width: 100%;
   min-height: 44px;

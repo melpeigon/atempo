@@ -74,14 +74,15 @@ El formulario de Comunicaciones permite publicar las novedades de una versión
 sin escribir SQL. Cada línea del campo Novedades se guarda como un elemento del
 array `cambios` de `public.novedades_app`.
 
-Al abrir esa versión, Atempo muestra el aviso a cada cuenta que todavía no lo
-haya confirmado. El botón **Entendido** crea una fila en
-`public.novedades_leidas`; no se vuelve a mostrar el mismo aviso a esa cuenta,
-aunque utilice otro dispositivo.
+Al abrir Atempo, cada cuenta ve en un único aviso las novedades publicadas desde
+la creación de su cuenta que todavía no haya confirmado y que no superen la
+versión instalada. Se agrupan por versión. El botón **Entendido** guarda una
+confirmación por cada novedad en `public.novedades_leidas`, también válida si
+la cuenta usa otro dispositivo.
 
-La columna **Novedades** del listado indica **Informada** o **No informada**
-para la versión configurada en `VERSION_ATEMPO`. Cada nueva comunicación debe
-usar un número de versión nuevo.
+La columna **Novedades** del listado indica **Al día** cuando no quedan avisos
+pendientes para esa cuenta y **Pendientes** cuando todavía tiene alguno por
+confirmar. Cada nueva comunicación debe usar un número de versión nuevo.
 
 ## Archivos relacionados
 
@@ -89,7 +90,7 @@ usar un número de versión nuevo.
 - `css/admin.css`: aspecto visual.
 - `js/admin.js`: acceso, carga y acciones del panel.
 - `js/seguimiento.js`: registro de errores desde Atempo.
-- `sql/014` a `sql/028`: administradoras, métricas, testers, errores y novedades.
+- `sql/014` a `sql/031`: administradoras, métricas, testers, errores y novedades.
 - `supabase/functions/procesar-avisos/index.ts`: errores del servidor.
 
 ## Funciones SQL utilizadas

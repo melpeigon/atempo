@@ -1,4 +1,4 @@
-// Aviso mostrado una sola vez al estrenar una versión de Atempo.
+// Reúne en un solo aviso las novedades pendientes desde el alta de la usuaria.
 
 const emergenteNovedades = document.querySelector("#emergente-novedades");
 const versionNovedades = document.querySelector("#version-novedades");
@@ -11,18 +11,62 @@ const mensajeErrorNovedades = document.querySelector(
   "#mensaje-error-novedades"
 );
 
-let novedadPendiente = null;
+let novedadesPendientes = [];
 let usuarioNovedades = null;
 
-function rellenarAvisoNovedades(novedad) {
-  versionNovedades.textContent = `Versión ${novedad.version}`;
-  tituloNovedades.textContent = novedad.titulo;
+function separarVersion(version) {
+  if (!/^\d+(?:\.\d+){0,2}$/.test(version)) {
+    return null;
+  }
+
+  return version.split(".").map(Number);
+}
+
+function versionNoSuperior(version, versionInstalada) {
+  const partesVersion = separarVersion(version);
+  const partesInstalada = separarVersion(versionInstalada);
+
+  if (!partesVersion || !partesInstalada) {
+    return false;
+  }
+
+  for (let indice = 0; indice < 3; indice++) {
+    const numeroNovedad = partesVersion[indice] || 0;
+    const numeroInstalado = partesInstalada[indice] || 0;
+
+    if (numeroNovedad !== numeroInstalado) {
+      return numeroNovedad < numeroInstalado;
+    }
+  }
+
+  return true;
+}
+
+function rellenarAvisoNovedades(novedades) {
+  versionNovedades.textContent = novedades.length === 1
+    ? `Versión ${novedades[0].version}`
+    : `${novedades.length} actualizaciones pendientes`;
+  tituloNovedades.textContent = novedades.length === 1
+    ? novedades[0].titulo
+    : "Novedades desde que te uniste a Atempo";
   listaNovedades.replaceChildren();
 
-  for (const cambio of novedad.cambios) {
-    const elementoCambio = document.createElement("li");
-    elementoCambio.textContent = cambio;
-    listaNovedades.append(elementoCambio);
+  for (const novedad of novedades) {
+    const elementoVersion = document.createElement("li");
+    const encabezadoVersion = document.createElement("strong");
+    const listaCambios = document.createElement("ul");
+
+    encabezadoVersion.textContent = `Versión ${novedad.version}`;
+    listaCambios.className = "cambios-version-novedad";
+
+    for (const cambio of novedad.cambios) {
+      const elementoCambio = document.createElement("li");
+      elementoCambio.textContent = cambio;
+      listaCambios.append(elementoCambio);
+    }
+
+    elementoVersion.append(encabezadoVersion, listaCambios);
+    listaNovedades.append(elementoVersion);
   }
 }
 
@@ -36,48 +80,59 @@ async function comprobarNovedadPendiente() {
 
   usuarioNovedades = datosUsuario.user;
 
-  const { data: novedad, error: errorNovedad } = await clienteSupabase
+  const { data: novedades, error: errorNovedades } = await clienteSupabase
     .from("novedades_app")
-    .select("id, version, titulo, cambios")
-    .eq("version", VERSION_ATEMPO)
+    .select("id, version, titulo, cambios, publicada_at")
     .eq("activa", true)
+    .gte("publicada_at", usuarioNovedades.created_at)
     .lte("publicada_at", new Date().toISOString())
-    .maybeSingle();
+    .order("publicada_at", { ascending: true });
 
-  if (errorNovedad) {
-    console.log("No se pudo comprobar la novedad de la versión:", errorNovedad);
-    registrarErrorApp("Comprobar novedades", errorNovedad);
+  if (errorNovedades) {
+    console.log("No se pudieron comprobar las novedades:", errorNovedades);
+    registrarErrorApp("Comprobar novedades", errorNovedades);
     return;
   }
 
-  if (!novedad) {
+  const novedadesDisponibles = (novedades || []).filter(function (novedad) {
+    return versionNoSuperior(novedad.version, VERSION_ATEMPO);
+  });
+
+  if (novedadesDisponibles.length === 0) {
     return;
   }
 
-  const { data: confirmacion, error: errorConfirmacion } = await clienteSupabase
+  const { data: confirmaciones, error: errorConfirmaciones } = await clienteSupabase
     .from("novedades_leidas")
-    .select("id")
-    .eq("novedad_id", novedad.id)
-    .eq("usuario_id", usuarioNovedades.id)
-    .maybeSingle();
+    .select("novedad_id")
+    .eq("usuario_id", usuarioNovedades.id);
 
-  if (errorConfirmacion) {
-    console.log("No se pudo comprobar la confirmación de novedades:", errorConfirmacion);
-    registrarErrorApp("Comprobar confirmación de novedades", errorConfirmacion);
+  if (errorConfirmaciones) {
+    console.log("No se pudieron comprobar las confirmaciones:", errorConfirmaciones);
+    registrarErrorApp("Comprobar confirmación de novedades", errorConfirmaciones);
     return;
   }
 
-  if (confirmacion) {
+  const idsConfirmados = new Set(
+    (confirmaciones || []).map(function (confirmacion) {
+      return confirmacion.novedad_id;
+    })
+  );
+
+  novedadesPendientes = novedadesDisponibles.filter(function (novedad) {
+    return !idsConfirmados.has(novedad.id);
+  });
+
+  if (novedadesPendientes.length === 0) {
     return;
   }
 
-  novedadPendiente = novedad;
-  rellenarAvisoNovedades(novedad);
+  rellenarAvisoNovedades(novedadesPendientes);
   emergenteNovedades.showModal();
 }
 
 async function confirmarNovedad() {
-  if (!novedadPendiente || !usuarioNovedades) {
+  if (novedadesPendientes.length === 0 || !usuarioNovedades) {
     return;
   }
 
@@ -85,16 +140,25 @@ async function confirmarNovedad() {
   botonEntendidoNovedades.textContent = "Guardando…";
   mensajeErrorNovedades.hidden = true;
 
-  const { error } = await clienteSupabase.from("novedades_leidas").insert({
-    novedad_id: novedadPendiente.id,
-    usuario_id: usuarioNovedades.id,
+  const confirmaciones = novedadesPendientes.map(function (novedad) {
+    return {
+      novedad_id: novedad.id,
+      usuario_id: usuarioNovedades.id,
+    };
   });
+
+  const { error } = await clienteSupabase
+    .from("novedades_leidas")
+    .upsert(confirmaciones, {
+      onConflict: "novedad_id,usuario_id",
+      ignoreDuplicates: true,
+    });
 
   botonEntendidoNovedades.disabled = false;
   botonEntendidoNovedades.textContent = "Entendido";
 
-  if (error && error.code !== "23505") {
-    console.log("No se pudo confirmar la novedad:", error);
+  if (error) {
+    console.log("No se pudieron confirmar las novedades:", error);
     registrarErrorApp("Confirmar novedades", error);
     mensajeErrorNovedades.textContent =
       "No hemos podido guardar la confirmación. Inténtalo otra vez.";
@@ -103,7 +167,7 @@ async function confirmarNovedad() {
   }
 
   emergenteNovedades.close();
-  novedadPendiente = null;
+  novedadesPendientes = [];
 }
 
 botonEntendidoNovedades.addEventListener("click", confirmarNovedad);

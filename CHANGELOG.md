@@ -4,6 +4,20 @@ Este archivo recoge las novedades principales de cada versión. Las Releases de
 GitHub conservan el punto exacto del código publicado; este documento explica
 qué cambió entre versiones.
 
+## 1.3.0 — 23 de octubre de 2026
+
+### Añadido
+
+- Catálogo de actividades organizado por categorías y con buscador.
+- Hora de fin opcional para las actividades, visible en agendas y resúmenes.
+- Hora configurable para los avisos del día anterior; por defecto, la hora de inicio.
+- Aviso único con las novedades pendientes desde el registro de cada tester.
+
+### Mejorado
+
+- El formulario de actividad presenta las horas de inicio y fin en una sola fila.
+- El panel indica si cada tester está al día con las novedades o tiene pendientes.
+
 ## 1.2.3 — 22 de octubre de 2026
 
 ### Añadido

@@ -69,6 +69,28 @@
   font-weight: 700;
 }
 
+.fila-horario-actividad {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.campo-horario-actividad {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.form-anadir-actividad .campo-horario-actividad label {
+  margin-top: 8px;
+}
+
+.campo-horario-actividad input[type="time"] {
+  min-width: 0;
+  padding-inline: 7px;
+}
+
 .introducir-datos-persona input,
 .introducir-datos-persona select,
 .form-anadir-actividad input:not([type="checkbox"]),
