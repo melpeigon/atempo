@@ -3,7 +3,14 @@
 const botonAbrirMenu = document.querySelector("#boton-abrir-menu");
 const emergenteMenu = document.querySelector("#emergente-menu");
 const botonCerrarMenu = document.querySelector("#boton-cerrar-menu");
+const contenedorSelectorAgenda = document.querySelector("#contenedor-selector-agenda");
+const selectorAgendaActiva = document.querySelector("#selector-agenda-activa");
+const emergenteElegirAgenda = document.querySelector("#emergente-elegir-agenda");
+const formularioElegirAgenda = document.querySelector("#formulario-elegir-agenda");
+const selectorElegirAgenda = document.querySelector("#selector-elegir-agenda");
+const botonConfirmarAgenda = document.querySelector("#boton-confirmar-agenda");
 const botonMenuNotificaciones = document.querySelector("#boton-menu-notificaciones");
+const botonMenuInvitaciones = document.querySelector("#boton-menu-invitaciones");
 const botonMenuGuia = document.querySelector("#boton-menu-guia");
 const emergenteNotificaciones = document.querySelector("#emergente-notificaciones");
 const formularioNotificaciones = document.querySelector("#formulario-notificaciones");
@@ -245,8 +252,58 @@ async function cargarConfiguracionNotificaciones() {
 }
 
 function abrirMenu() {
+  actualizarSelectorAgendas(familiasUsuario, familiaActual);
   emergenteMenu.showModal();
   registrarPantalla("menu");
+}
+
+function etiquetaAgenda(familia) {
+  return familia.rol === "miembro" ? "Agenda compartida" : "Mi agenda";
+}
+
+function actualizarSelectorAgendas(familias, familiaSeleccionada) {
+  selectorAgendaActiva.replaceChildren();
+  contenedorSelectorAgenda.hidden = familias.length < 2;
+
+  familias.forEach(function (familia) {
+    selectorAgendaActiva.add(new Option(etiquetaAgenda(familia), familia.id));
+  });
+
+  if (familiaSeleccionada) {
+    selectorAgendaActiva.value = familiaSeleccionada.id;
+  }
+}
+
+function pedirSeleccionInicialAgenda(familias) {
+  selectorElegirAgenda.replaceChildren();
+  selectorElegirAgenda.add(new Option("Elige una agenda", ""));
+
+  familias.forEach(function (familia) {
+    selectorElegirAgenda.add(new Option(etiquetaAgenda(familia), familia.id));
+  });
+
+  botonConfirmarAgenda.disabled = true;
+  selectorElegirAgenda.value = "";
+  selectorElegirAgenda.onchange = function () {
+    botonConfirmarAgenda.disabled = !selectorElegirAgenda.value;
+  };
+
+  emergenteElegirAgenda.showModal();
+
+  return new Promise(function (resolve) {
+    formularioElegirAgenda.onsubmit = function (evento) {
+      evento.preventDefault();
+      const familiaId = selectorElegirAgenda.value;
+      if (!familiaId) return;
+
+      emergenteElegirAgenda.close();
+      resolve(familias.find(function (familia) { return familia.id === familiaId; }));
+    };
+
+    emergenteElegirAgenda.oncancel = function (evento) {
+      evento.preventDefault();
+    };
+  });
 }
 
 function cerrarMenu() {
@@ -465,8 +522,17 @@ async function cambiarEstadoNotificaciones() {
 }
 
 botonAbrirMenu.addEventListener("click", abrirMenu);
+selectorAgendaActiva.addEventListener("change", async function () {
+  const agendaCambiada = await cambiarFamiliaActiva(selectorAgendaActiva.value);
+  if (!agendaCambiada && familiaActual) {
+    selectorAgendaActiva.value = familiaActual.id;
+  }
+});
 botonCerrarMenu.addEventListener("click", volverDesdeMenu);
 botonMenuNotificaciones.addEventListener("click", abrirConfiguracionNotificaciones);
+botonMenuInvitaciones.addEventListener("click", function () {
+  window.location.href = new URL("invitaciones.html", window.location.href).toString();
+});
 botonCerrarNotificaciones.addEventListener("click", volverAlMenuDesdeNotificaciones);
 botonRevisarNotificaciones.addEventListener(
   "click",

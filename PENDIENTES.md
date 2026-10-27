@@ -1,6 +1,6 @@
 # Pendientes de Atempo
 
-Última revisión: 17 de octubre de 2026.
+Última revisión: 25 de octubre de 2026.
 
 Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar primero el funcionamiento principal de la aplicación y dejar las mejoras más grandes para después.
 
@@ -91,6 +91,7 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Añadir un botón visible para abrir las instrucciones o guía de la aplicación.
 - [x] Explicar en la guía que cada persona tiene asignado un color y que ese color identifica también sus actividades.
 - [x] Explicar brevemente cómo crear personas, añadir actividades, elegir la recurrencia y consultar la agenda.
+- [ ] Explicar en la guía el control «Compartir este plan con la familia» y quién podrá ver cada actividad cuando esa función esté disponible.
 - [x] Explicar que las recurrencias mensuales de los días 29, 30 o 31 pasan al último día de los meses más cortos.
 - [x] Explicar la recurrencia anual y el caso especial del 29 de febrero.
 - [x] Mostrar la guía como una pantalla propia y desplazable.
@@ -127,6 +128,24 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [ ] Preparar los datos existentes para poder migrarlos desde `localStorage`.
 - [x] Publicar una primera versión de prueba en GitHub Pages.
 - [x] Probar la instalación como aplicación web en el móvil.
+
+## Compartir la agenda entre adultos
+
+- [x] Añadir a las personas un tipo `adulto` o `menor`; usar los iconos existentes como sugerencia inicial.
+- [x] Preparar la vinculación de fichas de adultos con cuentas de Atempo.
+- [x] Preparar los campos de autoría y visibilidad privada/compartida de actividades.
+- [ ] Usar esos campos en la interfaz y aplicar sus permisos mediante políticas RLS.
+- [ ] Revisar y probar `sql/034_politicas_datos_compartidos.sql` con dos cuentas antes de aceptar invitaciones.
+- [ ] Mantener las actividades infantiles antiguas de quien invita como compartidas y editables por ambos adultos.
+- [ ] Conservar las actividades personales privadas del adulto invitado; no importar sus actividades infantiles al aceptar la invitación y pedir confirmación antes de descartarlas.
+- [ ] Permitir que ambos adultos editen nombre, icono y color de las fichas infantiles; confirmar antes de borrar una ficha porque también elimina sus actividades.
+- [ ] Crear, aceptar y revocar invitaciones de un solo uso, con caducidad de 7 días y validación del correo.
+- [ ] Si un adulto abandona la familia, preguntar al adulto que permanece si transfiere o elimina los planes infantiles creados por quien se marcha.
+- [ ] Añadir una guía de primeros pasos para quienes se incorporan a una familia.
+- [ ] Resolver con cuidado la incorporación de cuentas existentes sin perder actividades personales ni duplicar hijos.
+- [ ] Probar con una cuenta de varias familias el selector de agenda implementado localmente; asegurar que no selecciona una con `limit(1)`.
+- [ ] Crear una vista combinada por adulto: mostrar su propia agenda junto con las personas y actividades de los hijos de la agenda compartida, sin mostrar la ficha ni los planes privados del otro adulto y evitando duplicar hijos.
+- [ ] Evitar que el registro iniciado desde una invitación cree primero una familia personal vacía.
 
 ## Revisión final
 
@@ -216,6 +235,7 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [ ] Publicar también los avisos importantes dentro de Atempo para llegar a quienes tengan las notificaciones desactivadas.
 - [ ] Añadir a los avisos de actualización un acceso directo para revisar la configuración de notificaciones.
 - [ ] Comprobar al abrir Atempo el permiso del navegador, la suscripción push y el estado activo del dispositivo en Supabase.
+- [ ] Investigar y corregir el caso reportado en móvil: al cerrar sesión y volver a entrar, las notificaciones del dispositivo quedan desconectadas; distinguir si se pierde la suscripción, su registro en Supabase o solo el estado mostrado por Atempo.
 - [ ] Mostrar en el menú si las notificaciones están activas, pausadas, bloqueadas o necesitan volver a conectarse.
 - [ ] Avisar dentro de Atempo cuando un dispositivo que antes recibía notificaciones deje de tenerlas activas.
 - [ ] No mostrar ese aviso de recuperación a quienes nunca hayan elegido activar las notificaciones.
@@ -234,7 +254,8 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [ ] Si se desarrolla, limitarlo a registrar y compartir información introducida por la familia: Atempo no recomendará medicamentos ni calculará dosis.
 - [ ] Estudiar con especial cuidado la privacidad, la sincronización, los avisos y la responsabilidad asociada a datos de salud antes de incorporarlo.
 - [ ] Incorporar cuentas e inicio de sesión para que cada familia pueda acceder a sus datos desde distintos dispositivos.
+- [x] Pedir el nombre preferido en la bienvenida de una cuenta nueva y utilizarlo en el saludo y en el título del resumen diario; conservar el correo solo como identificador.
+- [x] Mostrar los primeros pasos de Atempo tras el primer registro, con opción de continuar o saltarlos y sin obligar a activar notificaciones ni compartir la agenda.
 - [ ] Explorar una función de inteligencia artificial que aporte utilidad real a las familias.
 - [ ] Valorar ideas como resumir la semana, detectar conflictos de horarios, sugerir momentos libres o ayudar a redactar recordatorios.
 - [ ] Definir primero el problema que resolverá la IA antes de elegir una herramienta o incorporarla a la aplicación.
-- [ ] La pantalla breve durante el arranque.

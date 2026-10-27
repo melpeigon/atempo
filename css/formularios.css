@@ -360,6 +360,38 @@
   accent-color: var(--lila);
 }
 
+.opcion-compartir-actividad {
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--lila) 42%, var(--gris));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--lila) 12%, white);
+}
+
+.opcion-compartir-actividad[hidden] {
+  display: none;
+}
+
+.opcion-compartir-actividad label {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.opcion-compartir-actividad input {
+  flex: 0 0 auto;
+  margin: 2px 0 0;
+  accent-color: var(--lila);
+}
+
+.opcion-compartir-actividad p {
+  margin: 5px 0 0 26px;
+  color: #756d76;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
 .mensaje-error-formulario {
   margin-top: 8px;
   padding: 10px 12px;

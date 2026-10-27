@@ -333,13 +333,14 @@ async function procesarResumen(
       return `${horario} · ${actividad.nombre_persona} · ${obtenerNombreActividad(actividad)}`;
     })
     .join("\n");
+  const nombreVisible = await obtenerNombreVisible(supabase, configuracion.usuario_id);
 
   const enviadas = await enviarADispositivos(
     supabase,
     configuracion.usuario_id,
     dispositivos,
     {
-      title: obtenerTituloResumen(ahora),
+      title: obtenerTituloResumen(ahora, nombreVisible),
       body: `Hoy tenéis ${actividadesDeHoy.length} ${actividadesDeHoy.length === 1 ? "plan" : "planes"}:\n${resumen}`,
       url: "./",
       tag: clave,
@@ -361,12 +362,29 @@ async function procesarResumen(
   return 0;
 }
 
-function obtenerTituloResumen(fecha: DateTime) {
+async function obtenerNombreVisible(supabase: any, usuarioId: string) {
+  try {
+    const { data, error } = await supabase.auth.admin.getUserById(usuarioId);
+    if (error) throw error;
+
+    const nombre = data.user?.user_metadata?.nombre_visible;
+    return typeof nombre === "string" && nombre.trim() ? nombre.trim() : null;
+  } catch (error) {
+    console.warn("No se pudo obtener el nombre para personalizar el resumen:", error);
+    return null;
+  }
+}
+
+function obtenerTituloResumen(fecha: DateTime, nombreVisible: string | null = null) {
   if (fecha.hour < 13) {
-    return "Buenos días, ¿qué nos espera hoy?";
+    return nombreVisible
+      ? `Buenos días, ${nombreVisible}. ¿Qué nos espera hoy?`
+      : "Buenos días, ¿qué nos espera hoy?";
   }
 
-  return "¡Hoolaa! Estos son los planes de esta tarde:";
+  return nombreVisible
+    ? `¡Hoolaa, ${nombreVisible}! Estos son los planes de esta tarde:`
+    : "¡Hoolaa! Estos son los planes de esta tarde:";
 }
 
 function actividadOcurreEnFecha(actividad: any, fecha: DateTime) {

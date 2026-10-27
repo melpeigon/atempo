@@ -1,8 +1,10 @@
-const NOMBRE_CACHE = "atempo-v47";
+const NOMBRE_CACHE = "atempo-v61";
 
 const ARCHIVOS_PRINCIPALES = [
   "./",
   "./index.html",
+  "./invitaciones.html",
+  "./bienvenida.html",
   "./manifest.json",
   "./css/base.css",
   "./css/inicio.css",
@@ -14,6 +16,8 @@ const ARCHIVOS_PRINCIPALES = [
   "./css/guia.css",
   "./css/instalacion.css",
   "./css/acceso.css",
+  "./css/invitaciones.css",
+  "./css/bienvenida.css",
   "./css/responsive.css",
   "./js/app.js",
   "./js/supabase.js",
@@ -22,6 +26,8 @@ const ARCHIVOS_PRINCIPALES = [
   "./js/datos-supabase.js",
   "./js/novedades.js",
   "./js/autenticacion.js",
+  "./js/invitaciones.js",
+  "./js/bienvenida.js",
   "./js/actividades.js",
   "./js/formulario-actividades.js",
   "./js/calendario.js",

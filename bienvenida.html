@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#fcf9f5" />
+  <title>Bienvenida a Atempo</title>
+  <link rel="icon" href="Branding/logos/SVG/fabicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/bienvenida.css" />
+</head>
+
+<body>
+  <main class="pagina-bienvenida">
+    <img class="logo-bienvenida" src="Branding/logos/SVG/logo oscuro.svg" alt="Atempo" />
+    <p class="aviso-vista-previa-bienvenida" id="aviso-vista-previa-bienvenida" hidden>
+      Vista previa: puedes revisar esta pantalla, pero no se guardará ningún cambio.
+    </p>
+
+    <section class="tarjeta-bienvenida paso-bienvenida" id="paso-presentacion" aria-labelledby="titulo-bienvenida-inicial">
+      <p class="progreso-bienvenida">Paso 1 de 5</p>
+      <h1 id="titulo-bienvenida-inicial">Hola, soy Atempo 💜</h1>
+      <p class="intro-bienvenida">Este es tu espacio para dejar tus recordatorios y liberar la mente. Yo te ayudo a tenerlos presentes; tú solo disfruta del día.</p>
+
+      <form id="formulario-bienvenida">
+        <label for="nombre-visible">Antes de preparar tu agenda, ¿qué nombre o apodo quieres que use para llamarte?</label>
+        <input id="nombre-visible" name="nombre" type="text" maxlength="40" autocomplete="nickname"
+          placeholder="Nombre o apodo" required />
+        <p class="ayuda-nombre-bienvenida">Lo usaré para dirigirme a ti en Atempo y en el resumen diario.</p>
+
+        <p class="mensaje-bienvenida" id="mensaje-bienvenida" role="alert" hidden></p>
+        <button class="boton-continuar-bienvenida" id="boton-continuar-bienvenida" type="submit">
+          Continuar
+        </button>
+      </form>
+    </section>
+
+    <section class="tarjeta-bienvenida paso-bienvenida" id="paso-personas" aria-labelledby="titulo-bienvenida-personas" hidden>
+      <p class="progreso-bienvenida">Paso 2 de 5</p>
+      <h1 id="titulo-bienvenida-personas">Vamos a preparar tu agenda 💜</h1>
+      <p class="intro-bienvenida">
+        Añade las personas cuyos planes quieres tener a mano. Puedes crear tu perfil, el de tus hijos y los de otros
+        miembros de la familia.
+      </p>
+      <button class="boton-continuar-bienvenida" id="boton-anadir-personas" type="button">
+        Añadir personas
+      </button>
+      <p class="ayuda-paso-bienvenida">
+        Se abrirá tu agenda. Al terminar, pulsa allí «Volver a los primeros pasos» para seguir.
+      </p>
+      <button class="boton-secundario-bienvenida" id="boton-continuar-personas" type="button">
+        Continuar
+      </button>
+      <p class="mensaje-bienvenida" id="mensaje-paso-personas" role="status" hidden></p>
+    </section>
+
+    <section class="tarjeta-bienvenida paso-bienvenida" id="paso-notificaciones" aria-labelledby="titulo-bienvenida-notificaciones" hidden>
+      <p class="progreso-bienvenida">Paso 3 de 5</p>
+      <h1 id="titulo-bienvenida-notificaciones">Activamos tus avisos 💜</h1>
+      <p class="intro-bienvenida">
+        Si quieres, configura aquí los avisos de tus planes y el resumen diario. Se activan en este dispositivo; si usas
+        Atempo en otro, tendrás que autorizarlos también allí.
+      </p>
+      <button class="boton-continuar-bienvenida" id="boton-configurar-notificaciones-bienvenida" type="button">
+        Configurar avisos
+      </button>
+      <p class="ayuda-paso-bienvenida">
+        Atempo te pedirá permiso al activar las notificaciones. Puedes cambiar tus preferencias más adelante desde el menú.
+      </p>
+      <p class="mensaje-bienvenida" id="mensaje-paso-notificaciones" role="status" hidden></p>
+      <button class="boton-secundario-bienvenida" id="boton-continuar-notificaciones" type="button">
+        Continuar
+      </button>
+    </section>
+
+    <section class="tarjeta-bienvenida paso-bienvenida" id="paso-compartir" aria-labelledby="titulo-bienvenida-compartir" hidden>
+      <p class="progreso-bienvenida">Paso 4 de 5</p>
+      <h1 id="titulo-bienvenida-compartir">¿Compartimos tu agenda? 💜</h1>
+      <p class="intro-bienvenida">
+        Invita a otro adulto para tener juntos a mano los planes de los niños. Antes de enviar la invitación, elegirás qué personas podrá ver y si podrá hacer cambios en los planes que compartáis. Lo que mantengas privado seguirá siendo solo tuyo.
+      </p>
+      <button class="boton-continuar-bienvenida" id="boton-compartir-agenda-bienvenida" type="button">
+        Ver opciones para compartir
+      </button>
+      <p class="ayuda-paso-bienvenida">
+        Es opcional. Antes de crear el enlace podrás revisar los perfiles y permisos; también puedes hacerlo más adelante.
+      </p>
+      <p class="mensaje-bienvenida" id="mensaje-paso-compartir" role="status" hidden></p>
+      <button class="boton-secundario-bienvenida" id="boton-continuar-compartir" type="button">
+        Continuar
+      </button>
+    </section>
+
+    <section class="tarjeta-bienvenida paso-bienvenida" id="paso-actividad" aria-labelledby="titulo-bienvenida-actividad" hidden>
+      <p class="progreso-bienvenida">Paso 5 de 5</p>
+      <h1 id="titulo-bienvenida-actividad">¿Añadimos vuestro primer plan? 💜</h1>
+      <p class="intro-bienvenida">
+        Si ya tienes personas en la agenda, añade aquí el primer plan y te llevaré directamente a Atempo. Si lo dejas
+        para más adelante, pulsa «Terminar» y podrás añadirlo cuando quieras.
+      </p>
+      <button class="boton-continuar-bienvenida" id="boton-anadir-actividad-bienvenida" type="button">
+        Añadir primer plan
+      </button>
+      <p class="mensaje-bienvenida" id="mensaje-paso-actividad" role="alert" hidden></p>
+      <button class="boton-secundario-bienvenida" id="boton-finalizar-bienvenida" type="button">
+        Terminar
+      </button>
+    </section>
+
+    <p class="pie-bienvenida">Despeja la mente y disfruta del presente. 💜</p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/bienvenida.js"></script>
+</body>
+
+</html>

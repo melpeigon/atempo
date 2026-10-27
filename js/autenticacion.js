@@ -6,6 +6,8 @@ const mensajeAcceso = document.querySelector("#mensaje-acceso");
 const botonIniciarSesion = document.querySelector("#boton-iniciar-sesion");
 const botonCrearCuenta = document.querySelector("#boton-crear-cuenta");
 const botonCerrarSesion = document.querySelector("#boton-cerrar-sesion");
+const avisoRegresoBienvenida = document.querySelector("#aviso-regreso-bienvenida");
+const botonRegresoBienvenida = document.querySelector("#boton-regreso-bienvenida");
 const campoContrasena = document.querySelector("#contrasena-acceso");
 const botonMostrarContrasena = document.querySelector("#boton-mostrar-contrasena");
 const tituloAcceso = document.querySelector("#titulo-acceso");
@@ -34,6 +36,7 @@ let recuperandoContrasena =
   new URLSearchParams(window.location.search).get("type") === "recovery";
 
 let familiaActual = null;
+let familiasUsuario = [];
 
 function mostrarMensajeAcceso(mensaje, esError = true) {
   mensajeAcceso.textContent = mensaje;
@@ -110,24 +113,63 @@ async function crearFamiliaInicial() {
   return true;
 }
 
-async function cargarFamiliaActual(permitirCrearFamilia = true) {
+async function obtenerFamiliasUsuario() {
+  const { data: datosUsuario, error: errorUsuario } =
+    await clienteSupabase.auth.getUser();
+
+  if (errorUsuario || !datosUsuario.user) {
+    return { familias: [], usuarioId: null, correo: null, nombreVisible: null, error: errorUsuario };
+  }
+
   const { data, error } = await clienteSupabase
-    .from("familias")
-    .select("id, nombre")
-    .limit(1)
-    .maybeSingle();
+    .from("miembros_familia")
+    .select("familia_id, rol, familias(id, nombre)")
+    .eq("usuario_id", datosUsuario.user.id);
 
   if (error) {
-    console.log("No se pudo cargar la familia:", error);
-    registrarErrorApp("Cargar familia", error);
+    return {
+      familias: [],
+      usuarioId: datosUsuario.user.id,
+      correo: datosUsuario.user.email,
+      nombreVisible: datosUsuario.user.user_metadata?.nombre_visible || null,
+      error,
+    };
+  }
+
+  const familias = data
+    .filter(function (membresia) { return membresia.familias; })
+    .map(function (membresia) {
+      return {
+        id: membresia.familias.id,
+        nombre: membresia.familias.nombre,
+        rol: membresia.rol,
+      };
+    });
+
+  return {
+    familias,
+    usuarioId: datosUsuario.user.id,
+    correo: datosUsuario.user.email,
+    nombreVisible: datosUsuario.user.user_metadata?.nombre_visible || null,
+    error: null,
+  };
+}
+
+async function cargarFamiliaActual(permitirCrearFamilia = true) {
+  const resultadoFamilias = await obtenerFamiliasUsuario();
+  actualizarBienvenidaUsuario(resultadoFamilias.nombreVisible || resultadoFamilias.correo);
+
+  if (resultadoFamilias.error) {
+    console.log("No se pudieron cargar las agendas:", resultadoFamilias.error);
+    registrarErrorApp("Cargar agendas", resultadoFamilias.error);
     mostrarMensajeAcceso("No hemos podido cargar tu familia.");
     pantallaAcceso.hidden = false;
     return false;
   }
 
-  familiaActual = data;
+  familiasUsuario = resultadoFamilias.familias;
 
-  if (!familiaActual) {
+  if (familiasUsuario.length === 0) {
     if (!permitirCrearFamilia) {
       mostrarMensajeAcceso("No hemos podido preparar tu familia.");
       pantallaAcceso.hidden = false;
@@ -144,6 +186,25 @@ async function cargarFamiliaActual(permitirCrearFamilia = true) {
 
     return cargarFamiliaActual(false);
   }
+
+  const claveAgendaActiva = `atempo-agenda-activa:${resultadoFamilias.usuarioId}`;
+  const agendaGuardada = localStorage.getItem(claveAgendaActiva);
+  familiaActual = familiasUsuario.find(function (familia) {
+    return familia.id === agendaGuardada;
+  });
+
+  if (!familiaActual && familiasUsuario.length === 1) {
+    familiaActual = familiasUsuario[0];
+  }
+
+  if (!familiaActual) {
+    familiaActual = await pedirSeleccionInicialAgenda(familiasUsuario);
+  }
+
+  if (!familiaActual) return false;
+
+  localStorage.setItem(claveAgendaActiva, familiaActual.id);
+  actualizarSelectorAgendas(familiasUsuario, familiaActual);
 
   console.log("Familia conectada:", familiaActual.nombre);
 
@@ -162,16 +223,96 @@ async function cargarFamiliaActual(permitirCrearFamilia = true) {
   return true;
 }
 
+async function cambiarFamiliaActiva(familiaId) {
+  const nuevaFamilia = familiasUsuario.find(function (familia) {
+    return familia.id === familiaId;
+  });
+
+  if (!nuevaFamilia || nuevaFamilia.id === familiaActual?.id) return true;
+
+  const familiaAnterior = familiaActual;
+  const { data: datosUsuario, error: errorUsuario } =
+    await clienteSupabase.auth.getUser();
+
+  if (errorUsuario || !datosUsuario.user) return false;
+
+  familiaActual = nuevaFamilia;
+  localStorage.setItem(
+    `atempo-agenda-activa:${datosUsuario.user.id}`,
+    nuevaFamilia.id
+  );
+
+  const datosCargados = await cargarDatosDeSupabase();
+
+  if (!datosCargados) {
+    familiaActual = familiaAnterior;
+    localStorage.setItem(
+      `atempo-agenda-activa:${datosUsuario.user.id}`,
+      familiaAnterior.id
+    );
+    await cargarDatosDeSupabase();
+    return false;
+  }
+
+  actualizarSelectorAgendas(familiasUsuario, familiaActual);
+  console.log("Agenda activa:", familiaActual.nombre);
+  return true;
+}
+
 async function prepararSesion() {
   ocultarErrorAcceso();
+
+  const { data: usuarioAutenticado } = await clienteSupabase.auth.getUser();
+  const metadatosUsuario = usuarioAutenticado.user?.user_metadata || {};
+  const funcionBienvenida = new URLSearchParams(window.location.search).get("configurar");
+  const abrirPersonasDesdeBienvenida = funcionBienvenida === "personas";
+  const abrirNotificacionesDesdeBienvenida = funcionBienvenida === "notificaciones";
+  const abrirActividadDesdeBienvenida = funcionBienvenida === "actividad";
+  const abrirCompartirDesdeBienvenida = funcionBienvenida === "compartir";
+  const abrirFuncionDesdeBienvenida = abrirPersonasDesdeBienvenida || abrirNotificacionesDesdeBienvenida || abrirActividadDesdeBienvenida || abrirCompartirDesdeBienvenida;
+
+  if (abrirPersonasDesdeBienvenida || abrirNotificacionesDesdeBienvenida || abrirActividadDesdeBienvenida) {
+    sessionStorage.setItem("atempo-bienvenida-regreso", funcionBienvenida);
+  }
+
+  if (metadatosUsuario.atempo_bienvenida_pendiente && !metadatosUsuario.atempo_bienvenida_completada && !abrirFuncionDesdeBienvenida) {
+    window.location.replace(new URL("bienvenida.html", window.location.href).toString());
+    return;
+  }
 
   const familiaCargada = await cargarFamiliaActual();
 
   if (familiaCargada) {
     pantallaAcceso.hidden = true;
-    await comprobarNovedadPendiente();
+    avisoRegresoBienvenida.hidden = !sessionStorage.getItem("atempo-bienvenida-regreso");
+
+    if (!abrirFuncionDesdeBienvenida) {
+      await comprobarNovedadPendiente();
+    }
+
+    if (abrirFuncionDesdeBienvenida) {
+      window.history.replaceState({}, "", window.location.pathname);
+      if (abrirPersonasDesdeBienvenida) {
+        abrirEmergenteNuevaPersona();
+      } else if (abrirNotificacionesDesdeBienvenida) {
+        botonCerrarNotificaciones.textContent = "Volver a la agenda";
+        abrirConfiguracionNotificaciones();
+      } else if (abrirActividadDesdeBienvenida) {
+        abrirEmergenteNuevaActividad();
+      } else if (abrirCompartirDesdeBienvenida) {
+        window.location.replace(
+          new URL("invitaciones.html?desde=bienvenida&paso=compartir", window.location.href).toString()
+        );
+      }
+    }
   }
 }
+
+botonRegresoBienvenida.addEventListener("click", function () {
+  const paso = sessionStorage.getItem("atempo-bienvenida-regreso") || "personas";
+  sessionStorage.removeItem("atempo-bienvenida-regreso");
+  window.location.href = new URL(`bienvenida.html?paso=${encodeURIComponent(paso)}`, window.location.href).toString();
+});
 
 async function iniciarSesion(evento) {
   evento.preventDefault();
@@ -217,6 +358,10 @@ async function crearCuenta() {
     password: datosFormulario.get("contrasena"),
     options: {
       emailRedirectTo: URL_ATEMPO,
+      data: {
+        atempo_bienvenida_pendiente: true,
+        atempo_bienvenida_completada: false,
+      },
     },
   });
 
@@ -327,6 +472,7 @@ async function cerrarSesion() {
   await clienteSupabase.auth.signOut();
 
   familiaActual = null;
+  familiasUsuario = [];
   vaciarDatosDeLaAgenda();
   pantallaAcceso.hidden = false;
   cerrarMenu();

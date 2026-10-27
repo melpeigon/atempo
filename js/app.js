@@ -19,6 +19,7 @@ const rutasIconos = {
 
 const fechaHoy = document.querySelector("#fecha-hoy");
 const tituloBienvenida = document.querySelector("#bienvenida-titulo");
+const bienvenidaCuenta = document.querySelector("#bienvenida-cuenta");
 const mensajeBienvenida = document.querySelector("#bienvenida-mensaje");
 
 
@@ -39,23 +40,23 @@ function mostrarBienvenidaDelDia() {
   if (hora < 13) {
     bienvenidas = [
       { titulo: "Buenos días.", mensaje: "Vamos a por el día, a tu ritmo." },
-      { titulo: "Hola, familia.", mensaje: "Hoy también, paso a paso." },
-      { titulo: "Empezamos con calma.", mensaje: "Aquí tienes lo importante de hoy." },
-      { titulo: "Un día cada vez.", mensaje: "Echa un vistazo y sigue a tu ritmo." },
+      { titulo: "Hola, familia.", mensaje: "Hoy puede ser un día precioso. ¡Vamos a por él! 💜" },
+      { titulo: "Empezamos un nuevo día.", mensaje: "Aquí tienes lo importante de hoy." },
+      { titulo: "Hoy puede ser un día maravilloso.", mensaje: "Ojalá hoy te regale algo bonito." },
     ];
   } else if (hora < 20) {
     bienvenidas = [
       { titulo: "Buenas tardes.", mensaje: "Seguimos, sin prisa y con lo importante a mano." },
       { titulo: "Hola de nuevo.", mensaje: "Así va lo que queda del día." },
       { titulo: "Seguimos a vuestro ritmo.", mensaje: "Un vistazo y a continuar." },
-      { titulo: "La tarde, un poco más clara.", mensaje: "Aquí tienes los planes que quedan." },
+      { titulo: "¡A comernos la tarde!", mensaje: "Aquí tienes los planes que quedan." },
     ];
   } else {
     bienvenidas = [
       { titulo: "Buenas noches.", mensaje: "Un último vistazo y a descansar." },
       { titulo: "El día va terminando.", mensaje: "Lo de mañana puede esperar un poquito." },
       { titulo: "Hora de bajar el ritmo.", mensaje: "Aquí sigue todo, cuando lo necesites." },
-      { titulo: "Por hoy, poquito más.", mensaje: "Revisa lo necesario y deja descansar la cabeza." },
+      { titulo: "Objetivo del día conseguido.", mensaje: "Revisa lo necesario y deja descansar la cabeza." },
     ];
   }
 
@@ -68,6 +69,13 @@ function mostrarBienvenidaDelDia() {
 }
 
 mostrarBienvenidaDelDia();
+
+function actualizarBienvenidaUsuario(nombre) {
+  if (!bienvenidaCuenta) return;
+
+  bienvenidaCuenta.textContent = nombre ? `Hola, ${nombre}` : "";
+  bienvenidaCuenta.hidden = !nombre;
+}
 
 // boton añadir personas //
 

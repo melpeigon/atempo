@@ -124,8 +124,14 @@
       </button>
     </header>
 
+    <aside class="aviso-regreso-bienvenida" id="aviso-regreso-bienvenida" hidden>
+      <p>Cuando termines, puedes volver a preparar tu agenda.</p>
+      <button id="boton-regreso-bienvenida" type="button">Volver a los primeros pasos</button>
+    </aside>
+
     <section class="bienvenida" aria-labelledby="bienvenida-titulo">
       <h1 id="bienvenida-titulo">Buenos días.</h1>
+      <p class="bienvenida-cuenta" id="bienvenida-cuenta" hidden></p>
       <p id="bienvenida-mensaje">Vamos a por el día, a tu ritmo.</p>
       <time id="fecha-hoy"></time>
     </section>
@@ -214,6 +220,9 @@
     <h1 id="titulo-ficha-actividad">Ficha de actividad</h1>
 
     <div id="contenido-ficha-actividad"></div>
+    <p class="mensaje-permiso-actividad" id="mensaje-permiso-actividad" role="status" hidden>
+      Puedes consultar este plan, pero solo quien lo creó puede editarlo o eliminarlo.
+    </p>
 
     <div class="botones-ficha-actividad">
       <button class="boton-editar-actividad" id="boton-editar-actividad" type="button">
@@ -499,6 +508,14 @@
         Incluir esta actividad en el resumen diario
       </label>
 
+      <div class="opcion-compartir-actividad" id="opcion-compartir-actividad" hidden>
+        <label for="compartir-actividad">
+          <input type="checkbox" id="compartir-actividad" name="compartirActividad" checked />
+          Compartir este plan con quienes tienen acceso al perfil
+        </label>
+        <p>Desmárcalo si prefieres mantener este plan privado.</p>
+      </div>
+
       <label for="introduce-anotacion">Escribe tu recordatorio </label>
       <input type="text" id="introduce-anotacion" name="recordatorio" />
 
@@ -534,10 +551,20 @@
   <dialog class="emergente-menu" id="emergente-menu" aria-labelledby="titulo-menu">
     <h2 id="titulo-menu">Menú</h2>
 
+    <div class="selector-agenda" id="contenedor-selector-agenda" hidden>
+      <label for="selector-agenda-activa">Agenda activa</label>
+      <select id="selector-agenda-activa"></select>
+    </div>
+
     <nav class="opciones-menu" aria-label="Opciones de Atempo">
       <button id="boton-menu-notificaciones" type="button">
         <img src="Branding/iconos/SVG/notificaciones.svg" alt="" />
         Notificaciones
+      </button>
+
+      <button id="boton-menu-invitaciones" type="button">
+        <span aria-hidden="true">♡</span>
+        Compartir agenda
       </button>
 
       <button id="boton-menu-guia" type="button">
@@ -553,6 +580,20 @@
     <button class="boton-cerrar-menu" id="boton-cerrar-menu" type="button">
       Cerrar
     </button>
+  </dialog>
+
+  <dialog class="emergente-menu" id="emergente-elegir-agenda" aria-labelledby="titulo-elegir-agenda">
+    <h2 id="titulo-elegir-agenda">¿Qué agenda quieres abrir?</h2>
+    <p class="ayuda-selector-agenda">Puedes cambiar de agenda más adelante desde el menú.</p>
+    <form id="formulario-elegir-agenda">
+      <label for="selector-elegir-agenda">Tus agendas</label>
+      <select id="selector-elegir-agenda" required>
+        <option value="">Elige una agenda</option>
+      </select>
+      <button class="boton-guardar-configuracion" id="boton-confirmar-agenda" type="submit" disabled>
+        Continuar
+      </button>
+    </form>
   </dialog>
 
   <!-- CONFIGURACIÓN DE NOTIFICACIONES -->

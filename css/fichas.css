@@ -292,6 +292,21 @@
   gap: 10px;
 }
 
+.mensaje-permiso-actividad {
+  margin: 14px 0;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--lila) 45%, var(--gris));
+  border-radius: 14px;
+  color: var(--ciruela);
+  background: color-mix(in srgb, var(--lila) 16%, white);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.mensaje-permiso-actividad[hidden] {
+  display: none;
+}
+
 .botones-ficha-persona button,
 .botones-ficha-actividad button {
   width: auto;

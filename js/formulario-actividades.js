@@ -7,6 +7,8 @@ const botonCerrarActividad = document.querySelector("#boton-cerrar-actividad");
 const emergenteNuevaActividad = document.querySelector("#emergente-nueva-actividad");
 const formularioActividad = document.querySelector("#form-anadir-actividad");
 const selectorPersonaActividad = document.querySelector("#elige-persona");
+const opcionCompartirActividad = document.querySelector("#opcion-compartir-actividad");
+const casillaCompartirActividad = document.querySelector("#compartir-actividad");
 const selectorTipoActividad = document.querySelector("#elige-actividad");
 const botonElegirActividad = document.querySelector("#boton-elegir-actividad");
 const menuActividades = document.querySelector("#menu-actividades");
@@ -161,6 +163,23 @@ function mostrarPersonasEnFormulario() {
   }
 }
 
+function actualizarOpcionCompartirActividad(visibilidadGuardada = null) {
+  const puedeCompartir = perfilesCompartiblesActividad.has(selectorPersonaActividad.value);
+  opcionCompartirActividad.hidden = !puedeCompartir;
+
+  if (puedeCompartir) {
+    if (visibilidadGuardada) {
+      casillaCompartirActividad.checked = visibilidadGuardada === "compartida";
+    } else if (idActividadEnEdicion !== null) {
+      const actividad = actividades.find((item) => item.id === idActividadEnEdicion);
+      const persona = personas.find((item) => item.id === actividad?.personaId);
+      casillaCompartirActividad.checked = persona?.tipoPersona === "menor";
+    } else {
+      casillaCompartirActividad.checked = true;
+    }
+  }
+}
+
 function cambiarOpcionesRecurrencia() {
   if (selectorRecurrencia.value === "semanal") {
     contenedorDias.hidden = false;
@@ -267,6 +286,8 @@ function abrirEmergenteNuevaActividad(idPersona = null, fechaPreseleccionada = n
   contenedorHoraAviso.hidden = true;
   campoHoraAviso.required = false;
   campoFechaActividad.min = `${anoActual}-${mesActual}-${diaActual}`;
+  casillaCompartirActividad.checked = true;
+  opcionCompartirActividad.hidden = true;
 
   tituloEmergenteActividad.textContent = "Añade una actividad";
   botonGuardarActividad.textContent = "Guardar";
@@ -276,6 +297,7 @@ function abrirEmergenteNuevaActividad(idPersona = null, fechaPreseleccionada = n
 
   if (idPersona !== null) {
     selectorPersonaActividad.value = idPersona;
+    actualizarOpcionCompartirActividad();
   }
 
   if (fechaPreseleccionada !== null) {
@@ -321,6 +343,7 @@ function editarActividadSeleccionada() {
 
   formularioActividad.elements.persona.value =
     actividadSeleccionada.personaId;
+  actualizarOpcionCompartirActividad(actividadSeleccionada.visibilidad);
 
   const tipoActividad = actividadSeleccionada.actividad === "ingles"
     ? "idiomas"
@@ -458,6 +481,10 @@ async function guardarNuevaActividad(evento) {
     recordatorio: datosFormulario.get("recordatorio"),
   };
 
+  if (!opcionCompartirActividad.hidden) {
+    datosActividad.visibilidad = casillaCompartirActividad.checked ? "compartida" : "privada";
+  }
+
   const datosParaSupabase = convertirActividadParaSupabase(datosActividad);
   botonGuardarActividad.disabled = true;
 
@@ -476,12 +503,18 @@ async function guardarNuevaActividad(evento) {
       .update(datosParaSupabase)
       .eq("id", actividadExistente.id)
       .select("*")
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.log("No se pudo editar la actividad:", error);
       registrarErrorApp("Editar actividad", error);
       mostrarErrorActividad("No hemos podido guardar los cambios. Inténtalo otra vez.");
+      botonGuardarActividad.disabled = false;
+      return;
+    }
+
+    if (!data) {
+      mostrarErrorActividad("Solo quien creó esta actividad puede editarla. No se han guardado cambios.");
       botonGuardarActividad.disabled = false;
       return;
     }
@@ -541,6 +574,21 @@ async function guardarNuevaActividad(evento) {
       false,
       fechaOcurrenciaFichaActividad
     );
+  } else if (sessionStorage.getItem("atempo-bienvenida-regreso") === "actividad") {
+    const { error: errorBienvenida } = await clienteSupabase.auth.updateUser({
+      data: {
+        atempo_bienvenida_pendiente: false,
+        atempo_bienvenida_completada: true,
+      },
+    });
+
+    if (errorBienvenida) {
+      console.error("El plan se guardó, pero no se pudo cerrar la bienvenida:", errorBienvenida);
+      registrarErrorApp("Completar bienvenida después de añadir actividad", errorBienvenida);
+    } else {
+      sessionStorage.removeItem("atempo-bienvenida-regreso");
+      document.querySelector("#aviso-regreso-bienvenida").hidden = true;
+    }
   }
 }
 
@@ -554,6 +602,9 @@ botonAnadirActividadPersona.addEventListener("click", function () {
 botonCerrarActividad.addEventListener("click", cerrarEmergenteNuevaActividad);
 formularioActividad.addEventListener("submit", guardarNuevaActividad);
 selectorRecurrencia.addEventListener("change", cambiarOpcionesRecurrencia);
+selectorPersonaActividad.addEventListener("change", function () {
+  actualizarOpcionCompartirActividad();
+});
 selectorTipoActividad.addEventListener("change", cambiarOpcionesActividad);
 botonElegirActividad.addEventListener("click", alternarMenuActividades);
 campoBuscarActividad.addEventListener("input", function () {

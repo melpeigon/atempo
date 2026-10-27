@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#fcf9f5" />
+  <title>Invitaciones · Atempo</title>
+  <link rel="icon" href="Branding/logos/SVG/fabicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/invitaciones.css" />
+</head>
+
+<body>
+  <main class="pagina-invitaciones">
+    <a class="enlace-volver-atempo" id="enlace-volver-atempo" href="index.html">← Volver a Atempo</a>
+
+    <img class="logo-invitaciones" src="Branding/logos/SVG/logo oscuro.svg" alt="Atempo" />
+
+    <p class="ceja-invitaciones">Una agenda que se comparte</p>
+    <h1 id="titulo-invitaciones">Invitaciones</h1>
+    <p class="introduccion-invitaciones" id="introduccion-invitaciones">
+      Comparte los planes de la familia con otro adulto, manteniendo sus agendas personales privadas.
+    </p>
+
+    <p class="estado-pagina-invitaciones" id="estado-cargando" role="status">Preparando…</p>
+
+    <section class="tarjeta-invitaciones" id="panel-acceso" hidden aria-labelledby="titulo-acceso-invitaciones">
+      <h2 id="titulo-acceso-invitaciones">Entra en Atempo</h2>
+      <p>Para continuar con la invitación, inicia sesión o crea una cuenta con el correo invitado.</p>
+
+      <form id="formulario-acceso-invitaciones">
+        <label for="correo-invitaciones">Correo electrónico</label>
+        <input id="correo-invitaciones" name="correo" type="email" autocomplete="email" required />
+
+        <label for="contrasena-invitaciones">Contraseña</label>
+        <input id="contrasena-invitaciones" name="contrasena" type="password" autocomplete="current-password"
+          minlength="6" required />
+
+        <p class="mensaje-invitaciones" id="mensaje-acceso-invitaciones" role="status" hidden></p>
+        <button class="boton-principal-invitaciones" id="boton-entrar-invitaciones" type="submit">Entrar</button>
+        <button class="boton-secundario-invitaciones" id="boton-crear-cuenta-invitaciones" type="button" hidden>
+          Crear una cuenta
+        </button>
+      </form>
+    </section>
+
+    <section class="tarjeta-invitaciones" id="panel-crear-invitacion" hidden
+      aria-labelledby="titulo-crear-invitacion">
+      <h2 id="titulo-crear-invitacion">Invita a otro adulto</h2>
+      <p>Generaremos un enlace personal para que puedas enviarlo por WhatsApp o por correo. Caduca a los 7 días.</p>
+
+      <form id="formulario-crear-invitacion">
+        <label for="agenda-invitaciones">Agenda que quieres compartir</label>
+        <select id="agenda-invitaciones" name="familia" required></select>
+
+        <label for="correo-invitado">Correo de la persona invitada</label>
+        <input id="correo-invitado" name="correo" type="email" autocomplete="email" required />
+
+        <fieldset class="selector-perfiles-invitacion">
+          <legend>¿Qué personas de tu agenda podrá ver la persona invitada?</legend>
+          <p class="ayuda-perfiles-invitacion">Los niños aparecen seleccionados. Puedes cambiarlo antes de crear el enlace.</p>
+          <div id="lista-perfiles-invitacion" class="lista-perfiles-invitacion" aria-live="polite"></div>
+        </fieldset>
+
+        <fieldset class="selector-perfiles-invitacion permiso-edicion-invitacion">
+          <legend>Edición de actividades</legend>
+          <label class="opcion-perfil-invitacion">
+            <input id="permite-editar-invitacion" type="checkbox" />
+            <span>La persona invitada podrá editar las actividades compartidas que yo haya creado</span>
+          </label>
+          <p class="ayuda-perfiles-invitacion">Solo podrá hacerlo para las personas seleccionadas arriba. No verá tus actividades privadas ni podrá borrar las que hayas creado.</p>
+        </fieldset>
+
+        <div class="resumen-invitacion" aria-live="polite" aria-atomic="true">
+          <strong>Antes de crear el enlace</strong>
+          <p id="resumen-perfiles-invitacion">Selecciona las personas que quieras compartir.</p>
+          <p id="resumen-edicion-invitacion">La persona invitada no podrá editar tus actividades compartidas.</p>
+        </div>
+
+        <p class="mensaje-invitaciones" id="mensaje-crear-invitacion" role="status" hidden></p>
+        <button class="boton-principal-invitaciones" id="boton-generar-invitacion" type="submit">
+          Crear enlace de invitación
+        </button>
+      </form>
+
+      <div class="enlace-generado-invitaciones" id="enlace-generado-invitaciones" hidden>
+        <label for="url-invitacion-generada">Enlace para compartir</label>
+        <input id="url-invitacion-generada" type="text" readonly />
+        <button class="boton-secundario-invitaciones" id="boton-copiar-invitacion" type="button">
+          Copiar enlace
+        </button>
+        <p class="texto-privacidad-invitaciones">
+          El enlace solo se puede usar una vez y únicamente con el correo que has indicado.
+        </p>
+      </div>
+    </section>
+
+    <section class="tarjeta-invitaciones" id="panel-permisos-miembros" hidden
+      aria-labelledby="titulo-permisos-miembros">
+      <h2 id="titulo-permisos-miembros">Perfiles compartidos</h2>
+      <p>Elige qué personas de tu agenda puede ver cada adulto que ya se ha unido.</p>
+      <label for="miembro-permisos">Adulto</label>
+      <select id="miembro-permisos"></select>
+      <fieldset class="selector-perfiles-invitacion">
+        <legend>Personas que puede ver este adulto</legend>
+        <div id="lista-perfiles-permisos" class="lista-perfiles-invitacion"></div>
+      </fieldset>
+      <fieldset class="selector-perfiles-invitacion permiso-edicion-invitacion">
+        <legend>Edición de actividades</legend>
+        <label class="opcion-perfil-invitacion">
+          <input id="permite-editar-miembro" type="checkbox" />
+          <span>Este adulto puede editar las actividades compartidas que yo haya creado</span>
+        </label>
+        <p class="ayuda-perfiles-invitacion">Solo en las personas que puede ver. No verá tus actividades privadas ni podrá borrar las que hayas creado.</p>
+      </fieldset>
+      <p class="mensaje-invitaciones" id="mensaje-permisos-miembros" role="status" hidden></p>
+      <button class="boton-principal-invitaciones" id="boton-guardar-permisos" type="button">
+        Guardar permisos
+      </button>
+    </section>
+
+    <section class="tarjeta-invitaciones" id="panel-aceptar-invitacion" hidden
+      aria-labelledby="titulo-aceptar-invitacion">
+      <h2 id="titulo-aceptar-invitacion">Te han invitado a compartir una agenda</h2>
+      <p>Al aceptar, se añadirá esta agenda a tu cuenta. Las agendas y actividades que ya tienes se conservarán.</p>
+
+      <form id="formulario-aceptar-invitacion">
+        <label for="nombre-adulto-invitacion">Nombre que aparecerá en la agenda</label>
+        <input id="nombre-adulto-invitacion" name="nombre" type="text" maxlength="50" autocomplete="name" required />
+
+        <label for="icono-adulto-invitacion">Icono</label>
+        <select id="icono-adulto-invitacion" name="icono" required>
+          <option value="mujer">Mujer</option>
+          <option value="hombre">Hombre</option>
+          <option value="abuela">Abuela</option>
+          <option value="abuelo">Abuelo</option>
+        </select>
+
+        <label for="color-adulto-invitacion">Color</label>
+        <select id="color-adulto-invitacion" name="color" required>
+          <option value="#c6afd0">Lila</option>
+          <option value="#f2beba">Melocotón</option>
+          <option value="#ffeccc">Amarillo</option>
+          <option value="#e0dcd6">Gris</option>
+          <option value="#B0C5D4">Azul</option>
+          <option value="#AEC2B3">Verde</option>
+          <option value="#F2BBD7">Rosa</option>
+          <option value="#DACEC7">Arena</option>
+        </select>
+
+        <p class="mensaje-invitaciones" id="mensaje-aceptar-invitacion" role="status" hidden></p>
+        <button class="boton-principal-invitaciones" id="boton-aceptar-invitacion" type="submit">
+          Aceptar invitación
+        </button>
+      </form>
+    </section>
+
+    <footer class="pie-invitaciones">
+      <p>Vuestras agendas, a vuestro ritmo. 💜</p>
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/invitaciones.js"></script>
+</body>
+
+</html>

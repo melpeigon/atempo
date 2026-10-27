@@ -127,6 +127,7 @@ const listaActividadesHoy = document.querySelector("#lista-actividades-hoy");
 
 const fichaActividad = document.querySelector("#ficha-actividad");
 const contenidoFichaActividad = document.querySelector("#contenido-ficha-actividad");
+const mensajePermisoActividad = document.querySelector("#mensaje-permiso-actividad");
 const botonVolverActividad = document.querySelector("#boton-volver-actividad");
 const botonEditarActividad = document.querySelector("#boton-editar-actividad");
 const botonEliminarActividad = document.querySelector("#boton-eliminar-actividad");
@@ -308,6 +309,31 @@ function obtenerTextoAvisoActividad(actividad) {
   return "Sin aviso";
 }
 
+function puedeBorrarActividadActual(actividad) {
+  const persona = personas.find((item) => item.id === actividad.personaId);
+  if (!persona || !usuarioActualId) return false;
+
+  if (persona.tipoPersona === "menor") {
+    return actividad.creadaPor === null || actividad.creadaPor === usuarioActualId;
+  }
+
+  if (persona.usuarioId === usuarioActualId) {
+    return actividad.creadaPor === null || actividad.creadaPor === usuarioActualId;
+  }
+
+  return persona.usuarioId === null
+    && familiaActual?.rol === "propietaria"
+    && (actividad.creadaPor === null || actividad.creadaPor === usuarioActualId);
+}
+
+function puedeEditarActividadActual(actividad) {
+  if (puedeBorrarActividadActual(actividad)) return true;
+
+  return actividad.visibilidad === "compartida"
+    && actividad.creadaPor !== null
+    && autoresEditablesPorUsuario.has(actividad.creadaPor);
+}
+
 function abrirFichaActividad(
   idActividad,
   nuevoOrigen,
@@ -335,6 +361,17 @@ function abrirFichaActividad(
   }
 
   idActividadSeleccionada = idActividad;
+  const puedeEditar = puedeEditarActividadActual(actividadSeleccionada);
+  const puedeBorrar = puedeBorrarActividadActual(actividadSeleccionada);
+  botonEditarActividad.hidden = !puedeEditar;
+  botonEliminarActividad.hidden = !puedeBorrar;
+  mensajePermisoActividad.hidden = puedeEditar;
+  if (puedeEditar && !puedeBorrar) {
+    mensajePermisoActividad.textContent = "Puedes editar este plan compartido. Solo quien lo creó puede eliminarlo.";
+    mensajePermisoActividad.hidden = false;
+  } else if (!puedeEditar) {
+    mensajePermisoActividad.textContent = "Puedes consultar este plan, pero solo quien lo creó puede editarlo o eliminarlo.";
+  }
   fechaOcurrenciaFichaActividad = fechaOcurrencia;
   contenidoFichaActividad.replaceChildren();
   contenidoFichaActividad.style.setProperty(
@@ -620,15 +657,10 @@ function eliminarActividadSeleccionada() {
       }
 
       if (data.length === 0) {
-        console.log("Supabase no permitió eliminar la actividad. Revisa la política RLS de DELETE.");
-        registrarErrorApp(
-          "Eliminar actividad",
-          {
-            message: "Supabase no permitió eliminar la actividad.",
-            code: "SIN_FILAS_AFECTADAS",
-          }
+        mostrarAviso(
+          "No se pudo eliminar",
+          "Solo quien creó esta actividad puede eliminarla. La actividad sigue guardada."
         );
-        mostrarAviso("No se pudo eliminar", "La base de datos no ha permitido eliminar esta actividad.");
         return;
       }
 

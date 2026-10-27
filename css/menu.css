@@ -54,6 +54,52 @@
   gap: 10px;
 }
 
+.selector-agenda {
+  margin-top: 18px;
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.selector-agenda[hidden] {
+  display: none;
+}
+
+.selector-agenda select,
+#formulario-elegir-agenda select {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--gris);
+  border-radius: 12px;
+  color: var(--ciruela);
+  background: var(--white);
+  font: inherit;
+}
+
+.ayuda-selector-agenda {
+  margin: 12px 0 18px;
+  color: var(--ciruela);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+#formulario-elegir-agenda {
+  display: grid;
+  gap: 10px;
+}
+
+#formulario-elegir-agenda label {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+#formulario-elegir-agenda button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .opciones-menu button {
   width: 100%;
   min-height: 50px;

@@ -11,6 +11,36 @@
   height: auto;
 }
 
+.aviso-regreso-bienvenida {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--lila) 55%, var(--gris));
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--lila) 18%, white);
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.aviso-regreso-bienvenida p {
+  margin: 0 0 9px;
+}
+
+.aviso-regreso-bienvenida button {
+  padding: 7px 13px;
+  border: 1px solid var(--ciruela);
+  border-radius: 999px;
+  color: var(--ciruela);
+  background: transparent;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.aviso-regreso-bienvenida[hidden] {
+  display: none;
+}
+
 .bienvenida {
   margin-top: 30px;
   padding: 15px 22px 18px;
@@ -21,6 +51,18 @@
 .bienvenida p {
   margin-top: 3px;
   font-size: 15px;
+}
+
+.bienvenida .bienvenida-cuenta {
+  max-width: 100%;
+  margin-top: 5px;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.bienvenida .bienvenida-cuenta[hidden] {
+  display: none;
 }
 
 .bienvenida time {
