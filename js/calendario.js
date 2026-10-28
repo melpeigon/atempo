@@ -11,6 +11,7 @@ const seccionActividadesDia = document.querySelector("#actividades-dia-calendari
 const tituloActividadesDia = document.querySelector("#titulo-actividades-dia");
 const listaActividadesDia = document.querySelector("#lista-actividades-dia");
 const botonAnadirActividadDia = document.querySelector("#boton-anadir-actividad-dia");
+botonAnadirActividadDia.disabled = modoVistaConjuntaSoloLectura;
 const mensajeInicialCalendario = document.querySelector("#mensaje-inicial-calendario");
 
 const mensajesDiaSinPlanes = [

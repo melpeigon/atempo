@@ -342,7 +342,13 @@ async function cargarErroresAdmin() {
     return;
   }
 
-  mostrarErroresAdmin(data || []);
+  const limiteReciente = Date.now() - 72 * 60 * 60 * 1000;
+  const erroresRecientes = (data || []).filter(function (errorApp) {
+    const fecha = new Date(errorApp.fecha).getTime();
+    return Number.isFinite(fecha) && fecha >= limiteReciente;
+  });
+
+  mostrarErroresAdmin(erroresRecientes);
 }
 
 function filtrarTestersAdmin() {

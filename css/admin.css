@@ -428,6 +428,13 @@ label[for="buscar-tester-admin"] {
   font-size: 14px;
 }
 
+.ayuda-errores-admin {
+  margin: 0 0 12px;
+  color: var(--gris-texto);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
 .error-admin {
   padding: 18px 0;
   border-bottom: 1px solid var(--borde);

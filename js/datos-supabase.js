@@ -3,6 +3,8 @@
 let perfilesCompartiblesActividad = new Set();
 let autoresEditablesPorUsuario = new Set();
 let usuarioActualId = null;
+let ultimaRecargaAgendaAlVolver = 0;
+let recargaAgendaEnCurso = false;
 
 function convertirPersonaDeSupabase(persona) {
   return {
@@ -10,8 +12,10 @@ function convertirPersonaDeSupabase(persona) {
     nombre: persona.nombre,
     color: persona.color,
     icono: persona.icono,
+    familiaId: persona.familia_id,
     tipoPersona: persona.tipo_persona,
     usuarioId: persona.usuario_id,
+    compartida: perfilesCompartiblesActividad.has(persona.id),
   };
 }
 
@@ -68,10 +72,14 @@ async function cargarDatosDeSupabase() {
   const { data: datosUsuario } = await clienteSupabase.auth.getUser();
   usuarioActualId = datosUsuario.user?.id || null;
 
+  const familiasConsultables = modoVistaConjuntaPrevia
+    ? familiasUsuario.map((familia) => familia.id)
+    : [familiaActual.id];
+
   const resultadoPersonas = await clienteSupabase
     .from("personas")
-    .select("id, nombre, color, icono, tipo_persona, usuario_id")
-    .eq("familia_id", familiaActual.id)
+    .select("id, familia_id, nombre, color, icono, tipo_persona, usuario_id")
+    .in("familia_id", familiasConsultables)
     .order("created_at", { ascending: true });
 
   if (resultadoPersonas.error) {
@@ -155,3 +163,29 @@ function vaciarDatosDeLaAgenda() {
   autoresEditablesPorUsuario = new Set();
   actualizarPantallasConDatosCargados();
 }
+
+async function actualizarAgendaAlVolver() {
+  if (
+    document.visibilityState !== "visible"
+    || !familiaActual
+    || recargaAgendaEnCurso
+    || Date.now() - ultimaRecargaAgendaAlVolver < 10000
+    || document.querySelector("dialog[open]")
+  ) {
+    return;
+  }
+
+  const { data, error } = await clienteSupabase.auth.getSession();
+  if (error || !data.session) return;
+
+  recargaAgendaEnCurso = true;
+  ultimaRecargaAgendaAlVolver = Date.now();
+  try {
+    await cargarDatosDeSupabase();
+  } finally {
+    recargaAgendaEnCurso = false;
+  }
+}
+
+document.addEventListener("visibilitychange", actualizarAgendaAlVolver);
+window.addEventListener("focus", actualizarAgendaAlVolver);

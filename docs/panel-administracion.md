@@ -66,7 +66,8 @@ de las agendas.
 
 Los errores nuevos aparecen como **Pendientes**. Una administradora puede
 marcarlos como **Revisados** sin eliminarlos y devolverlos a pendiente si fuera
-necesario. Los pendientes se muestran primero.
+necesario. Los pendientes se muestran primero. El panel muestra hasta 20 errores
+de las últimas 72 horas; los anteriores se conservan en Supabase.
 
 ## Comunicaciones
 

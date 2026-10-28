@@ -25,7 +25,9 @@ const mensajePasoCompartir = document.querySelector("#mensaje-paso-compartir");
 const mensajePasoActividad = document.querySelector("#mensaje-paso-actividad");
 const mensajePasoPersonas = document.querySelector("#mensaje-paso-personas");
 const modoVistaPrevia = new URLSearchParams(window.location.search).get("preview") === "1";
-const pasoSolicitado = new URLSearchParams(window.location.search).get("paso");
+const parametrosBienvenida = new URLSearchParams(window.location.search);
+const modoRevision = parametrosBienvenida.get("revisar") === "1";
+const pasoSolicitado = parametrosBienvenida.get("paso");
 
 let usuarioBienvenida = null;
 
@@ -48,18 +50,18 @@ function mostrarPasoBienvenida(paso, agregarHistorial = true) {
   pasoCompartirBienvenida.hidden = paso !== "compartir";
   pasoActividadBienvenida.hidden = paso !== "actividad";
 
-  tituloPasoPersonas.textContent = nombre
-    ? `${nombre}, vamos a preparar tu agenda`
-    : "Vamos a preparar tu agenda";
-  tituloPasoNotificaciones.textContent = nombre
-    ? `${nombre}, ¿activamos tus avisos?`
-    : "¿Activamos tus avisos?";
+  tituloPasoPersonas.textContent = modoRevision
+    ? nombre ? `${nombre}, revisa tus personas` : "Revisa tus personas"
+    : nombre ? `${nombre}, vamos a preparar tu agenda` : "Vamos a preparar tu agenda";
+  tituloPasoNotificaciones.textContent = modoRevision
+    ? nombre ? `${nombre}, revisa tus avisos` : "Revisa tus avisos"
+    : nombre ? `${nombre}, ¿activamos tus avisos?` : "¿Activamos tus avisos?";
   tituloPasoCompartir.textContent = nombre
-    ? `${nombre}, Que los planes de los peques no recaigan solo en ti`
-    : "Que los planes de los peques no recaigan solo en ti";
+    ? modoRevision ? `${nombre}, revisa lo que compartes` : `${nombre}, Que los planes de los peques no recaigan solo en ti`
+    : modoRevision ? "Revisa lo que compartes" : "Que los planes de los peques no recaigan solo en ti";
   tituloPasoActividad.textContent = nombre
-    ? `${nombre}, ¿añadimos vuestro primer plan?`
-    : "¿Añadimos vuestro primer plan?";
+    ? `${nombre}, ${modoRevision ? "¿añadimos otro plan?" : "¿añadimos vuestro primer plan?"}`
+    : modoRevision ? "¿Añadimos otro plan?" : "¿Añadimos vuestro primer plan?";
 
   if (!agregarHistorial) return;
 
@@ -105,6 +107,22 @@ async function prepararBienvenida() {
     return;
   }
 
+  if (modoRevision) {
+    sessionStorage.setItem("atempo-bienvenida-revision", "1");
+    campoNombreVisible.value = metadatos.nombre_visible || "";
+    mostrarPasoBienvenida(
+      ["personas", "notificaciones", "compartir", "actividad"].includes(pasoSolicitado) ? pasoSolicitado : "presentacion",
+      false
+    );
+    if (!pasoSolicitado || pasoSolicitado === "presentacion") {
+      document.querySelector("#titulo-bienvenida-inicial").textContent = "Hola de nuevo, soy Atempo 💜";
+      formularioBienvenida.querySelector("label").textContent = "¿Quieres cambiar el nombre o apodo con el que te llamo?";
+      botonContinuarBienvenida.textContent = "Guardar y continuar";
+    }
+    actualizarTextosRevision();
+    return;
+  }
+
   if (["personas", "notificaciones", "compartir", "actividad"].includes(pasoSolicitado) && metadatos.atempo_bienvenida_pendiente && !metadatos.atempo_bienvenida_completada) {
     campoNombreVisible.value = metadatos.nombre_visible || "";
     mostrarPasoBienvenida(pasoSolicitado, false);
@@ -124,6 +142,25 @@ async function prepararBienvenida() {
   campoNombreVisible.value = metadatos.nombre_visible || "";
   mostrarPasoBienvenida("presentacion", false);
   campoNombreVisible.focus();
+}
+
+function actualizarTextosRevision() {
+  if (!modoRevision) return;
+  const nombre = campoNombreVisible.value.trim();
+  tituloPasoPersonas.textContent = nombre ? `${nombre}, revisa tus personas` : "Revisa tus personas";
+  tituloPasoNotificaciones.textContent = nombre ? `${nombre}, revisa tus avisos` : "Revisa tus avisos";
+  tituloPasoCompartir.textContent = nombre ? `${nombre}, revisa lo que compartes` : "Revisa lo que compartes";
+  tituloPasoActividad.textContent = nombre ? `${nombre}, ¿añadimos otro plan?` : "¿Añadimos otro plan?";
+  document.querySelector("#paso-personas .intro-bienvenida").textContent =
+    "Puedes añadir o revisar las personas cuyos planes quieres tener a mano.";
+  botonAnadirPersonasBienvenida.textContent = "Revisar personas";
+  document.querySelector("#paso-notificaciones .intro-bienvenida").textContent =
+    "Revisa los avisos de tus planes y el resumen diario. Se configuran en este dispositivo.";
+  document.querySelector("#paso-compartir .intro-bienvenida").textContent =
+    "Si quieres, invita a otro adulto para tener juntos a mano los planes de los niños.";
+  document.querySelector("#paso-actividad .intro-bienvenida").textContent =
+    "Puedes añadir otro plan ahora o volver a tu agenda cuando quieras.";
+  botonAnadirActividadBienvenida.textContent = "Añadir un plan";
 }
 
 function activarVistaPrevia() {
@@ -148,11 +185,13 @@ async function finalizarBienvenida(nombreVisible = "") {
   botonContinuarBienvenida.disabled = true;
   botonContinuarBienvenida.textContent = "Guardando…";
 
-  const datosUsuario = {
-    atempo_bienvenida_pendiente: true,
-    atempo_bienvenida_completada: false,
-  };
-  datosUsuario.nombre_visible = nombreLimpio;
+  const datosUsuario = modoRevision
+    ? { nombre_visible: nombreLimpio }
+    : {
+        atempo_bienvenida_pendiente: true,
+        atempo_bienvenida_completada: false,
+        nombre_visible: nombreLimpio,
+      };
 
   const { error } = await clienteSupabase.auth.updateUser({ data: datosUsuario });
 
@@ -184,7 +223,7 @@ botonAnadirPersonasBienvenida.addEventListener("click", function () {
     return;
   }
 
-  window.location.href = new URL("index.html?configurar=personas", window.location.href).toString();
+  irAConfigurar("personas");
 });
 
 botonContinuarPersonasBienvenida.addEventListener("click", function () {
@@ -202,7 +241,7 @@ botonConfigurarNotificacionesBienvenida.addEventListener("click", function () {
     return;
   }
 
-  window.location.href = new URL("index.html?configurar=notificaciones", window.location.href).toString();
+  irAConfigurar("notificaciones");
 });
 
 botonCompartirAgendaBienvenida.addEventListener("click", function () {
@@ -212,7 +251,10 @@ botonCompartirAgendaBienvenida.addEventListener("click", function () {
     return;
   }
 
-  window.location.href = new URL("index.html?configurar=compartir", window.location.href).toString();
+  if (modoRevision) sessionStorage.setItem("atempo-bienvenida-regreso", "compartir");
+  const destinoCompartir = new URL("invitaciones.html?desde=bienvenida&paso=compartir", window.location.href);
+  if (modoRevision) destinoCompartir.searchParams.set("revisar", "1");
+  window.location.href = destinoCompartir.toString();
 });
 
 botonContinuarCompartirBienvenida.addEventListener("click", function () {
@@ -226,13 +268,27 @@ botonAnadirActividadBienvenida.addEventListener("click", function () {
     return;
   }
 
-  window.location.href = new URL("index.html?configurar=actividad", window.location.href).toString();
+  irAConfigurar("actividad");
 });
+
+function irAConfigurar(funcion) {
+  if (modoRevision) sessionStorage.setItem("atempo-bienvenida-revision", "1");
+  const destino = new URL(`index.html?configurar=${encodeURIComponent(funcion)}`, window.location.href);
+  if (modoRevision) destino.searchParams.set("revisar", "1");
+  window.location.href = destino.toString();
+}
 
 botonFinalizarBienvenida.addEventListener("click", async function () {
   if (modoVistaPrevia) {
     mensajePasoActividad.textContent = "En la bienvenida real, este botón terminará la configuración y abrirá tu agenda.";
     mensajePasoActividad.hidden = false;
+    return;
+  }
+
+  if (modoRevision) {
+    sessionStorage.removeItem("atempo-bienvenida-revision");
+    sessionStorage.removeItem("atempo-bienvenida-regreso");
+    window.location.replace(new URL("index.html", window.location.href).toString());
     return;
   }
 

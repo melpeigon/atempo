@@ -1,6 +1,16 @@
 
 // Estos datos se cargan desde Supabase después de iniciar sesión.
 const personas = [];
+const modoVistaConjuntaPrevia = new URLSearchParams(window.location.search).get("vista") === "conjunta";
+const modoVistaConjuntaSoloLectura = modoVistaConjuntaPrevia;
+
+if (modoVistaConjuntaPrevia) {
+  document.body.classList.add("vista-conjunta-previa");
+  const avisoVistaConjunta = document.querySelector("#aviso-vista-conjunta-previa");
+  if (avisoVistaConjunta) {
+    avisoVistaConjunta.hidden = false;
+  }
+}
 
 let idPersonaSeleccionada = null;
 let idPersonaEnEdicion = null;
@@ -77,6 +87,22 @@ function actualizarBienvenidaUsuario(nombre) {
   bienvenidaCuenta.hidden = !nombre;
 }
 
+function crearInsigniaCompartida() {
+  const insignia = document.createElement("span");
+  insignia.className = "insignia-perfil-compartido";
+  insignia.setAttribute("role", "img");
+  insignia.setAttribute("aria-label", "Perfil compartido");
+  insignia.title = "Perfil compartido";
+
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("aria-hidden", "true");
+  svg.innerHTML = '<path d="m8.7 13.7 6.6-4.3m-6.6 5.9 6.6 4.3" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="6.4" cy="15" r="3.2" fill="currentColor"/><circle cx="17.6" cy="7.5" r="3.2" fill="currentColor"/><circle cx="17.6" cy="21" r="3.2" fill="currentColor"/>';
+
+  insignia.append(svg);
+  return insignia;
+}
+
 // boton añadir personas //
 
 const botonPersona = document.querySelector("#boton-primera-persona");
@@ -141,6 +167,8 @@ function aceptarConfirmacion() {
 }
 
 function abrirEmergenteNuevaPersona() {
+  if (modoVistaConjuntaPrevia) return;
+
   idPersonaEnEdicion = null;
 
   formularioNuevaPersona.reset();
@@ -166,6 +194,10 @@ function abrirFichaPersona(idPersona, guardarEnHistorial = true) {
     return;
   }
 
+  botonAnadirActividadPersona.disabled = modoVistaConjuntaSoloLectura;
+  botonEditarPersona.disabled = modoVistaConjuntaPrevia;
+  botonEliminarPersona.disabled = modoVistaConjuntaPrevia;
+
   contenidoFichaPersona.replaceChildren();
 
   const avatarFichaPersona = document.createElement("div");
@@ -175,6 +207,10 @@ function abrirFichaPersona(idPersona, guardarEnHistorial = true) {
   const iconoFichaPersona = document.createElement("img");
   iconoFichaPersona.src = rutasIconos[personaSeleccionada.icono];
   iconoFichaPersona.alt = "";
+
+  if (personaSeleccionada.compartida) {
+    avatarFichaPersona.append(crearInsigniaCompartida());
+  }
 
   const nombreFichaPersona = document.createElement("h2");
   nombreFichaPersona.textContent = personaSeleccionada.nombre;
@@ -350,6 +386,8 @@ function abrirFichaPersona(idPersona, guardarEnHistorial = true) {
 }
 
 function editarPersonaSeleccionada() {
+  if (modoVistaConjuntaPrevia) return;
+
   const personaSeleccionada = personas.find(function (persona) {
     return persona.id === idPersonaSeleccionada;
   });
@@ -382,6 +420,8 @@ function volverInicio() {
 }
 
 function eliminarPersonaSeleccionada() {
+  if (modoVistaConjuntaPrevia) return;
+
   const indicePersona = personas.findIndex(function (persona) {
     return persona.id === idPersonaSeleccionada;
   });
@@ -453,6 +493,8 @@ function eliminarPersonaSeleccionada() {
 
 async function guardarNuevaPersona(evento) {
   evento.preventDefault();
+  if (modoVistaConjuntaPrevia) return;
+
   mensajeErrorPersona.hidden = true;
 
   const datosFormulario = new FormData(formularioNuevaPersona);
@@ -546,6 +588,8 @@ async function guardarNuevaPersona(evento) {
 
 function renderizarPersonas() {
   listaPersonas.replaceChildren();
+  botonPersona.disabled = modoVistaConjuntaPrevia;
+  botonAnadirOtraPersona.disabled = modoVistaConjuntaPrevia;
 
   if (personas.length === 0) {
     estadoSinPersonas.hidden = false;
@@ -578,6 +622,9 @@ function renderizarPersonas() {
     nombrePersona.textContent = persona.nombre;
 
     avatarPersona.append(iconoPersona);
+    if (persona.compartida) {
+      avatarPersona.append(crearInsigniaCompartida());
+    }
 
     tarjetaPersona.append(avatarPersona, nombrePersona);
 

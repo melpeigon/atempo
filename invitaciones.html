@@ -125,6 +125,28 @@
       </button>
     </section>
 
+    <section class="tarjeta-invitaciones" id="panel-permiso-propio" hidden
+      aria-labelledby="titulo-permiso-propio">
+      <h2 id="titulo-permiso-propio">Tú decides sobre tus planes</h2>
+      <p>Elige si otro adulto de una agenda compartida puede editar las actividades compartidas que tú hayas creado.</p>
+      <label for="agenda-permiso-propio">Agenda compartida</label>
+      <select id="agenda-permiso-propio"></select>
+      <label for="adulto-permiso-propio">Adulto</label>
+      <select id="adulto-permiso-propio"></select>
+      <fieldset class="selector-perfiles-invitacion permiso-edicion-invitacion">
+        <legend>Edición de actividades</legend>
+        <label class="opcion-perfil-invitacion">
+          <input id="permite-editar-propio" type="checkbox" />
+          <span>Este adulto puede editar mis actividades compartidas</span>
+        </label>
+        <p class="ayuda-perfiles-invitacion">Solo podrá editar planes que hayas compartido en perfiles que puede ver. Tus actividades privadas seguirán siendo solo tuyas y no podrá borrar las que hayas creado.</p>
+      </fieldset>
+      <p class="mensaje-invitaciones" id="mensaje-permiso-propio" role="status" hidden></p>
+      <button class="boton-principal-invitaciones" id="boton-guardar-permiso-propio" type="button">
+        Guardar mi permiso
+      </button>
+    </section>
+
     <section class="tarjeta-invitaciones" id="panel-aceptar-invitacion" hidden
       aria-labelledby="titulo-aceptar-invitacion">
       <h2 id="titulo-aceptar-invitacion">Te han invitado a compartir una agenda</h2>

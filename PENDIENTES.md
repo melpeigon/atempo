@@ -1,6 +1,6 @@
 # Pendientes de Atempo
 
-Última revisión: 25 de octubre de 2026.
+Última revisión: 28 de octubre de 2026.
 
 Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar primero el funcionamiento principal de la aplicación y dejar las mejoras más grandes para después.
 
@@ -96,6 +96,14 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Explicar la recurrencia anual y el caso especial del 29 de febrero.
 - [x] Mostrar la guía como una pantalla propia y desplazable.
 
+## Bienvenida y primeros pasos
+
+- [x] Presentar Atempo a las cuentas nuevas con una bienvenida y pedir el nombre o apodo que quieren usar.
+- [x] Guardar ese nombre en el perfil de la cuenta y mostrarlo en el saludo de Inicio y en el resumen diario.
+- [x] Permitir que una cuenta existente vuelva a los primeros pasos desde la guía y cambie su nombre sin reiniciar la bienvenida ni modificar sus datos.
+- [x] Enlazar los pasos con las pantallas para añadir personas, configurar notificaciones, compartir e incluir un plan.
+- [ ] Revisar el flujo completo con una cuenta nueva y otra ya existente antes de publicar la siguiente versión.
+
 ## Notificaciones — imprescindibles para la versión 1.0
 
 - [x] Añadir al formulario de actividad un selector «Avisarme»: sin aviso, 1 hora antes o a una hora concreta.
@@ -144,7 +152,10 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [ ] Añadir una guía de primeros pasos para quienes se incorporan a una familia.
 - [ ] Resolver con cuidado la incorporación de cuentas existentes sin perder actividades personales ni duplicar hijos.
 - [ ] Probar con una cuenta de varias familias el selector de agenda implementado localmente; asegurar que no selecciona una con `limit(1)`.
-- [ ] Crear una vista combinada por adulto: mostrar su propia agenda junto con las personas y actividades de los hijos de la agenda compartida, sin mostrar la ficha ni los planes privados del otro adulto y evitando duplicar hijos.
+- [x] Implementar en local una vista combinada de solo lectura que reúne la agenda propia y los perfiles y planes compartidos, sin duplicar perfiles.
+- [ ] Validar en producción con dos cuentas que cada adulto vea su propia agenda y los perfiles infantiles autorizados, sin acceder a los planes privados del otro.
+- [ ] Comprobar en producción los permisos de edición y borrado de actividades compartidas antes de dar por terminada esta mejora.
+- [x] Permitir que cada adulto decida si el otro puede editar sus propias actividades compartidas; conservar los planes privados y el borrado solo para quien los creó.
 - [ ] Evitar que el registro iniciado desde una invitación cree primero una familia personal vacía.
 
 ## Revisión final
@@ -222,6 +233,7 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Crear un registro seguro de errores de la aplicación para mostrarlo en el panel de administración.
 - [x] Registrar el tipo de error, fecha, versión, plataforma, instalación y usuario cuando ya esté identificado.
 - [x] Diferenciar en el panel los errores de la aplicación y del procesador de notificaciones.
+- [x] Mostrar en el panel solo los errores de las últimas 72 horas, con un máximo de 20; conservar los anteriores en Supabase.
 - [ ] Permitir filtrar los errores por tester, versión, plataforma, tipo y fecha.
 - [ ] No guardar contraseñas, contenido de actividades ni otros datos privados dentro de los registros de errores.
 - [x] Permitir redactar y publicar desde el panel los avisos internos con las novedades de cada versión.

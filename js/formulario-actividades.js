@@ -2,6 +2,8 @@
 
 const botonAnadirActividad = document.querySelector("#boton-anadir-actividad");
 const botonAnadirActividadPersona = document.querySelector("#boton-anadir-actividad-persona");
+botonAnadirActividad.disabled = modoVistaConjuntaSoloLectura;
+botonAnadirActividadPersona.disabled = modoVistaConjuntaSoloLectura;
 
 const botonCerrarActividad = document.querySelector("#boton-cerrar-actividad");
 const emergenteNuevaActividad = document.querySelector("#emergente-nueva-actividad");
@@ -270,6 +272,8 @@ function marcarDiaDeFechaInicio() {
 }
 
 function abrirEmergenteNuevaActividad(idPersona = null, fechaPreseleccionada = null) {
+  if (modoVistaConjuntaSoloLectura) return;
+
   idActividadEnEdicion = null;
 
   formularioActividad.reset();
@@ -322,6 +326,8 @@ function ocultarErrorActividad() {
 }
 
 function editarActividadSeleccionada() {
+  if (modoVistaConjuntaSoloLectura) return;
+
   const actividadSeleccionada = actividades.find(function (actividad) {
     return actividad.id === idActividadSeleccionada;
   });
@@ -410,6 +416,7 @@ function editarActividadSeleccionada() {
 
 async function guardarNuevaActividad(evento) {
   evento.preventDefault();
+  if (modoVistaConjuntaSoloLectura) return;
 
   ocultarErrorActividad();
 
@@ -574,7 +581,7 @@ async function guardarNuevaActividad(evento) {
       false,
       fechaOcurrenciaFichaActividad
     );
-  } else if (sessionStorage.getItem("atempo-bienvenida-regreso") === "actividad") {
+  } else if (sessionStorage.getItem("atempo-bienvenida-regreso") === "actividad" && sessionStorage.getItem("atempo-bienvenida-revision") !== "1") {
     const { error: errorBienvenida } = await clienteSupabase.auth.updateUser({
       data: {
         atempo_bienvenida_pendiente: false,
@@ -589,6 +596,10 @@ async function guardarNuevaActividad(evento) {
       sessionStorage.removeItem("atempo-bienvenida-regreso");
       document.querySelector("#aviso-regreso-bienvenida").hidden = true;
     }
+  } else if (sessionStorage.getItem("atempo-bienvenida-regreso") === "actividad") {
+    sessionStorage.removeItem("atempo-bienvenida-regreso");
+    sessionStorage.removeItem("atempo-bienvenida-revision");
+    document.querySelector("#aviso-regreso-bienvenida").hidden = true;
   }
 }
 

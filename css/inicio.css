@@ -192,10 +192,29 @@
 .avatar-persona {
   width: 47px;
   height: 47px;
+  position: relative;
   display: grid;
   place-items: center;
-  overflow: hidden;
+  overflow: visible;
   border-radius: 50%;
+}
+
+.insignia-perfil-compartido {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  z-index: 2;
+  width: 12px;
+  height: 12px;
+  display: grid;
+  place-items: center;
+  transform: translateX(-50%);
+  color: var(--ciruela);
+}
+
+.insignia-perfil-compartido svg {
+  width: 12px;
+  height: 12px;
 }
 
 .avatar-persona img {
@@ -363,4 +382,22 @@
   font-size: 23px;
   vertical-align: -2px;
   line-height: 0;
+}
+.aviso-vista-conjunta-previa {
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border: 1px solid #d9c6db;
+  border-radius: 16px;
+  background: #fffaf8;
+  color: var(--ciruela);
+  font-size: 14px;
+}
+
+.aviso-vista-conjunta-previa p {
+  margin: 6px 0 0;
+  line-height: 1.45;
+}
+
+body.vista-conjunta-previa #contenedor-selector-agenda {
+  display: none !important;
 }

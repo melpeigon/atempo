@@ -123,7 +123,7 @@ async function obtenerFamiliasUsuario() {
 
   const { data, error } = await clienteSupabase
     .from("miembros_familia")
-    .select("familia_id, rol, familias(id, nombre)")
+    .select("familia_id, rol, familias!miembros_familia_familia_id_fkey(id, nombre)")
     .eq("usuario_id", datosUsuario.user.id);
 
   if (error) {
@@ -270,8 +270,11 @@ async function prepararSesion() {
   const abrirActividadDesdeBienvenida = funcionBienvenida === "actividad";
   const abrirCompartirDesdeBienvenida = funcionBienvenida === "compartir";
   const abrirFuncionDesdeBienvenida = abrirPersonasDesdeBienvenida || abrirNotificacionesDesdeBienvenida || abrirActividadDesdeBienvenida || abrirCompartirDesdeBienvenida;
+  const revisarBienvenida = new URLSearchParams(window.location.search).get("revisar") === "1";
 
-  if (abrirPersonasDesdeBienvenida || abrirNotificacionesDesdeBienvenida || abrirActividadDesdeBienvenida) {
+  if (revisarBienvenida) sessionStorage.setItem("atempo-bienvenida-revision", "1");
+
+  if (abrirPersonasDesdeBienvenida || abrirNotificacionesDesdeBienvenida || abrirActividadDesdeBienvenida || abrirCompartirDesdeBienvenida) {
     sessionStorage.setItem("atempo-bienvenida-regreso", funcionBienvenida);
   }
 
@@ -285,6 +288,9 @@ async function prepararSesion() {
   if (familiaCargada) {
     pantallaAcceso.hidden = true;
     avisoRegresoBienvenida.hidden = !sessionStorage.getItem("atempo-bienvenida-regreso");
+    if (sessionStorage.getItem("atempo-bienvenida-revision") === "1") {
+      avisoRegresoBienvenida.querySelector("p").textContent = "Cuando termines, puedes volver a revisar los primeros pasos.";
+    }
 
     if (!abrirFuncionDesdeBienvenida) {
       await comprobarNovedadPendiente();
@@ -300,8 +306,9 @@ async function prepararSesion() {
       } else if (abrirActividadDesdeBienvenida) {
         abrirEmergenteNuevaActividad();
       } else if (abrirCompartirDesdeBienvenida) {
+        if (revisarBienvenida) sessionStorage.setItem("atempo-bienvenida-revision", "1");
         window.location.replace(
-          new URL("invitaciones.html?desde=bienvenida&paso=compartir", window.location.href).toString()
+          new URL(`invitaciones.html?desde=bienvenida&paso=compartir${revisarBienvenida ? "&revisar=1" : ""}`, window.location.href).toString()
         );
       }
     }
@@ -311,7 +318,8 @@ async function prepararSesion() {
 botonRegresoBienvenida.addEventListener("click", function () {
   const paso = sessionStorage.getItem("atempo-bienvenida-regreso") || "personas";
   sessionStorage.removeItem("atempo-bienvenida-regreso");
-  window.location.href = new URL(`bienvenida.html?paso=${encodeURIComponent(paso)}`, window.location.href).toString();
+  const revisar = sessionStorage.getItem("atempo-bienvenida-revision") === "1";
+  window.location.href = new URL(`bienvenida.html?paso=${encodeURIComponent(paso)}${revisar ? "&revisar=1" : ""}`, window.location.href).toString();
 });
 
 async function iniciarSesion(evento) {

@@ -78,3 +78,28 @@
   font-size: 11px;
   text-align: center;
 }
+
+.enlace-primeros-pasos {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 9px 16px;
+  border: 1px solid color-mix(in srgb, var(--ciruela) 35%, white);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--lila) 24%, var(--crema));
+  color: var(--ciruela);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-decoration: none;
+  transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.enlace-primeros-pasos:hover {
+  border-color: var(--ciruela);
+  background: color-mix(in srgb, var(--lila) 38%, var(--crema));
+}
+
+.enlace-primeros-pasos:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--ciruela) 35%, transparent);
+  outline-offset: 3px;
+}

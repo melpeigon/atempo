@@ -4,7 +4,9 @@ const enlaceVolverInvitaciones = document.querySelector("#enlace-volver-atempo")
 
 if (parametrosInvitacion.get("desde") === "bienvenida") {
   const paso = parametrosInvitacion.get("paso") || "compartir";
-  enlaceVolverInvitaciones.href = `bienvenida.html?paso=${encodeURIComponent(paso)}`;
+  const revisar = parametrosInvitacion.get("revisar") === "1";
+  enlaceVolverInvitaciones.href = `bienvenida.html?paso=${encodeURIComponent(paso)}${revisar ? "&revisar=1" : ""}`;
+  if (revisar) sessionStorage.setItem("atempo-bienvenida-revision", "1");
   enlaceVolverInvitaciones.textContent = "← Volver a los primeros pasos";
 }
 
@@ -36,11 +38,18 @@ const listaPerfilesPermisos = document.querySelector("#lista-perfiles-permisos")
 const mensajePermisosMiembros = document.querySelector("#mensaje-permisos-miembros");
 const botonGuardarPermisos = document.querySelector("#boton-guardar-permisos");
 const casillaEdicionMiembro = document.querySelector("#permite-editar-miembro");
+const panelPermisoPropio = document.querySelector("#panel-permiso-propio");
+const selectorAgendaPermisoPropio = document.querySelector("#agenda-permiso-propio");
+const selectorAdultoPermisoPropio = document.querySelector("#adulto-permiso-propio");
+const casillaPermisoPropio = document.querySelector("#permite-editar-propio");
+const mensajePermisoPropio = document.querySelector("#mensaje-permiso-propio");
+const botonGuardarPermisoPropio = document.querySelector("#boton-guardar-permiso-propio");
 const formularioAceptarInvitacion = document.querySelector("#formulario-aceptar-invitacion");
 const mensajeAceptarInvitacion = document.querySelector("#mensaje-aceptar-invitacion");
 const botonAceptarInvitacion = document.querySelector("#boton-aceptar-invitacion");
 let perfilesAgendaInvitaciones = [];
 let miembrosAgendaInvitaciones = [];
+let agendasCompartidasPropias = [];
 
 function mostrarMensajeInvitaciones(elemento, mensaje, esError = false) {
   elemento.textContent = mensaje;
@@ -141,7 +150,7 @@ async function crearCuentaDesdeInvitacion() {
 async function cargarAgendasParaInvitar(usuarioId) {
   const { data, error } = await clienteSupabase
     .from("miembros_familia")
-    .select("familia_id, rol, familias(id, nombre)")
+    .select("familia_id, rol, familias!miembros_familia_familia_id_fkey(id, nombre)")
     .eq("usuario_id", usuarioId)
     .eq("rol", "propietaria");
 
@@ -238,6 +247,95 @@ async function cargarMiembrosAgenda(familiaId) {
   }
 
   if (miembrosAgendaInvitaciones.length > 0) await cargarPermisosMiembro();
+}
+
+async function mostrarPanelPermisoPropio(usuario) {
+  const { data, error } = await clienteSupabase
+    .from("miembros_familia")
+    .select("familia_id, familias!miembros_familia_familia_id_fkey(id, nombre)")
+    .eq("usuario_id", usuario.id)
+    .eq("rol", "miembro");
+
+  if (error) throw error;
+
+  agendasCompartidasPropias = (data || [])
+    .filter((membresia) => membresia.familias)
+    .map((membresia) => ({
+      id: membresia.familias.id,
+      nombre: membresia.familias.nombre,
+    }));
+
+  panelPermisoPropio.hidden = agendasCompartidasPropias.length === 0;
+  if (agendasCompartidasPropias.length === 0) return;
+
+  selectorAgendaPermisoPropio.replaceChildren();
+  agendasCompartidasPropias.forEach((agenda) => {
+    selectorAgendaPermisoPropio.add(new Option(agenda.nombre, agenda.id));
+  });
+  await cargarAdultosParaPermisoPropio();
+  ocultarEstadoInvitaciones();
+}
+
+async function cargarAdultosParaPermisoPropio() {
+  const { data, error } = await clienteSupabase.rpc("obtener_miembros_compartidos", {
+    familia_consultada: selectorAgendaPermisoPropio.value,
+  });
+
+  if (error) throw error;
+
+  selectorAdultoPermisoPropio.replaceChildren();
+  for (const adulto of data || []) {
+    selectorAdultoPermisoPropio.add(new Option(adulto.email || "Otro adulto", adulto.usuario_id));
+  }
+
+  const hayAdulto = selectorAdultoPermisoPropio.options.length > 0;
+  selectorAdultoPermisoPropio.disabled = !hayAdulto;
+  casillaPermisoPropio.disabled = !hayAdulto;
+  botonGuardarPermisoPropio.disabled = !hayAdulto;
+  if (!hayAdulto) {
+    mostrarMensajeInvitaciones(mensajePermisoPropio, "No encontramos otro adulto en esta agenda compartida.", true);
+    return;
+  }
+  await cargarMiPermisoEdicion();
+}
+
+async function cargarMiPermisoEdicion() {
+  limpiarMensajeInvitaciones(mensajePermisoPropio);
+  const { data, error } = await clienteSupabase.rpc("obtener_mi_permiso_edicion", {
+    familia_consultada: selectorAgendaPermisoPropio.value,
+    usuario_editor: selectorAdultoPermisoPropio.value,
+  });
+
+  if (error) {
+    console.error("No se pudo cargar tu permiso de edición:", error);
+    mostrarMensajeInvitaciones(mensajePermisoPropio, "No hemos podido cargar tu permiso. Comprueba que esté aplicada la migración 039.", true);
+    casillaPermisoPropio.disabled = true;
+    botonGuardarPermisoPropio.disabled = true;
+    return;
+  }
+
+  casillaPermisoPropio.disabled = false;
+  botonGuardarPermisoPropio.disabled = false;
+  casillaPermisoPropio.checked = data === true;
+}
+
+async function guardarMiPermisoEdicion() {
+  limpiarMensajeInvitaciones(mensajePermisoPropio);
+  botonGuardarPermisoPropio.disabled = true;
+  const { data, error } = await clienteSupabase.rpc("configurar_mi_permiso_edicion", {
+    familia_consultada: selectorAgendaPermisoPropio.value,
+    usuario_editor: selectorAdultoPermisoPropio.value,
+    permite_editar: casillaPermisoPropio.checked,
+  });
+  botonGuardarPermisoPropio.disabled = false;
+
+  if (error || data !== true) {
+    console.error("No se pudo guardar tu permiso de edición:", error);
+    mostrarMensajeInvitaciones(mensajePermisoPropio, "No se pudo guardar el permiso. Inténtalo de nuevo.", true);
+    return;
+  }
+
+  mostrarMensajeInvitaciones(mensajePermisoPropio, "Permiso guardado. El otro adulto tendrá que recargar Atempo para ver el cambio.");
 }
 
 function actualizarEstadoCasillaEdicion(contenedorPerfiles, casillaEdicion) {
@@ -470,6 +568,14 @@ async function prepararPaginaInvitaciones() {
   }
 
   await mostrarPanelCrearInvitacion(data.session.user);
+  try {
+    await mostrarPanelPermisoPropio(data.session.user);
+  } catch (error) {
+    console.error("No se pudo cargar el permiso de edición propio:", error);
+    if (!panelPermisoPropio.hidden) {
+      mostrarMensajeInvitaciones(mensajePermisoPropio, "No hemos podido cargar este permiso. Comprueba que esté aplicada la migración 039.", true);
+    }
+  }
 }
 
 formularioAccesoInvitaciones.addEventListener("submit", iniciarSesionInvitaciones);
@@ -490,6 +596,9 @@ selectorAgendaInvitaciones.addEventListener("change", async function () {
 });
 selectorMiembroPermisos.addEventListener("change", cargarPermisosMiembro);
 botonGuardarPermisos.addEventListener("click", guardarPermisosMiembro);
+selectorAgendaPermisoPropio.addEventListener("change", cargarAdultosParaPermisoPropio);
+selectorAdultoPermisoPropio.addEventListener("change", cargarMiPermisoEdicion);
+botonGuardarPermisoPropio.addEventListener("click", guardarMiPermisoEdicion);
 listaPerfilesInvitacion.addEventListener("change", function () {
   actualizarEstadoCasillaEdicion(listaPerfilesInvitacion, casillaEdicionInvitacion);
   actualizarResumenInvitacion();
