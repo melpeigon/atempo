@@ -124,11 +124,6 @@
       </button>
     </header>
 
-    <aside class="aviso-vista-conjunta-previa" id="aviso-vista-conjunta-previa" hidden>
-      <strong>Vista previa de agenda conjunta</strong>
-      <p>Estamos reuniendo los perfiles y planes que esta cuenta puede ver. Esta previsualización es de solo lectura: aquí no se pueden añadir, editar ni borrar personas o planes.</p>
-    </aside>
-
     <aside class="aviso-regreso-bienvenida" id="aviso-regreso-bienvenida" hidden>
       <p>Cuando termines, puedes volver a preparar tu agenda.</p>
       <button id="boton-regreso-bienvenida" type="button">Volver a los primeros pasos</button>
@@ -562,11 +557,6 @@
   <dialog class="emergente-menu" id="emergente-menu" aria-labelledby="titulo-menu">
     <h2 id="titulo-menu">Menú</h2>
 
-    <div class="selector-agenda" id="contenedor-selector-agenda" hidden>
-      <label for="selector-agenda-activa">Agenda activa</label>
-      <select id="selector-agenda-activa"></select>
-    </div>
-
     <nav class="opciones-menu" aria-label="Opciones de Atempo">
       <button id="boton-menu-notificaciones" type="button">
         <img src="Branding/iconos/SVG/notificaciones.svg" alt="" />
@@ -574,8 +564,13 @@
       </button>
 
       <button id="boton-menu-invitaciones" type="button">
-        <span aria-hidden="true">♡</span>
-        Compartir agenda
+        <svg class="icono-agenda-compartida-menu" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m8.7 13.7 6.6-4.3m-6.6 5.9 6.6 4.3" fill="none" stroke="currentColor" stroke-width="2.2" />
+          <circle cx="6.4" cy="15" r="3.2" fill="currentColor" />
+          <circle cx="17.6" cy="7.5" r="3.2" fill="currentColor" />
+          <circle cx="17.6" cy="21" r="3.2" fill="currentColor" />
+        </svg>
+        Agenda compartida
       </button>
 
       <button id="boton-menu-guia" type="button">
@@ -591,20 +586,6 @@
     <button class="boton-cerrar-menu" id="boton-cerrar-menu" type="button">
       Cerrar
     </button>
-  </dialog>
-
-  <dialog class="emergente-menu" id="emergente-elegir-agenda" aria-labelledby="titulo-elegir-agenda">
-    <h2 id="titulo-elegir-agenda">¿Qué agenda quieres abrir?</h2>
-    <p class="ayuda-selector-agenda">Puedes cambiar de agenda más adelante desde el menú.</p>
-    <form id="formulario-elegir-agenda">
-      <label for="selector-elegir-agenda">Tus agendas</label>
-      <select id="selector-elegir-agenda" required>
-        <option value="">Elige una agenda</option>
-      </select>
-      <button class="boton-guardar-configuracion" id="boton-confirmar-agenda" type="submit" disabled>
-        Continuar
-      </button>
-    </form>
   </dialog>
 
   <!-- CONFIGURACIÓN DE NOTIFICACIONES -->

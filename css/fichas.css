@@ -25,6 +25,13 @@
   text-align: center;
 }
 
+.aviso-borrado-persona {
+  margin: -8px 0 16px;
+  color: var(--texto-secundario);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
 .avatar-ficha-persona {
   width: 132px;
   height: 132px;

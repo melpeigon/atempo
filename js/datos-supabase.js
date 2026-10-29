@@ -15,6 +15,7 @@ function convertirPersonaDeSupabase(persona) {
     familiaId: persona.familia_id,
     tipoPersona: persona.tipo_persona,
     usuarioId: persona.usuario_id,
+    creadaPor: persona.creada_por || null,
     compartida: perfilesCompartiblesActividad.has(persona.id),
   };
 }
@@ -72,13 +73,11 @@ async function cargarDatosDeSupabase() {
   const { data: datosUsuario } = await clienteSupabase.auth.getUser();
   usuarioActualId = datosUsuario.user?.id || null;
 
-  const familiasConsultables = modoVistaConjuntaPrevia
-    ? familiasUsuario.map((familia) => familia.id)
-    : [familiaActual.id];
+  const familiasConsultables = familiasUsuario.map((familia) => familia.id);
 
   const resultadoPersonas = await clienteSupabase
     .from("personas")
-    .select("id, familia_id, nombre, color, icono, tipo_persona, usuario_id")
+    .select("id, familia_id, nombre, color, icono, tipo_persona, usuario_id, creada_por")
     .in("familia_id", familiasConsultables)
     .order("created_at", { ascending: true });
 
@@ -101,11 +100,11 @@ async function cargarDatosDeSupabase() {
     resultadoPerfilesCompartibles.error ? [] : resultadoPerfilesCompartibles.data || []
   );
 
-  const resultadoAutoresEditables = await clienteSupabase.rpc("obtener_autores_editables", {
-    familia_consultada: familiaActual.id,
-  });
+  const resultadosAutoresEditables = await Promise.all(familiasConsultables.map((familiaId) =>
+    clienteSupabase.rpc("obtener_autores_editables", { familia_consultada: familiaId })
+  ));
   autoresEditablesPorUsuario = new Set(
-    resultadoAutoresEditables.error ? [] : resultadoAutoresEditables.data || []
+    resultadosAutoresEditables.flatMap((resultado) => resultado.error ? [] : resultado.data || [])
   );
 
   const idsPersonas = resultadoPersonas.data.map(function (persona) {

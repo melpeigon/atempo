@@ -383,21 +383,3 @@
   vertical-align: -2px;
   line-height: 0;
 }
-.aviso-vista-conjunta-previa {
-  margin: 0 0 18px;
-  padding: 14px 16px;
-  border: 1px solid #d9c6db;
-  border-radius: 16px;
-  background: #fffaf8;
-  color: var(--ciruela);
-  font-size: 14px;
-}
-
-.aviso-vista-conjunta-previa p {
-  margin: 6px 0 0;
-  line-height: 1.45;
-}
-
-body.vista-conjunta-previa #contenedor-selector-agenda {
-  display: none !important;
-}

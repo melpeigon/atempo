@@ -38,6 +38,22 @@ const listaPerfilesPermisos = document.querySelector("#lista-perfiles-permisos")
 const mensajePermisosMiembros = document.querySelector("#mensaje-permisos-miembros");
 const botonGuardarPermisos = document.querySelector("#boton-guardar-permisos");
 const casillaEdicionMiembro = document.querySelector("#permite-editar-miembro");
+const botonDejarCompartir = document.querySelector("#boton-dejar-compartir");
+const botonSalirAgenda = document.querySelector("#boton-salir-agenda");
+const dialogoRetiradaAgenda = document.querySelector("#dialogo-retirada-agenda");
+const tituloRetiradaAgenda = document.querySelector("#titulo-retirada-agenda");
+const nombreAdultoRetirada = document.querySelector("#nombre-adulto-retirada");
+const prefijoPreguntaRetirada = document.querySelector("#prefijo-pregunta-retirada");
+const sufijoPreguntaRetirada = document.querySelector("#sufijo-pregunta-retirada");
+const avisoRetiradaAgenda = document.querySelector("#aviso-retirada-agenda");
+const ayudaConservarRetirada = document.querySelector(".ayuda-conservar-retirada");
+const ayudaEliminarRetirada = document.querySelector(".ayuda-eliminar-retirada");
+const textoOpcionEliminar = document.querySelector("#texto-opcion-eliminar");
+const mensajeRetiradaAgenda = document.querySelector("#mensaje-retirada-agenda");
+const mensajeDialogoRetirada = document.querySelector("#mensaje-dialogo-retirada");
+const botonCancelarRetirada = document.querySelector("#boton-cancelar-retirada");
+const botonConfirmarRetirada = document.querySelector("#boton-confirmar-retirada");
+const textoOpcionConservar = document.querySelector("#texto-opcion-conservar");
 const panelPermisoPropio = document.querySelector("#panel-permiso-propio");
 const selectorAgendaPermisoPropio = document.querySelector("#agenda-permiso-propio");
 const selectorAdultoPermisoPropio = document.querySelector("#adulto-permiso-propio");
@@ -45,11 +61,14 @@ const casillaPermisoPropio = document.querySelector("#permite-editar-propio");
 const mensajePermisoPropio = document.querySelector("#mensaje-permiso-propio");
 const botonGuardarPermisoPropio = document.querySelector("#boton-guardar-permiso-propio");
 const formularioAceptarInvitacion = document.querySelector("#formulario-aceptar-invitacion");
+const casillaEdicionAlAceptar = document.querySelector("#permite-edicion-al-aceptar");
 const mensajeAceptarInvitacion = document.querySelector("#mensaje-aceptar-invitacion");
 const botonAceptarInvitacion = document.querySelector("#boton-aceptar-invitacion");
 let perfilesAgendaInvitaciones = [];
 let miembrosAgendaInvitaciones = [];
 let agendasCompartidasPropias = [];
+let usuarioSesionInvitaciones = null;
+let modoRetiradaAgenda = "propietaria";
 
 function mostrarMensajeInvitaciones(elemento, mensaje, esError = false) {
   elemento.textContent = mensaje;
@@ -430,6 +449,130 @@ async function guardarPermisosMiembro() {
   mostrarMensajeInvitaciones(mensajePermisosMiembros, "Permisos guardados. La otra cuenta tendrá que recargar Atempo para ver el cambio.");
 }
 
+function abrirDialogoRetiradaAgenda() {
+  modoRetiradaAgenda = "propietaria";
+  tituloRetiradaAgenda.textContent = "Dejar de compartir agenda";
+  const opcionesRetirada = document.querySelectorAll('input[name="accion-planes-retirada"]');
+  if (opcionesRetirada[1]) opcionesRetirada[1].value = "eliminar";
+  limpiarMensajeInvitaciones(mensajeRetiradaAgenda);
+  limpiarMensajeInvitaciones(mensajeDialogoRetirada);
+  botonConfirmarRetirada.disabled = true;
+  document.querySelectorAll('input[name="accion-planes-retirada"]').forEach((opcion) => {
+    opcion.checked = false;
+  });
+  botonConfirmarRetirada.textContent = "Confirmar";
+  prefijoPreguntaRetirada.textContent = "¿Qué quieres hacer con los planes compartidos de los niños que creó ";
+  sufijoPreguntaRetirada.textContent = "?";
+  nombreAdultoRetirada.hidden = false;
+  nombreAdultoRetirada.textContent = selectorMiembroPermisos.selectedOptions[0]?.textContent || "este adulto";
+  textoOpcionConservar.textContent = "Conservarlos en la agenda";
+  textoOpcionEliminar.textContent = "Eliminar esos planes compartidos";
+  ayudaConservarRetirada.textContent = "La autoría pasará a ti y seguirán en esta agenda.";
+  ayudaEliminarRetirada.textContent = "Se borrarán solo estos planes compartidos de menores.";
+  avisoRetiradaAgenda.textContent = "Este adulto perderá el acceso a esta agenda. Su cuenta, perfiles y planes privados se mantienen.";
+  dialogoRetiradaAgenda.showModal();
+}
+
+function abrirDialogoSalidaPropia() {
+  modoRetiradaAgenda = "miembro";
+  tituloRetiradaAgenda.textContent = "Salir de la agenda compartida";
+  limpiarMensajeInvitaciones(mensajeRetiradaAgenda);
+  limpiarMensajeInvitaciones(mensajeDialogoRetirada);
+  botonConfirmarRetirada.disabled = true;
+  document.querySelectorAll('input[name="accion-planes-retirada"]').forEach((opcion) => {
+    opcion.checked = false;
+  });
+  botonConfirmarRetirada.textContent = "Confirmar";
+  textoOpcionConservar.textContent = "Conservarlos en la agenda";
+  prefijoPreguntaRetirada.textContent = "Al salir, ¿qué hacemos con los planes compartidos de los niños que has creado?";
+  nombreAdultoRetirada.hidden = true;
+  sufijoPreguntaRetirada.textContent = "";
+  prefijoPreguntaRetirada.textContent = "¿Qué quieres hacer con los perfiles y planes que compartieron contigo?";
+  textoOpcionConservar.textContent = "Conservarlos en mi agenda";
+  textoOpcionEliminar.textContent = "Eliminar perfiles y planes de mi agenda";
+  const opcionesRetirada = document.querySelectorAll('input[name="accion-planes-retirada"]');
+  if (opcionesRetirada[1]) opcionesRetirada[1].value = "no_conservar";
+  ayudaConservarRetirada.textContent = "Se copiarán los perfiles y sus planes a tu agenda. La otra persona conservará los originales.";
+  ayudaEliminarRetirada.textContent = "Se eliminarán solo de tu agenda. La otra persona seguirá conservando sus perfiles y planes.";
+  avisoRetiradaAgenda.textContent = "Tu agenda personal y tus planes propios seguirán igual. Las fichas copiadas no se fusionan con otras fichas tuyas.";
+  dialogoRetiradaAgenda.showModal();
+}
+
+async function confirmarRetiradaAgenda() {
+  const accion = document.querySelector('input[name="accion-planes-retirada"]:checked')?.value;
+  const familiaId = modoRetiradaAgenda === "miembro"
+    ? selectorAgendaPermisoPropio.value
+    : selectorAgendaInvitaciones.value;
+  const usuarioId = selectorMiembroPermisos.value;
+  if (!accion || !familiaId || (modoRetiradaAgenda === "propietaria" && !usuarioId)) return;
+
+  botonConfirmarRetirada.disabled = true;
+  botonCancelarRetirada.disabled = true;
+  botonConfirmarRetirada.textContent = "Actualizando…";
+  limpiarMensajeInvitaciones(mensajeDialogoRetirada);
+
+  let resultado;
+  try {
+    resultado = modoRetiradaAgenda === "miembro"
+      ? await clienteSupabase.rpc("salir_de_agenda_compartida", {
+        familia_consultada: familiaId,
+        accion_salida: accion,
+      })
+      : await clienteSupabase.rpc("retirar_miembro_agenda", {
+        familia_consultada: familiaId,
+        usuario_destino: usuarioId,
+        accion_planes: accion,
+      });
+  } catch (error) {
+    resultado = { error };
+  }
+  const { data, error } = resultado;
+
+  botonCancelarRetirada.disabled = false;
+  botonConfirmarRetirada.textContent = "Confirmar";
+
+  if (error || !data) {
+    console.error("No se pudo retirar al adulto de la agenda:", error);
+    const mensaje = error?.code === "PGRST202"
+      ? (modoRetiradaAgenda === "miembro"
+        ? "Falta aplicar en Supabase la migración 044 para conservar perfiles en la agenda propia al salir."
+        : "Falta aplicar en Supabase la migración 041 para dejar de compartir la agenda.")
+      : "No hemos podido actualizar la agenda. No se han aplicado cambios; inténtalo de nuevo.";
+    mostrarMensajeInvitaciones(mensajeDialogoRetirada, mensaje, true);
+    botonConfirmarRetirada.disabled = false;
+    return;
+  }
+
+  dialogoRetiradaAgenda.close();
+  const cantidad = Number(data.planes_procesados) || 0;
+  const accionTexto = modoRetiradaAgenda === "miembro"
+    ? (accion === "conservar"
+      ? `Se copiaron ${Number(data.perfiles_copiados) || 0} perfiles infantiles y ${Number(data.planes_copiados) || 0} planes a tu agenda propia. Los originales siguen en la agenda compartida.`
+      : "Has salido sin copiar esos perfiles ni sus planes; la otra persona conserva los originales.")
+    : (accion === "conservar"
+      ? "se quedan en tu agenda y pasan a estar a tu nombre"
+      : "se han eliminado de la agenda compartida");
+  const mensajeAcceso = modoRetiradaAgenda === "miembro"
+    ? "Ya no tienes acceso a esta agenda."
+    : "El adulto ya no tiene acceso.";
+  mostrarMensajeInvitaciones(
+    mensajeRetiradaAgenda,
+    modoRetiradaAgenda === "miembro"
+      ? `${accionTexto} ${mensajeAcceso}`
+      : `Agenda desconectada. ${cantidad} ${cantidad === 1 ? "plan compartido" : "planes compartidos"} de los niños ${accionTexto}. ${mensajeAcceso}`,
+  );
+
+  try {
+    if (modoRetiradaAgenda === "miembro") {
+      await mostrarPanelPermisoPropio(usuarioSesionInvitaciones);
+    } else {
+      await cargarMiembrosAgenda(familiaId);
+    }
+  } catch (errorCarga) {
+    console.error("Se retiró al adulto, pero no se pudo actualizar la lista:", errorCarga);
+  }
+}
+
 async function mostrarPanelCrearInvitacion(usuario) {
   try {
     const agendas = await cargarAgendasParaInvitar(usuario.id);
@@ -527,9 +670,7 @@ async function aceptarInvitacion(evento) {
 
   const { data: familiaId, error } = await clienteSupabase.rpc("aceptar_invitacion_familia", {
     token_invitacion: tokenInvitacion,
-    nombre_adulto: document.querySelector("#nombre-adulto-invitacion").value.trim(),
-    icono_adulto: document.querySelector("#icono-adulto-invitacion").value,
-    color_adulto: document.querySelector("#color-adulto-invitacion").value,
+    permitir_edicion_invitada: casillaEdicionAlAceptar.checked,
   });
 
   if (error || !familiaId) {
@@ -537,7 +678,7 @@ async function aceptarInvitacion(evento) {
     mostrarMensajeInvitaciones(
       mensajeAceptarInvitacion,
       error?.code === "PGRST202"
-        ? "La base de datos aún no tiene activada la función para aceptar invitaciones."
+        ? "Falta aplicar en Supabase la migración 045 para guardar los permisos al aceptar la invitación."
         : error?.message || "No hemos podido aceptar la invitación. Comprueba que el enlace sigue activo.",
       true
     );
@@ -546,7 +687,6 @@ async function aceptarInvitacion(evento) {
     return;
   }
 
-  localStorage.setItem(`atempo-agenda-activa:${usuarioData.user.id}`, familiaId);
   window.history.replaceState({}, "", window.location.pathname);
   window.location.replace(new URL("index.html", window.location.href).toString());
 }
@@ -559,6 +699,7 @@ async function prepararPaginaInvitaciones() {
     mostrarFormularioAccesoInvitaciones();
     return;
   }
+  usuarioSesionInvitaciones = data.session.user;
 
   if (tokenInvitacion) {
     panelAccesoInvitaciones.hidden = true;
@@ -596,9 +737,27 @@ selectorAgendaInvitaciones.addEventListener("change", async function () {
 });
 selectorMiembroPermisos.addEventListener("change", cargarPermisosMiembro);
 botonGuardarPermisos.addEventListener("click", guardarPermisosMiembro);
+botonDejarCompartir.addEventListener("click", abrirDialogoRetiradaAgenda);
+botonCancelarRetirada.addEventListener("click", () => dialogoRetiradaAgenda.close());
+botonConfirmarRetirada.addEventListener("click", confirmarRetiradaAgenda);
+dialogoRetiradaAgenda.addEventListener("change", (evento) => {
+  if (evento.target.matches('input[name="accion-planes-retirada"]')) {
+    botonConfirmarRetirada.disabled = false;
+    if (modoRetiradaAgenda === "miembro") {
+      botonConfirmarRetirada.textContent = evento.target.value === "no_conservar"
+        ? "Eliminar y salir"
+        : "Conservar y salir";
+    } else {
+      botonConfirmarRetirada.textContent = evento.target.value === "eliminar"
+        ? "Eliminar planes y dejar de compartir"
+        : "Conservar y dejar de compartir";
+    }
+  }
+});
 selectorAgendaPermisoPropio.addEventListener("change", cargarAdultosParaPermisoPropio);
 selectorAdultoPermisoPropio.addEventListener("change", cargarMiPermisoEdicion);
 botonGuardarPermisoPropio.addEventListener("click", guardarMiPermisoEdicion);
+botonSalirAgenda.addEventListener("click", abrirDialogoSalidaPropia);
 listaPerfilesInvitacion.addEventListener("change", function () {
   actualizarEstadoCasillaEdicion(listaPerfilesInvitacion, casillaEdicionInvitacion);
   actualizarResumenInvitacion();

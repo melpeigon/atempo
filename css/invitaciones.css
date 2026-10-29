@@ -202,9 +202,151 @@ body {
   background: var(--degradado);
 }
 
+#boton-guardar-permisos,
+#boton-guardar-permiso-propio {
+  display: block;
+  width: fit-content;
+  margin-right: auto;
+  margin-left: auto;
+}
+
 .boton-secundario-invitaciones {
   border: 1px solid var(--ciruela);
   background: transparent;
+}
+
+.acciones-dejar-compartir {
+  margin-top: 10px;
+}
+
+.aviso-retirada-agenda {
+  color: #756d76;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.enlace-dejar-compartir {
+  display: block;
+  margin: 4px auto 0;
+  padding: 7px 14px;
+  border: 0;
+  color: #756d76;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.enlace-dejar-compartir:hover {
+  color: var(--ciruela);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.enlace-dejar-compartir:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--ciruela) 45%, transparent);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.enlace-dejar-compartir:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.boton-dejar-compartir {
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid color-mix(in srgb, #a24b56 40%, white);
+  border-radius: 999px;
+  color: #813d49;
+  background: color-mix(in srgb, var(--melocoton) 22%, white);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.boton-dejar-compartir:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
+.dialogo-retirada-agenda {
+  width: min(calc(100% - 32px), 440px);
+  max-height: min(90vh, 680px);
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--lila) 42%, var(--gris));
+  border-radius: 22px;
+  color: var(--ciruela);
+  background: var(--crema);
+  box-shadow: 0 18px 60px rgb(45 35 50 / 24%);
+}
+
+.dialogo-retirada-agenda::backdrop {
+  background: rgb(48 38 50 / 46%);
+}
+
+.contenido-dialogo-retirada {
+  display: grid;
+  gap: 12px;
+  padding: clamp(20px, 5vw, 28px);
+  overflow-y: auto;
+}
+
+.contenido-dialogo-retirada h2,
+.contenido-dialogo-retirada p {
+  margin: 0;
+}
+
+.contenido-dialogo-retirada h2 {
+  font-size: 23px;
+}
+
+.contenido-dialogo-retirada > p {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.opcion-retirada-agenda {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 !important;
+  padding: 11px 12px;
+  border: 1px solid color-mix(in srgb, var(--lila) 32%, var(--gris));
+  border-radius: 12px;
+  background: white;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1.4;
+}
+
+.opcion-retirada-agenda input {
+  width: 18px;
+  min-height: 18px;
+  margin: 1px 0 0;
+  accent-color: #a889b6;
+}
+
+.ayuda-conservar-retirada,
+.ayuda-eliminar-retirada {
+  margin: -8px 0 2px 40px;
+  color: #756d76;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.botones-dialogo-retirada {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.botones-dialogo-retirada button {
+  flex: 1 1 140px;
 }
 
 .boton-principal-invitaciones:disabled,

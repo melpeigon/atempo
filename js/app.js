@@ -1,17 +1,6 @@
 
 // Estos datos se cargan desde Supabase después de iniciar sesión.
 const personas = [];
-const modoVistaConjuntaPrevia = new URLSearchParams(window.location.search).get("vista") === "conjunta";
-const modoVistaConjuntaSoloLectura = modoVistaConjuntaPrevia;
-
-if (modoVistaConjuntaPrevia) {
-  document.body.classList.add("vista-conjunta-previa");
-  const avisoVistaConjunta = document.querySelector("#aviso-vista-conjunta-previa");
-  if (avisoVistaConjunta) {
-    avisoVistaConjunta.hidden = false;
-  }
-}
-
 let idPersonaSeleccionada = null;
 let idPersonaEnEdicion = null;
 
@@ -103,6 +92,16 @@ function crearInsigniaCompartida() {
   return insignia;
 }
 
+function puedeEliminarPersonaActual(persona) {
+  if (!persona) return false;
+  if (persona.creadaPor && persona.creadaPor === usuarioActualId) return true;
+
+  return persona.creadaPor === null
+    && familiasUsuario.some((familia) =>
+      familia.id === persona.familiaId && familia.rol === "propietaria"
+    );
+}
+
 // boton añadir personas //
 
 const botonPersona = document.querySelector("#boton-primera-persona");
@@ -167,8 +166,6 @@ function aceptarConfirmacion() {
 }
 
 function abrirEmergenteNuevaPersona() {
-  if (modoVistaConjuntaPrevia) return;
-
   idPersonaEnEdicion = null;
 
   formularioNuevaPersona.reset();
@@ -194,9 +191,13 @@ function abrirFichaPersona(idPersona, guardarEnHistorial = true) {
     return;
   }
 
-  botonAnadirActividadPersona.disabled = modoVistaConjuntaSoloLectura;
-  botonEditarPersona.disabled = modoVistaConjuntaPrevia;
-  botonEliminarPersona.disabled = modoVistaConjuntaPrevia;
+  botonAnadirActividadPersona.disabled = false;
+  botonEditarPersona.disabled = false;
+  botonEliminarPersona.hidden = false;
+  botonEliminarPersona.disabled = !puedeEliminarPersonaActual(personaSeleccionada);
+  botonEliminarPersona.title = puedeEliminarPersonaActual(personaSeleccionada)
+    ? "Eliminar esta persona y sus actividades"
+    : "Solo quien creó esta ficha puede eliminarla";
 
   contenidoFichaPersona.replaceChildren();
 
@@ -214,6 +215,13 @@ function abrirFichaPersona(idPersona, guardarEnHistorial = true) {
 
   const nombreFichaPersona = document.createElement("h2");
   nombreFichaPersona.textContent = personaSeleccionada.nombre;
+
+  const avisoBorradoPersona = document.createElement("p");
+  avisoBorradoPersona.className = "aviso-borrado-persona";
+  avisoBorradoPersona.textContent = puedeEliminarPersonaActual(personaSeleccionada)
+    ? "Si eliminas esta persona, también se borrarán sus actividades."
+    : "Esta persona está compartida. Solo quien creó la ficha puede eliminarla.";
+  avisoBorradoPersona.hidden = puedeEliminarPersonaActual(personaSeleccionada);
 
   const seccionProximasActividades = document.createElement("section");
   seccionProximasActividades.classList.add("proximas-actividades-persona");
@@ -374,6 +382,7 @@ function abrirFichaPersona(idPersona, guardarEnHistorial = true) {
   contenidoFichaPersona.append(
     avatarFichaPersona,
     nombreFichaPersona,
+    avisoBorradoPersona,
     seccionProximasActividades
   );
 
@@ -386,8 +395,6 @@ function abrirFichaPersona(idPersona, guardarEnHistorial = true) {
 }
 
 function editarPersonaSeleccionada() {
-  if (modoVistaConjuntaPrevia) return;
-
   const personaSeleccionada = personas.find(function (persona) {
     return persona.id === idPersonaSeleccionada;
   });
@@ -420,8 +427,6 @@ function volverInicio() {
 }
 
 function eliminarPersonaSeleccionada() {
-  if (modoVistaConjuntaPrevia) return;
-
   const indicePersona = personas.findIndex(function (persona) {
     return persona.id === idPersonaSeleccionada;
   });
@@ -431,6 +436,10 @@ function eliminarPersonaSeleccionada() {
   }
 
   const persona = personas[indicePersona];
+  if (!puedeEliminarPersonaActual(persona)) {
+    mostrarAviso("Esta persona es compartida", "Solo quien creó esta ficha puede eliminarla.");
+    return;
+  }
   const numeroActividadesPersona = actividades.filter(function (actividad) {
     return actividad.personaId === persona.id;
   }).length;
@@ -493,7 +502,6 @@ function eliminarPersonaSeleccionada() {
 
 async function guardarNuevaPersona(evento) {
   evento.preventDefault();
-  if (modoVistaConjuntaPrevia) return;
 
   mensajeErrorPersona.hidden = true;
 
@@ -548,7 +556,7 @@ async function guardarNuevaPersona(evento) {
         color: datosPersona.color,
         icono: datosPersona.icono,
       })
-      .select("id, nombre, color, icono")
+      .select("id, familia_id, nombre, color, icono, tipo_persona, usuario_id, creada_por")
       .single();
 
     if (error) {
@@ -562,9 +570,14 @@ async function guardarNuevaPersona(evento) {
 
     const nuevaPersona = {
       id: data.id,
-      nombre: datosPersona.nombre,
-      color: datosPersona.color,
-      icono: datosPersona.icono,
+      nombre: data.nombre,
+      color: data.color,
+      icono: data.icono,
+      familiaId: data.familia_id,
+      tipoPersona: data.tipo_persona,
+      usuarioId: data.usuario_id,
+      creadaPor: data.creada_por,
+      compartida: false,
     };
 
     personas.push(nuevaPersona);
@@ -588,8 +601,8 @@ async function guardarNuevaPersona(evento) {
 
 function renderizarPersonas() {
   listaPersonas.replaceChildren();
-  botonPersona.disabled = modoVistaConjuntaPrevia;
-  botonAnadirOtraPersona.disabled = modoVistaConjuntaPrevia;
+  botonPersona.disabled = false;
+  botonAnadirOtraPersona.disabled = false;
 
   if (personas.length === 0) {
     estadoSinPersonas.hidden = false;

@@ -53,7 +53,7 @@ adultos pueden verla, editarla o borrarla.
 
 | Contenido | Quién puede verlo | Quién puede editarlo o borrarlo |
 | --- | --- | --- |
-| Ficha de una persona (nombre, icono y color) | Los miembros adultos de la familia | Ambos pueden editar fichas infantiles y perfiles adultos sin cuenta; cada adulto edita su propio perfil vinculado |
+| Ficha de una persona (nombre, icono y color) | Los miembros adultos autorizados | Los miembros autorizados pueden editar según RLS; solo quien creó la ficha puede borrarla. En fichas antiguas sin autoría, la propietaria gestiona el borrado. |
 | Actividad compartida de un hijo | Los miembros adultos con acceso a ese perfil | Quien la creó; la propietaria también puede autorizar a un miembro a editar sus planes compartidos |
 | Actividad privada de un adulto | Solo ese adulto | Solo ese adulto |
 | Actividad privada de un hijo | Solo quien la creó | Solo quien la creó |
@@ -69,15 +69,22 @@ elección de quien crea el plan.
 
 Ser miembro de una familia no dará permiso automáticamente para modificar las
 actividades nuevas creadas por otra persona. Al invitar, la propietaria puede
-marcar «Permitir que edite mis actividades compartidas». El permiso solo cubre
-planes compartidos de perfiles a los que la otra cuenta tiene acceso; nunca
-incluye planes privados. Quien recibe el permiso puede editar, pero solo quien
-creó cada actividad puede borrarla. La propietaria puede cambiar este permiso
-más tarde desde la gestión de miembros. Supabase aplica estas reglas mediante
-RLS; los controles de la interfaz solo reflejan el permiso.
+permitir que la persona invitada edite sus actividades compartidas. Al aceptar,
+la persona invitada también puede decidir si permite que la propietaria edite
+las suyas. Cada permiso solo cubre planes compartidos de perfiles a los que la
+otra cuenta tiene acceso; nunca incluye planes privados. Quien recibe el permiso
+puede editar, pero solo quien creó cada actividad puede borrarla. Ambos permisos
+se pueden cambiar después desde «Agenda compartida». Supabase aplica estas
+reglas mediante RLS; los controles de la interfaz solo reflejan el permiso.
 
-Borrar una ficha infantil requerirá confirmación explícita e indicará que
-también se borrarán sus actividades asociadas. En el esquema actual,
+Cada persona adulta conserva sus fichas propias. En la agenda conjunta puede
+ver también las fichas compartidas por otro adulto, identificadas con el
+indicador de perfil compartido. Las fichas parecidas o repetidas siguen siendo
+registros independientes: Atempo no las fusiona. Cada adulto puede borrar las
+fichas que creó; antes de confirmar, Atempo indica que también se borrarán sus
+actividades asociadas. En las fichas antiguas cuya autoría no se pueda conocer,
+la gestión del borrado queda reservada a la propietaria de la agenda. En el
+esquema actual,
 `actividades.persona_id` tiene `ON DELETE CASCADE`, por lo que eliminar una
 persona elimina en cascada sus actividades.
 
@@ -107,13 +114,26 @@ Si la persona aún no tiene cuenta, el registro iniciado desde la invitación
 deberá añadirla directamente a la familia que invita, sin crearle una familia
 vacía adicional.
 
+Cada cuenta conserva su propio perfil adulto en su agenda personal. Aceptar una
+invitación solo añade la membresía y los permisos para consultar los perfiles
+que la persona invitante eligió compartir; no crea otro perfil adulto ni mueve
+los perfiles o actividades personales de quien acepta. La migración
+`sql/043_aceptar_invitacion_sin_crear_perfil.sql` actualiza la función para que siga
+este flujo.
+
+Las invitaciones aceptadas con versiones anteriores pudieron crear una ficha
+adulta adicional en la agenda compartida. No se elimina automáticamente porque
+podría tener actividades asociadas; hay que revisar esos casos antes de limpiar
+datos antiguos.
+
 ### Persona invitada con una cuenta y agenda existentes
 
-La familia de quien invita será la referencia para los hijos compartidos: se
-conservarán sus fichas y actividades. Para evitar duplicados, no se importarán
-las fichas ni las actividades infantiles de la agenda existente de la persona
-invitada. Antes de descartar esos datos, Atempo avisará claramente y pedirá
-confirmación.
+La familia de quien invita será la referencia para los perfiles que decida
+compartir. No se copian ni se fusionan fichas: cada cuenta conserva las que ya
+tenía y la vista conjunta muestra también las compartidas. Si ambas cuentas
+crearon una ficha del mismo hijo, aparecen como dos fichas independientes; la
+persona invitada puede borrar la suya si ya no la necesita. Al borrarla, se
+eliminan también sus actividades asociadas, previa confirmación.
 
 Las actividades personales del adulto invitado no se deben borrar ni compartir
 por esta decisión; se conservarán como privadas. La forma técnica de trasladar
@@ -122,17 +142,27 @@ antes de activar la aceptación para cuentas existentes.
 
 ## 5. Salida de un miembro
 
-Si un adulto abandona la familia, se avisará al adulto que permanece y se le
-preguntará qué hacer con los planes compartidos de los hijos creados por quien
-se marcha:
+La propietaria puede retirar a un adulto desde el final de la tarjeta de
+gestión de miembros en `invitaciones.html`. Antes de confirmar, elige qué hacer
+con los planes compartidos de los hijos creados por esa persona:
 
 - **Conservarlos:** transferir su autoría al adulto que permanece.
 - **Eliminarlos:** borrar esos planes compartidos.
 
-Esta decisión se refiere a los planes de los hijos, no a las actividades
-personales privadas del adulto que se marcha. La salida también debe revocar su
-acceso a la familia. El tratamiento posterior de sus datos privados deberá
-respetar esa separación.
+La operación revoca su acceso a esa agenda y sus permisos asociados. No elimina
+su cuenta, perfiles, otras agendas ni actividades privadas o personales. La
+transferencia de autoría se limita a actividades compartidas de perfiles
+infantiles. La función transaccional `retirar_miembro_agenda` y la migración
+`sql/041_dejar_de_compartir_agenda.sql` aplican esta regla en Supabase.
+
+El adulto invitado también puede salir desde su propia página de invitaciones.
+Puede copiar a su agenda propia los perfiles infantiles que tenía autorizados y
+las actividades que podía consultar. La copia queda en su agenda y los originales
+permanecen en la agenda compartida de la otra persona. Si elige no conservarlos,
+solo pierde el acceso; los datos originales siguen en la agenda compartida. Las
+copias son fichas independientes y no se fusionan con fichas propias del mismo
+niño. La migración `sql/044_conservar_perfiles_compartidos_al_salir.sql` aplica
+esta regla en la función de salida.
 
 ## 6. Incorporación y primeros pasos
 
@@ -159,14 +189,26 @@ Quien acepte una invitación verá una guía breve una sola vez para:
 
 Las migraciones `032` a `036` ya están ejecutadas en el proyecto de pruebas:
 crean invitaciones seguras, añaden los campos de tipo, titularidad, autoría y
-visibilidad, y aplican las políticas RLS iniciales. La selección de agenda y el
-flujo de aceptar invitaciones ya existen.
+visibilidad, y aplican las políticas RLS iniciales. El flujo de aceptar
+invitaciones ya existe; la pantalla principal ya no pide elegir una agenda.
 
-La migración `sql/037_permisos_perfiles_y_actividades.sql` ya se ejecutó en el
-proyecto de pruebas. `sql/038_permisos_edicion_compartida.sql` está preparada
-localmente y debe ejecutarse en Supabase antes de probar la nueva autorización.
-Los cambios de interfaz y políticas todavía deben validarse con dos cuentas;
-no se deben ofrecer a testers aún. Esta fase añade:
+Las migraciones `sql/037_permisos_perfiles_y_actividades.sql`,
+`sql/038_permisos_edicion_compartida.sql` y
+`sql/039_permiso_edicion_reciproco.sql` se han probado con dos cuentas. La
+pantalla principal ya está preparada localmente para reunir las agendas
+consultables, marcar perfiles compartidos y mantener fichas independientes.
+La migración `sql/040_autoria_personas_agenda_unificada.sql` añade autoría de
+fichas y limita su borrado mediante RLS. La migración
+`sql/041_dejar_de_compartir_agenda.sql` añade la retirada segura de un miembro y
+la elección de conservar o eliminar sus planes compartidos de menores. Debe
+aplicarse en Supabase antes de usar el nuevo botón.
+La migración `sql/042_salida_adulto_agenda_compartida.sql` añadió la salida
+iniciada por el adulto invitado. La migración
+`sql/044_conservar_perfiles_compartidos_al_salir.sql` actualiza su elección para
+copiar los perfiles infantiles y los planes visibles a la agenda propia, sin
+modificar los originales compartidos.
+La migración `sql/045_permisos_edicion_al_aceptar_invitacion.sql` permite que la
+persona invitada configure su permiso de edición al aceptar.
 
 - selección de perfiles al invitar: menores marcados por defecto y adultos
   desmarcados;
@@ -185,13 +227,14 @@ no se deben ofrecer a testers aún. Esta fase añade:
   creó el plan.
 
 La interfaz solo facilita la elección. La autorización real debe seguir
-resuelta por las funciones y políticas de Supabase. Primero se validará en local
-con dos cuentas, incluyendo revocar permisos y confirmar que los datos siguen
-existiendo aunque una cuenta deje de verlos.
+resuelta por las funciones y políticas de Supabase. La agenda conjunta y sus
+permisos se validarán en local con dos cuentas, incluyendo revocar accesos y
+confirmar que los datos siguen existiendo aunque una cuenta deje de verlos.
 
-Quedan para fases posteriores la gestión formal de salida/transferencia de un
-miembro, el onboarding de nuevos miembros y una vista combinada que reúna la
-agenda propia con los perfiles compartidos sin mostrar al otro adulto.
+Quedan pendientes la prueba completa de la agenda conjunta con dos cuentas,
+incluyendo perfiles repetidos, actividades privadas, edición autorizada,
+borrado de fichas propias y ambas formas de salir de una agenda; y el onboarding
+de nuevos miembros.
 
 La posibilidad futura de incluir cuidadores u otros miembros con permisos de
 solo lectura queda fuera de esta primera versión.

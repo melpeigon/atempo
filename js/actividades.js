@@ -365,12 +365,10 @@ function abrirFichaActividad(
   idActividadSeleccionada = idActividad;
   const puedeEditar = puedeEditarActividadActual(actividadSeleccionada);
   const puedeBorrar = puedeBorrarActividadActual(actividadSeleccionada);
-  botonEditarActividad.hidden = modoVistaConjuntaSoloLectura || !puedeEditar;
-  botonEliminarActividad.hidden = modoVistaConjuntaSoloLectura || !puedeBorrar;
-  mensajePermisoActividad.hidden = modoVistaConjuntaSoloLectura ? false : puedeEditar;
-  if (modoVistaConjuntaSoloLectura) {
-    mensajePermisoActividad.textContent = "Vista previa de solo lectura: aquí no se guardan cambios.";
-  } else if (puedeEditar && !puedeBorrar) {
+  botonEditarActividad.hidden = !puedeEditar;
+  botonEliminarActividad.hidden = !puedeBorrar;
+  mensajePermisoActividad.hidden = puedeEditar;
+  if (puedeEditar && !puedeBorrar) {
     mensajePermisoActividad.textContent = "Puedes editar este plan compartido. Solo quien lo creó puede eliminarlo.";
     mensajePermisoActividad.hidden = false;
   } else if (!puedeEditar) {
@@ -632,8 +630,6 @@ function renderizarActividadesDeHoy() {
 }
 
 function eliminarActividadSeleccionada() {
-  if (modoVistaConjuntaSoloLectura) return;
-
   const indiceActividad = actividades.findIndex(function (actividad) {
     return actividad.id === idActividadSeleccionada;
   });

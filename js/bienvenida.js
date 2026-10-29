@@ -24,6 +24,7 @@ const mensajePasoNotificaciones = document.querySelector("#mensaje-paso-notifica
 const mensajePasoCompartir = document.querySelector("#mensaje-paso-compartir");
 const mensajePasoActividad = document.querySelector("#mensaje-paso-actividad");
 const mensajePasoPersonas = document.querySelector("#mensaje-paso-personas");
+const botonesSaltarBienvenida = document.querySelectorAll(".boton-saltar-bienvenida");
 const modoVistaPrevia = new URLSearchParams(window.location.search).get("preview") === "1";
 const parametrosBienvenida = new URLSearchParams(window.location.search);
 const modoRevision = parametrosBienvenida.get("revisar") === "1";
@@ -206,6 +207,45 @@ async function finalizarBienvenida(nombreVisible = "") {
   mostrarPasoBienvenida("personas");
 }
 
+async function saltarBienvenida(boton) {
+  if (modoVistaPrevia) {
+    avisoVistaPreviaBienvenida.textContent = "En la bienvenida real, Saltar guardará esta elección y abrirá tu agenda.";
+    avisoVistaPreviaBienvenida.hidden = false;
+    return;
+  }
+
+  if (modoRevision) {
+    sessionStorage.removeItem("atempo-bienvenida-revision");
+    sessionStorage.removeItem("atempo-bienvenida-regreso");
+    window.location.replace(new URL("index.html", window.location.href).toString());
+    return;
+  }
+
+  boton.disabled = true;
+  boton.textContent = "Abriendo tu agenda…";
+  const { error } = await clienteSupabase.auth.updateUser({
+    data: {
+      atempo_bienvenida_pendiente: false,
+      atempo_bienvenida_completada: true,
+    },
+  });
+
+  if (error) {
+    console.error("No se pudo saltar la bienvenida:", error);
+    boton.disabled = false;
+    boton.textContent = "Saltar";
+    const pasoVisible = document.querySelector(".paso-bienvenida:not([hidden])");
+    const mensaje = pasoVisible?.querySelector(".mensaje-bienvenida");
+    if (mensaje) {
+      mensaje.textContent = "No hemos podido abrir tu agenda. Comprueba la conexión e inténtalo de nuevo.";
+      mensaje.hidden = false;
+    }
+    return;
+  }
+
+  window.location.replace(new URL("index.html", window.location.href).toString());
+}
+
 formularioBienvenida.addEventListener("submit", async function (evento) {
   evento.preventDefault();
   if (modoVistaPrevia) {
@@ -214,6 +254,12 @@ formularioBienvenida.addEventListener("submit", async function (evento) {
   }
   if (!formularioBienvenida.reportValidity()) return;
   await finalizarBienvenida(campoNombreVisible.value);
+});
+
+botonesSaltarBienvenida.forEach(function (boton) {
+  boton.addEventListener("click", function () {
+    saltarBienvenida(boton);
+  });
 });
 
 botonAnadirPersonasBienvenida.addEventListener("click", function () {

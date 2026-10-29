@@ -123,7 +123,36 @@
       <button class="boton-principal-invitaciones" id="boton-guardar-permisos" type="button">
         Guardar permisos
       </button>
+      <div class="acciones-dejar-compartir">
+        <button class="enlace-dejar-compartir" id="boton-dejar-compartir" type="button">
+          Dejar de compartir agenda
+        </button>
+      </div>
     </section>
+    <p class="mensaje-invitaciones" id="mensaje-retirada-agenda" role="status" hidden></p>
+
+    <dialog class="dialogo-retirada-agenda" id="dialogo-retirada-agenda" aria-labelledby="titulo-retirada-agenda">
+      <div class="contenido-dialogo-retirada">
+        <h2 id="titulo-retirada-agenda">Dejar de compartir agenda</h2>
+        <p><span id="prefijo-pregunta-retirada">¿Qué quieres hacer con los planes compartidos de los niños que creó </span><strong id="nombre-adulto-retirada"></strong><span id="sufijo-pregunta-retirada">?</span></p>
+        <label class="opcion-retirada-agenda">
+          <input type="radio" name="accion-planes-retirada" value="conservar" />
+          <span id="texto-opcion-conservar">Conservarlos en la agenda</span>
+        </label>
+        <p class="ayuda-conservar-retirada">La autoría pasará a la persona propietaria de la agenda.</p>
+        <label class="opcion-retirada-agenda">
+          <input type="radio" name="accion-planes-retirada" value="eliminar" />
+          <span id="texto-opcion-eliminar">Eliminar esos planes</span>
+        </label>
+        <p class="ayuda-eliminar-retirada">Se borrarán de la agenda compartida para todos sus miembros.</p>
+        <p class="aviso-retirada-agenda" id="aviso-retirada-agenda">Este adulto perderá el acceso a esta agenda. Su cuenta, perfiles y planes privados se mantienen.</p>
+        <p class="mensaje-invitaciones" id="mensaje-dialogo-retirada" role="status" hidden></p>
+        <div class="botones-dialogo-retirada">
+          <button class="boton-secundario-invitaciones" id="boton-cancelar-retirada" type="button">Cancelar</button>
+          <button class="boton-dejar-compartir" id="boton-confirmar-retirada" type="button" disabled>Confirmar</button>
+        </div>
+      </div>
+    </dialog>
 
     <section class="tarjeta-invitaciones" id="panel-permiso-propio" hidden
       aria-labelledby="titulo-permiso-propio">
@@ -145,37 +174,27 @@
       <button class="boton-principal-invitaciones" id="boton-guardar-permiso-propio" type="button">
         Guardar mi permiso
       </button>
+      <div class="acciones-dejar-compartir">
+        <button class="enlace-dejar-compartir" id="boton-salir-agenda" type="button">
+          Salir de esta agenda compartida
+        </button>
+      </div>
     </section>
 
     <section class="tarjeta-invitaciones" id="panel-aceptar-invitacion" hidden
       aria-labelledby="titulo-aceptar-invitacion">
       <h2 id="titulo-aceptar-invitacion">Te han invitado a compartir una agenda</h2>
-      <p>Al aceptar, se añadirá esta agenda a tu cuenta. Las agendas y actividades que ya tienes se conservarán.</p>
+      <p>Al aceptar, verás en tu agenda las personas que han elegido compartir contigo. Tu agenda personal y sus actividades se mantienen.</p>
 
       <form id="formulario-aceptar-invitacion">
-        <label for="nombre-adulto-invitacion">Nombre que aparecerá en la agenda</label>
-        <input id="nombre-adulto-invitacion" name="nombre" type="text" maxlength="50" autocomplete="name" required />
-
-        <label for="icono-adulto-invitacion">Icono</label>
-        <select id="icono-adulto-invitacion" name="icono" required>
-          <option value="mujer">Mujer</option>
-          <option value="hombre">Hombre</option>
-          <option value="abuela">Abuela</option>
-          <option value="abuelo">Abuelo</option>
-        </select>
-
-        <label for="color-adulto-invitacion">Color</label>
-        <select id="color-adulto-invitacion" name="color" required>
-          <option value="#c6afd0">Lila</option>
-          <option value="#f2beba">Melocotón</option>
-          <option value="#ffeccc">Amarillo</option>
-          <option value="#e0dcd6">Gris</option>
-          <option value="#B0C5D4">Azul</option>
-          <option value="#AEC2B3">Verde</option>
-          <option value="#F2BBD7">Rosa</option>
-          <option value="#DACEC7">Arena</option>
-        </select>
-
+        <fieldset class="selector-perfiles-invitacion permiso-edicion-invitacion">
+          <legend>Edición de actividades</legend>
+          <label class="opcion-perfil-invitacion" for="permite-edicion-al-aceptar">
+            <input id="permite-edicion-al-aceptar" type="checkbox" />
+            <span>Permitir que la otra persona edite mis actividades compartidas</span>
+          </label>
+          <p class="ayuda-perfiles-invitacion">Solo podrá editar planes compartidos de perfiles que pueda ver. Tus planes privados seguirán siendo solo tuyos. Podrás cambiarlo más adelante en «Agenda compartida».</p>
+        </fieldset>
         <p class="mensaje-invitaciones" id="mensaje-aceptar-invitacion" role="status" hidden></p>
         <button class="boton-principal-invitaciones" id="boton-aceptar-invitacion" type="submit">
           Aceptar invitación
@@ -190,7 +209,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase.js"></script>
-  <script src="js/invitaciones.js"></script>
+  <script src="js/invitaciones.js?v=20261029-3"></script>
 </body>
 
 </html>

@@ -1,6 +1,6 @@
 # Pendientes de Atempo
 
-Última revisión: 28 de octubre de 2026.
+Última revisión: 29 de octubre de 2026.
 
 Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar primero el funcionamiento principal de la aplicación y dejar las mejoras más grandes para después.
 
@@ -148,11 +148,21 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [ ] Conservar las actividades personales privadas del adulto invitado; no importar sus actividades infantiles al aceptar la invitación y pedir confirmación antes de descartarlas.
 - [ ] Permitir que ambos adultos editen nombre, icono y color de las fichas infantiles; confirmar antes de borrar una ficha porque también elimina sus actividades.
 - [ ] Crear, aceptar y revocar invitaciones de un solo uso, con caducidad de 7 días y validación del correo.
-- [ ] Si un adulto abandona la familia, preguntar al adulto que permanece si transfiere o elimina los planes infantiles creados por quien se marcha.
+- [x] Permitir que la propietaria deje de compartir la agenda con un adulto desde la página de invitaciones, sin borrar su cuenta ni sus otras agendas.
+- [x] Al retirar a un adulto, preguntar si quiere conservar (transfiriendo la autoría) o eliminar los planes compartidos de menores creados por quien se marcha; mantener intactos los privados y perfiles.
+- [x] Al salir, permitir al adulto invitado copiar a su agenda propia los perfiles infantiles compartidos y sus planes visibles; mantener los originales en la agenda compartida.
+- [ ] Ejecutar `sql/044_conservar_perfiles_compartidos_al_salir.sql` en Supabase y probar ambas opciones de salida con dos cuentas.
+- [x] Al aceptar una invitación, añadir la membresía y los permisos de perfiles sin crear una ficha adulta duplicada.
+- [x] Permitir que la persona invitada autorice desde la aceptación que quien invita edite sus actividades compartidas; cambiar el nombre del menú a «Agenda compartida» y usar el icono de perfil compartido.
+- [ ] Ejecutar `sql/045_permisos_edicion_al_aceptar_invitacion.sql` en Supabase y probar el permiso en ambos sentidos.
+- [ ] Revisar fichas adultas adicionales creadas por invitaciones anteriores antes de borrar ninguna; comprobar si tienen actividades asociadas.
+- [ ] Probar con dos cuentas la aceptación y reincorporación a una agenda, comprobando que no se cree una ficha adicional ni se pierdan actividades.
 - [ ] Añadir una guía de primeros pasos para quienes se incorporan a una familia.
-- [ ] Resolver con cuidado la incorporación de cuentas existentes sin perder actividades personales ni duplicar hijos.
-- [ ] Probar con una cuenta de varias familias el selector de agenda implementado localmente; asegurar que no selecciona una con `limit(1)`.
-- [x] Implementar en local una vista combinada de solo lectura que reúne la agenda propia y los perfiles y planes compartidos, sin duplicar perfiles.
+- [ ] Probar cuentas existentes con fichas propias del mismo hijo: mantenerlas como fichas independientes y dejar que cada adulto borre las suyas tras ver las compartidas.
+- [x] Integrar en la pantalla principal una sola vista con los perfiles y planes consultables de todas las agendas; marcar visualmente las fichas compartidas y mantener independientes las fichas repetidas.
+- [x] Retirar el selector de agendas: la agenda propia queda como contexto para crear perfiles y la vista presenta también los datos compartidos.
+- [ ] Ejecutar `sql/040_autoria_personas_agenda_unificada.sql` en Supabase para registrar la autoría de perfiles y limitar su borrado.
+- [ ] Probar con dos cuentas la agenda conjunta: privacidad de planes, edición permitida y borrado de fichas propias sin afectar a las compartidas.
 - [ ] Validar en producción con dos cuentas que cada adulto vea su propia agenda y los perfiles infantiles autorizados, sin acceder a los planes privados del otro.
 - [ ] Comprobar en producción los permisos de edición y borrado de actividades compartidas antes de dar por terminada esta mejora.
 - [x] Permitir que cada adulto decida si el otro puede editar sus propias actividades compartidas; conservar los planes privados y el borrado solo para quien los creó.

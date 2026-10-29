@@ -1,4 +1,4 @@
-const NOMBRE_CACHE = "atempo-v61";
+const NOMBRE_CACHE = "atempo-v70";
 
 const ARCHIVOS_PRINCIPALES = [
   "./",
@@ -26,7 +26,7 @@ const ARCHIVOS_PRINCIPALES = [
   "./js/datos-supabase.js",
   "./js/novedades.js",
   "./js/autenticacion.js",
-  "./js/invitaciones.js",
+  "./js/invitaciones.js?v=20261029-3",
   "./js/bienvenida.js",
   "./js/actividades.js",
   "./js/formulario-actividades.js",

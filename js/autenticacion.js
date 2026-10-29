@@ -187,25 +187,10 @@ async function cargarFamiliaActual(permitirCrearFamilia = true) {
     return cargarFamiliaActual(false);
   }
 
-  const claveAgendaActiva = `atempo-agenda-activa:${resultadoFamilias.usuarioId}`;
-  const agendaGuardada = localStorage.getItem(claveAgendaActiva);
-  familiaActual = familiasUsuario.find(function (familia) {
-    return familia.id === agendaGuardada;
-  });
-
-  if (!familiaActual && familiasUsuario.length === 1) {
-    familiaActual = familiasUsuario[0];
-  }
-
-  if (!familiaActual) {
-    familiaActual = await pedirSeleccionInicialAgenda(familiasUsuario);
-  }
-
-  if (!familiaActual) return false;
-
-  localStorage.setItem(claveAgendaActiva, familiaActual.id);
-  actualizarSelectorAgendas(familiasUsuario, familiaActual);
-
+  // La pantalla reúne todas las agendas consultables; la agenda propia queda
+  // como contexto para crear perfiles nuevos.
+  familiaActual = familiasUsuario.find((familia) => familia.rol === "propietaria")
+    || familiasUsuario[0];
   console.log("Familia conectada:", familiaActual.nombre);
 
   const datosCargados = await cargarDatosDeSupabase();
@@ -220,42 +205,6 @@ async function cargarFamiliaActual(permitirCrearFamilia = true) {
   await cargarConfiguracionNotificaciones();
   await comprobarEstadoNotificacionesAlIniciar();
 
-  return true;
-}
-
-async function cambiarFamiliaActiva(familiaId) {
-  const nuevaFamilia = familiasUsuario.find(function (familia) {
-    return familia.id === familiaId;
-  });
-
-  if (!nuevaFamilia || nuevaFamilia.id === familiaActual?.id) return true;
-
-  const familiaAnterior = familiaActual;
-  const { data: datosUsuario, error: errorUsuario } =
-    await clienteSupabase.auth.getUser();
-
-  if (errorUsuario || !datosUsuario.user) return false;
-
-  familiaActual = nuevaFamilia;
-  localStorage.setItem(
-    `atempo-agenda-activa:${datosUsuario.user.id}`,
-    nuevaFamilia.id
-  );
-
-  const datosCargados = await cargarDatosDeSupabase();
-
-  if (!datosCargados) {
-    familiaActual = familiaAnterior;
-    localStorage.setItem(
-      `atempo-agenda-activa:${datosUsuario.user.id}`,
-      familiaAnterior.id
-    );
-    await cargarDatosDeSupabase();
-    return false;
-  }
-
-  actualizarSelectorAgendas(familiasUsuario, familiaActual);
-  console.log("Agenda activa:", familiaActual.nombre);
   return true;
 }
 
