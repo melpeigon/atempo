@@ -355,6 +355,12 @@ label[for="buscar-tester-admin"] {
   font-size: 14px;
 }
 
+.celda-agenda-compartida {
+  min-width: 180px;
+  max-width: 280px;
+  overflow-wrap: anywhere;
+}
+
 .etiqueta-admin {
   display: inline-flex;
   align-items: center;

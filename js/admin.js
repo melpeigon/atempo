@@ -126,7 +126,7 @@ function mostrarTestersAdmin(testers) {
     const fila = document.createElement("tr");
     const celda = crearCeldaTester("No hay testers que coincidan con la búsqueda.");
 
-    celda.colSpan = 7;
+    celda.colSpan = 8;
     fila.append(celda);
     listadoTestersAdmin.append(fila);
     return;
@@ -178,6 +178,7 @@ function mostrarTestersAdmin(testers) {
 
     fila.append(
       crearCeldaTester(tester.correo || "Sin correo"),
+      crearCeldaAgendaCompartida(tester.agenda_compartida_con),
       crearCeldaTester(dispositivo),
       crearCeldaTester(tester.version_app || "Sin datos"),
       crearCeldaConEtiqueta(textoNovedades, claseNovedades),
@@ -210,14 +211,39 @@ async function cargarTestersAdmin() {
     console.error("No se pudo cargar el listado de testers:", error);
     listadoTestersAdmin.innerHTML = `
       <tr>
-        <td colspan="7">No hemos podido cargar los testers.</td>
+        <td colspan="8">No hemos podido cargar los testers.</td>
       </tr>
     `;
     return;
   }
 
-  testersCargadosAdmin = data || [];
+  const { data: agendasCompartidas, error: errorAgendas } =
+    await clienteSupabase.rpc("obtener_agendas_compartidas_admin");
+
+  if (errorAgendas) {
+    console.warn("No se pudieron cargar las agendas compartidas:", errorAgendas);
+  }
+
+  const agendasPorUsuario = new Map(
+    (agendasCompartidas || []).map((agenda) => [
+      agenda.usuario_id,
+      agenda.compartida_con,
+    ])
+  );
+
+  testersCargadosAdmin = (data || []).map((tester) => ({
+    ...tester,
+    agenda_compartida_con: agendasPorUsuario.get(tester.usuario_id) || null,
+  }));
   mostrarTestersAdmin(testersCargadosAdmin);
+}
+
+function crearCeldaAgendaCompartida(correos) {
+  const celda = crearCeldaTester(
+    correos ? `Con ${correos}` : "No comparte"
+  );
+  celda.classList.add("celda-agenda-compartida");
+  return celda;
 }
 
 function mostrarErroresAdmin(errores) {
@@ -364,6 +390,7 @@ function filtrarTestersAdmin() {
   const testersFiltrados = testersCargadosAdmin.filter(function (tester) {
     const datosBuscables = [
       tester.correo,
+      tester.agenda_compartida_con,
       tester.plataforma,
       tester.version_app,
       tester.estado,

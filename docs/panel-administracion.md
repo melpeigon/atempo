@@ -1,6 +1,6 @@
 # Panel de administración de Atempo
 
-Última revisión: 22 de octubre de 2026.
+Última revisión: 10 de noviembre de 2026.
 
 El panel es una herramienta privada de soporte durante las pruebas de Atempo.
 Se abre desde `admin.html` y no forma parte de la navegación normal de las
@@ -35,6 +35,7 @@ sistema operativo mantenga actualmente todos los permisos concedidos.
 La tabla muestra únicamente información necesaria para pruebas y soporte:
 
 - Correo de la cuenta.
+- Correo de los otros adultos con quienes comparte agenda, si los hay.
 - Plataforma conocida.
 - Uso como PWA instalada o navegador.
 - Versión registrada.
@@ -44,6 +45,9 @@ La tabla muestra únicamente información necesaria para pruebas y soporte:
 - Estado de actividad.
 
 No muestra personas, actividades, recordatorios ni contenido de las agendas.
+La columna de agendas compartidas depende de la función
+`obtener_agendas_compartidas_admin()` y de la migración
+`sql/047_agendas_compartidas_panel_admin.sql`.
 
 ## Errores recientes
 

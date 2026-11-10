@@ -4,6 +4,49 @@ Este archivo recoge las novedades principales de cada versión. Las Releases de
 GitHub conservan el punto exacto del código publicado; este documento explica
 qué cambió entre versiones.
 
+## Candidata 1.5.0-beta.1 — en pruebas
+
+### Añadido
+
+- Avisos push a los otros adultos autorizados cuando se crea, modifica o elimina
+  un plan compartido. Las notificaciones de modificación indican qué datos
+  cambiaron, como la actividad, fecha, hora, recurrencia o aviso.
+- Columna en el panel de administración para ver con qué otras cuentas comparte
+  agenda cada tester.
+
+### Mejorado
+
+- El procesador de notificaciones respeta los permisos de perfiles compartidos y
+  evita enviar avisos sobre información que la persona destinataria no puede ver.
+- Corregida la lectura de permisos necesaria para preparar los resúmenes diarios
+  de agendas con perfiles compartidos.
+
+> El procesador ya está desplegado en producción y las testers están comprobando
+> los avisos con distintos móviles y situaciones. Esta candidata deja registrado
+> el estado de las pruebas; no es todavía el lanzamiento estable 1.5.0.
+> La columna de agendas compartidas del panel aún necesita aplicar y probar su
+> migración SQL.
+
+## 1.4.0 — 29 de octubre de 2026
+
+### Añadido
+
+- Agendas compartidas entre adultos mediante invitaciones.
+- Vista conjunta de los perfiles propios y compartidos, sin fusionar fichas.
+- Permisos para elegir qué perfiles y actividades puede consultar cada adulto.
+- Opción para autorizar que el otro adulto edite las actividades compartidas
+  que haya creado cada persona.
+- Salida de una agenda compartida con opción de conservar copias de los perfiles
+  y planes visibles en la agenda propia.
+- Identificador visual discreto para distinguir perfiles compartidos.
+
+### Mejorado
+
+- La aceptación de una invitación no crea una ficha adulta duplicada ni mueve
+  las personas o actividades personales de quien se une.
+- La propietaria puede dejar de compartir la agenda y decidir qué hacer con los
+  planes compartidos creados por la persona que sale.
+
 ## 1.3.0 — 23 de octubre de 2026
 
 ### Añadido

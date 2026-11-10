@@ -1,6 +1,6 @@
 # Sistema de notificaciones de Atempo
 
-Última revisión: 17 de octubre de 2026.
+Última revisión: 10 de noviembre de 2026.
 
 Atempo utiliza notificaciones push para poder avisar aunque la PWA esté
 cerrada. El permiso pertenece a cada dispositivo: activar los avisos en un
@@ -22,6 +22,22 @@ La configuración general permite recibir:
 - Resumen diario y avisos de actividades.
 
 Cada actividad decide además si debe aparecer en el resumen diario.
+
+Cuando un adulto crea una actividad compartida en un perfil que otro miembro
+puede ver, el procesador puede enviarle un aviso push de nuevo plan. Esta
+notificación de creación ya se ha comprobado en producción. Se envía en la
+siguiente ejecución del cron (normalmente en menos de un minuto) y respeta el
+modo de notificaciones del destinatario: debe tener activos los avisos de
+actividades, además de una suscripción push activa.
+
+Los avisos de modificación y eliminación están desplegados en producción y en
+pruebas con testers. La migración
+`sql/048_detallar_cambios_actividad_compartida.sql` guarda una comparación de
+los valores anteriores y nuevos de una modificación. El aviso puede resumir,
+por ejemplo, un cambio de hora o de aviso. La cola de eventos tiene RLS
+activado: las cuentas normales no pueden leerla y solo la procesa el servidor.
+La ronda de pruebas comprobará estos casos en distintos dispositivos y con
+personas que tengan o no acceso al perfil compartido.
 
 ## Recorrido de una notificación
 
@@ -54,6 +70,8 @@ El service worker muestra la notificación
 - `configuracion_notificaciones`: modo y hora del resumen.
 - `dispositivos_notificaciones`: suscripciones push activas.
 - `avisos_enviados`: evita duplicados.
+- `notificaciones_cambios_actividad`: cola interna para cambios y borrados de
+  planes compartidos; inaccesible para cuentas normales.
 - `errores_app`: fallos de la app y del procesador.
 - `procesar-avisos`: Edge Function que decide y envía los avisos.
 - Cron `procesar-avisos-cada-minuto`: ejecución automática.
@@ -93,6 +111,14 @@ sin soporte no se considera un fallo técnico.
 Modificar el archivo local no actualiza Supabase automáticamente. Después de
 editar `supabase/functions/procesar-avisos/index.ts` hay que desplegar de nuevo
 la Edge Function desde el editor de Supabase o mediante su CLI.
+
+El procesador usa el rol `service_role` para leer los permisos de perfiles
+compartidos y guardar sus errores técnicos. La migración
+`sql/046_permisos_lectura_avisos_compartidos.sql` concede únicamente la lectura
+de `permisos_personas_miembro` y la inserción en `errores_app`; no desactiva RLS.
+La migración `sql/048_detallar_cambios_actividad_compartida.sql` amplía la cola
+para registrar qué campos se modificaron, manteniéndola cerrada a `anon` y
+`authenticated`.
 
 Para una prueba manual:
 

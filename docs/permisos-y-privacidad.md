@@ -1,8 +1,9 @@
 # Familias, permisos y privacidad en Atempo
 
-Este documento resume el modelo acordado para que varios adultos puedan
-coordinar los planes de sus hijos sin compartir automáticamente sus agendas
-personales. Describe el comportamiento deseado; no todo está implementado aún.
+Este documento describe el funcionamiento de las agendas compartidas publicado
+en Atempo 1.4.0 y las decisiones de privacidad que lo protegen. Las mejoras de
+notificación de cambios se describen como pendientes hasta completar su
+despliegue y pruebas.
 
 ## 1. Conceptos
 
@@ -110,9 +111,9 @@ La primera versión del flujo será manual, sin envío automático de correo:
    como miembro. El enlace solo se puede aceptar una vez y la propietaria puede
    revocarlo.
 
-Si la persona aún no tiene cuenta, el registro iniciado desde la invitación
-deberá añadirla directamente a la familia que invita, sin crearle una familia
-vacía adicional.
+Si la persona aún no tiene cuenta, el registro iniciado desde la invitación la
+añade directamente a la familia que invita, sin crearle una familia vacía
+adicional.
 
 Cada cuenta conserva su propio perfil adulto en su agenda personal. Aceptar una
 invitación solo añade la membresía y los permisos para consultar los perfiles
@@ -135,10 +136,10 @@ crearon una ficha del mismo hijo, aparecen como dos fichas independientes; la
 persona invitada puede borrar la suya si ya no la necesita. Al borrarla, se
 eliminan también sus actividades asociadas, previa confirmación.
 
-Las actividades personales del adulto invitado no se deben borrar ni compartir
-por esta decisión; se conservarán como privadas. La forma técnica de trasladar
-esas actividades y su perfil personal a la familia compartida debe resolverse
-antes de activar la aceptación para cuentas existentes.
+Las actividades personales del adulto invitado no se borran ni se comparten al
+aceptar la invitación; permanecen en su agenda propia. La vista conjunta reúne
+esa agenda con los perfiles compartidos autorizados sin mover ni fusionar sus
+fichas.
 
 ## 5. Salida de un miembro
 
@@ -166,7 +167,9 @@ esta regla en la función de salida.
 
 ## 6. Incorporación y primeros pasos
 
-Quien acepte una invitación verá una guía breve una sola vez para:
+Al aceptar una invitación, la persona puede configurar si la otra adulta podrá
+editar sus actividades compartidas. La guía de primeros pasos específica para
+miembros invitados sigue pendiente. Debería explicar:
 
 1. Confirmar a qué familia se ha unido.
 2. Revisar o crear su perfil personal.
@@ -187,54 +190,24 @@ Quien acepte una invitación verá una guía breve una sola vez para:
 
 ## 8. Estado actual y trabajo pendiente
 
-Las migraciones `032` a `036` ya están ejecutadas en el proyecto de pruebas:
-crean invitaciones seguras, añaden los campos de tipo, titularidad, autoría y
-visibilidad, y aplican las políticas RLS iniciales. El flujo de aceptar
-invitaciones ya existe; la pantalla principal ya no pide elegir una agenda.
+La agenda compartida se publicó en Atempo 1.4.0. Las migraciones `032` a `045`
+preparan las invitaciones, perfiles autorizados, autoría, visibilidad privada o
+compartida, edición delegada y las dos formas de salir de una agenda. Las reglas
+de lectura, edición y borrado se aplican en Supabase mediante RLS; los controles
+de la interfaz solo reflejan esas reglas.
 
-Las migraciones `sql/037_permisos_perfiles_y_actividades.sql`,
-`sql/038_permisos_edicion_compartida.sql` y
-`sql/039_permiso_edicion_reciproco.sql` se han probado con dos cuentas. La
-pantalla principal ya está preparada localmente para reunir las agendas
-consultables, marcar perfiles compartidos y mantener fichas independientes.
-La migración `sql/040_autoria_personas_agenda_unificada.sql` añade autoría de
-fichas y limita su borrado mediante RLS. La migración
-`sql/041_dejar_de_compartir_agenda.sql` añade la retirada segura de un miembro y
-la elección de conservar o eliminar sus planes compartidos de menores. Debe
-aplicarse en Supabase antes de usar el nuevo botón.
-La migración `sql/042_salida_adulto_agenda_compartida.sql` añadió la salida
-iniciada por el adulto invitado. La migración
-`sql/044_conservar_perfiles_compartidos_al_salir.sql` actualiza su elección para
-copiar los perfiles infantiles y los planes visibles a la agenda propia, sin
-modificar los originales compartidos.
-La migración `sql/045_permisos_edicion_al_aceptar_invitacion.sql` permite que la
-persona invitada configure su permiso de edición al aceptar.
+El flujo se ha probado con dos cuentas: cada adulta conserva sus perfiles y
+planes privados, ve los perfiles que le han compartido, puede editar según los
+permisos acordados y no puede borrar las fichas o actividades creadas por la
+otra. Las fichas repetidas permanecen independientes; Atempo no las fusiona.
 
-- selección de perfiles al invitar: menores marcados por defecto y adultos
-  desmarcados;
-- una sección para que la propietaria cambie los perfiles autorizados de un
-  miembro que ya aceptó, útil para las pruebas actuales;
-- aislamiento RLS para que cada cuenta solo reciba los perfiles autorizados;
-- conservación del acceso actual de los miembros existentes a los perfiles
-  infantiles, para que la migración no les vacíe la agenda de golpe;
-- una casilla de visibilidad por actividad cuando el perfil se comparte con
-  otra cuenta; permite mantener privado incluso un plan de un menor;
-- valor privado por defecto cuando nadie más tiene acceso al perfil.
-- opción previa a enviar una invitación para autorizar la edición de los planes
-  compartidos creados por quien invita, desactivada por defecto;
-- gestión posterior del permiso desde la página de invitaciones;
-- edición delegada protegida por RLS, manteniendo el borrado exclusivo de quien
-  creó el plan.
+Pendiente para versiones siguientes:
 
-La interfaz solo facilita la elección. La autorización real debe seguir
-resuelta por las funciones y políticas de Supabase. La agenda conjunta y sus
-permisos se validarán en local con dos cuentas, incluyendo revocar accesos y
-confirmar que los datos siguen existiendo aunque una cuenta deje de verlos.
-
-Quedan pendientes la prueba completa de la agenda conjunta con dos cuentas,
-incluyendo perfiles repetidos, actividades privadas, edición autorizada,
-borrado de fichas propias y ambas formas de salir de una agenda; y el onboarding
-de nuevos miembros.
+- avisar al adulto cuando quien comparte le retire el acceso y ofrecerle
+  conservar copias de los perfiles compartidos o quitarlas solo de su agenda;
+- completar la guía de primeros pasos para una persona que acepta una invitación;
+- terminar el despliegue y las pruebas de avisos al modificar o eliminar planes
+  compartidos.
 
 La posibilidad futura de incluir cuidadores u otros miembros con permisos de
 solo lectura queda fuera de esta primera versión.

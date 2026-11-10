@@ -57,6 +57,17 @@ export default {
         throw error;
       }
 
+      // Los cambios de más de cinco minutos ya no deben generar avisos tardíos.
+      const { error: errorCaducidad } = await ctx.supabaseAdmin
+        .from("notificaciones_cambios_actividad")
+        .update({ procesado_at: ahora.toISO() })
+        .is("procesado_at", null)
+        .lt("created_at", ahora.minus({ minutes: 5 }).toISO());
+
+      if (errorCaducidad) {
+        throw errorCaducidad;
+      }
+
       let avisosEnviados = 0;
 
       for (const configuracion of configuraciones || []) {
@@ -121,7 +132,21 @@ async function procesarUsuario(supabase: any, configuracion: any, ahora: DateTim
     configuracion.modo === "solo-actividades" ||
     configuracion.modo === "resumen-y-actividades"
   ) {
+    enviadas += await procesarCambiosActividad(
+      supabase,
+      configuracion.usuario_id,
+      dispositivos,
+      ahora,
+    );
+
     for (const actividad of actividades) {
+      enviadas += await procesarAvisoNuevoPlanCompartido(
+        supabase,
+        configuracion.usuario_id,
+        actividad,
+        dispositivos,
+        ahora,
+      );
       enviadas += await procesarAvisoActividad(
         supabase,
         configuracion.usuario_id,
@@ -148,6 +173,169 @@ async function procesarUsuario(supabase: any, configuracion: any, ahora: DateTim
   return enviadas;
 }
 
+async function procesarAvisoNuevoPlanCompartido(
+  supabase: any,
+  usuarioId: string,
+  actividad: any,
+  dispositivos: any[],
+  ahora: DateTime,
+) {
+  if (
+    !actividad.creada_por ||
+    actividad.creada_por === usuarioId ||
+    actividad.visibilidad !== "compartida" ||
+    !actividad.created_at
+  ) {
+    return 0;
+  }
+
+  const creadaEn = DateTime.fromISO(actividad.created_at).setZone(ZONA_HORARIA);
+  if (
+    !creadaEn.isValid ||
+    creadaEn < ahora.minus({ minutes: 5 }) ||
+    creadaEn > ahora.plus({ minutes: 1 })
+  ) {
+    return 0;
+  }
+
+  const clave = `nuevo-plan:${actividad.id}`;
+  if (await avisoYaEnviado(supabase, usuarioId, clave)) {
+    return 0;
+  }
+
+  const fecha = actividad.fecha_inicio
+    ? DateTime.fromISO(actividad.fecha_inicio, { zone: ZONA_HORARIA })
+    : null;
+  const fechaVisible = fecha?.isValid ? fecha.toFormat("d LLL") : "";
+  const horaVisible = actividad.hora ? actividad.hora.slice(0, 5) : "";
+  const detalles = [fechaVisible, horaVisible].filter(Boolean).join(" · ");
+  const contenido = {
+    title: `Han añadido un nuevo plan para ${actividad.nombre_persona}`,
+    body: [
+      obtenerNombreActividad(actividad),
+      detalles,
+    ].filter(Boolean).join(" · "),
+    url: "./",
+    tag: clave,
+  };
+
+  const enviadas = await enviarADispositivos(
+    supabase,
+    usuarioId,
+    dispositivos,
+    contenido,
+  );
+
+  if (enviadas > 0) {
+    await registrarAviso(
+      supabase,
+      usuarioId,
+      actividad.id,
+      clave,
+      "actividad",
+      actividad.fecha_inicio || null,
+    );
+    return 1;
+  }
+
+  return 0;
+}
+
+async function procesarCambiosActividad(
+  supabase: any,
+  usuarioId: string,
+  dispositivos: any[],
+  ahora: DateTime,
+) {
+  const { data: eventos, error } = await supabase
+    .from("notificaciones_cambios_actividad")
+    .select("*")
+    .eq("destinatario_id", usuarioId)
+    .is("procesado_at", null)
+    .gte("created_at", ahora.minus({ minutes: 5 }).toISO())
+    .order("created_at", { ascending: true })
+    .limit(20);
+
+  if (error) {
+    throw error;
+  }
+
+  let enviadas = 0;
+
+  for (const evento of eventos || []) {
+    const clave = `cambio-plan:${evento.id}`;
+
+    if (await avisoYaEnviado(supabase, usuarioId, clave)) {
+      const { error: errorProcesado } = await supabase
+        .from("notificaciones_cambios_actividad")
+        .update({ procesado_at: ahora.toISO() })
+        .eq("id", evento.id);
+
+      if (errorProcesado) {
+        throw errorProcesado;
+      }
+
+      continue;
+    }
+
+    const fecha = evento.fecha_inicio
+      ? DateTime.fromISO(evento.fecha_inicio, { zone: ZONA_HORARIA })
+      : null;
+    const fechaVisible = fecha?.isValid ? fecha.toFormat("d LLL") : "";
+    const horaVisible = evento.hora ? String(evento.hora).slice(0, 5) : "";
+    const detalles = [fechaVisible, horaVisible].filter(Boolean).join(" · ");
+    const titulos: Record<string, string> = {
+      añadida: `Han añadido un nuevo plan para ${evento.nombre_persona}`,
+      modificada: `Han actualizado el plan de ${evento.nombre_persona}`,
+      eliminada: `Han eliminado un plan de ${evento.nombre_persona}`,
+    };
+    const cambios = evento.tipo_evento === "modificada"
+      ? formatearDetallesCambios(evento.detalles_cambio)
+      : [];
+
+    const contenido = {
+      title: titulos[evento.tipo_evento] || "Ha cambiado un plan compartido",
+      body: cambios.length > 0
+        ? cambios.join(" · ")
+        : [obtenerNombreActividad(evento), detalles].filter(Boolean).join(" · "),
+      url: "./",
+      tag: clave,
+    };
+
+    const dispositivosNotificados = await enviarADispositivos(
+      supabase,
+      usuarioId,
+      dispositivos,
+      contenido,
+    );
+
+    if (dispositivosNotificados > 0) {
+      // No vinculamos el historial a la actividad: puede haberse eliminado.
+      await registrarAviso(
+        supabase,
+        usuarioId,
+        null,
+        clave,
+        "actividad",
+        evento.fecha_inicio || null,
+      );
+
+      const { error: errorProcesado } = await supabase
+        .from("notificaciones_cambios_actividad")
+        .update({ procesado_at: ahora.toISO() })
+        .eq("id", evento.id);
+
+      if (errorProcesado) {
+        throw errorProcesado;
+      }
+
+      enviadas++;
+    }
+  }
+
+  return enviadas;
+}
+
 async function obtenerDispositivos(supabase: any, usuarioId: string) {
   const { data, error } = await supabase
     .from("dispositivos_notificaciones")
@@ -165,16 +353,20 @@ async function obtenerDispositivos(supabase: any, usuarioId: string) {
 async function obtenerActividades(supabase: any, usuarioId: string) {
   const { data: membresias, error: errorMembresias } = await supabase
     .from("miembros_familia")
-    .select("familia_id")
+    .select("familia_id, rol")
     .eq("usuario_id", usuarioId);
 
   if (errorMembresias) {
     throw errorMembresias;
   }
 
-  const familias = (membresias || []).map((membresia: any) =>
-    membresia.familia_id
+  const rolesPorFamilia = new Map(
+    (membresias || []).map((membresia: any) => [
+      membresia.familia_id,
+      membresia.rol,
+    ]),
   );
+  const familias = [...rolesPorFamilia.keys()];
 
   if (familias.length === 0) {
     return [];
@@ -182,17 +374,38 @@ async function obtenerActividades(supabase: any, usuarioId: string) {
 
   const { data: personas, error: errorPersonas } = await supabase
     .from("personas")
-    .select("id, nombre")
+    .select("id, nombre, familia_id, tipo_persona, usuario_id")
     .in("familia_id", familias);
 
   if (errorPersonas) {
     throw errorPersonas;
   }
 
-  const nombresPersonas = new Map(
-    (personas || []).map((persona: any) => [persona.id, persona.nombre]),
+  const { data: permisos, error: errorPermisos } = await supabase
+    .from("permisos_personas_miembro")
+    .select("familia_id, persona_id")
+    .eq("usuario_id", usuarioId);
+
+  if (errorPermisos) {
+    throw errorPermisos;
+  }
+
+  const perfilesPermitidos = new Set(
+    (permisos || []).map((permiso: any) =>
+      `${permiso.familia_id}:${permiso.persona_id}`
+    ),
   );
-  const idsPersonas = [...nombresPersonas.keys()];
+  const personasVisibles = (personas || []).filter((persona: any) => {
+    const rol = rolesPorFamilia.get(persona.familia_id);
+    return persona.usuario_id === usuarioId ||
+      perfilesPermitidos.has(`${persona.familia_id}:${persona.id}`) ||
+      (rol === "propietaria" &&
+        (persona.tipo_persona === "menor" || persona.usuario_id === null));
+  });
+  const personaPorId = new Map(
+    personasVisibles.map((persona: any) => [persona.id, persona]),
+  );
+  const idsPersonas = [...personaPorId.keys()];
 
   if (idsPersonas.length === 0) {
     return [];
@@ -207,10 +420,26 @@ async function obtenerActividades(supabase: any, usuarioId: string) {
     throw errorActividades;
   }
 
-  return (actividades || []).map((actividad: any) => ({
-    ...actividad,
-    nombre_persona: nombresPersonas.get(actividad.persona_id),
-  }));
+  return (actividades || [])
+    .filter((actividad: any) => {
+      const persona = personaPorId.get(actividad.persona_id);
+      if (!persona) return false;
+
+      // El procesador usa service_role, que omite RLS. Reproducimos aquí
+      // el permiso de lectura para que no envíe avisos de perfiles/planes
+      // que la persona destinataria no puede consultar en la aplicación.
+      return actividad.creada_por === usuarioId ||
+        actividad.visibilidad === "compartida" ||
+        (actividad.creada_por == null &&
+          (persona.tipo_persona === "menor" ||
+            (persona.tipo_persona === "adulto" &&
+              (persona.usuario_id === usuarioId ||
+                rolesPorFamilia.get(persona.familia_id) === "propietaria"))));
+    })
+    .map((actividad: any) => ({
+      ...actividad,
+      nombre_persona: personaPorId.get(actividad.persona_id)?.nombre,
+    }));
 }
 
 async function procesarAvisoActividad(
@@ -436,6 +665,140 @@ function obtenerNombreActividad(actividad: any) {
   return NOMBRES_ACTIVIDADES[actividad.tipo_actividad] || "Actividad";
 }
 
+function formatearDetallesCambios(cambios: any): string[] {
+  if (!cambios || typeof cambios !== "object") {
+    return [];
+  }
+
+  const detalles: string[] = [];
+
+  if (cambios.actividad) {
+    detalles.push(formatearCambio(
+      "Actividad",
+      obtenerNombreActividad(cambios.actividad.antes),
+      obtenerNombreActividad(cambios.actividad.despues),
+    ));
+  }
+
+  if (cambios.persona) {
+    detalles.push(formatearCambio(
+      "Persona",
+      cambios.persona.antes,
+      cambios.persona.despues,
+    ));
+  }
+
+  if (cambios.fecha) {
+    detalles.push(formatearCambio(
+      "Fecha",
+      formatearFechaCambio(cambios.fecha.antes),
+      formatearFechaCambio(cambios.fecha.despues),
+    ));
+  }
+
+  if (cambios.hora) {
+    detalles.push(formatearCambio(
+      "Hora",
+      formatearHoraCambio(cambios.hora.antes),
+      formatearHoraCambio(cambios.hora.despues),
+    ));
+  }
+
+  if (cambios.hora_fin) {
+    detalles.push(formatearCambio(
+      "Fin",
+      formatearHoraCambio(cambios.hora_fin.antes) || "Sin hora de fin",
+      formatearHoraCambio(cambios.hora_fin.despues) || "Sin hora de fin",
+    ));
+  }
+
+  if (cambios.frecuencia) {
+    detalles.push(formatearCambio(
+      "Frecuencia",
+      formatearFrecuencia(cambios.frecuencia.antes),
+      formatearFrecuencia(cambios.frecuencia.despues),
+    ));
+  }
+
+  if (cambios.aviso) {
+    detalles.push(formatearCambio(
+      "Aviso",
+      formatearAviso(cambios.aviso.antes),
+      formatearAviso(cambios.aviso.despues),
+    ));
+  }
+
+  if (cambios.incluir_resumen) {
+    detalles.push(formatearCambio(
+      "Resumen diario",
+      cambios.incluir_resumen.antes ? "Sí" : "No",
+      cambios.incluir_resumen.despues ? "Sí" : "No",
+    ));
+  }
+
+  if (cambios.recordatorio) {
+    detalles.push(formatearCambio(
+      "Recordatorio",
+      cambios.recordatorio.antes || "Sin texto",
+      cambios.recordatorio.despues || "Sin texto",
+    ));
+  }
+
+  const visibles = detalles.slice(0, 3);
+  if (detalles.length > visibles.length) {
+    visibles.push(`y ${detalles.length - visibles.length} cambios más`);
+  }
+
+  return visibles;
+}
+
+function formatearCambio(etiqueta: string, anterior: any, nuevo: any) {
+  return `${etiqueta}: ${acortarTexto(String(anterior ?? "—"))} → ${acortarTexto(String(nuevo ?? "—"))}`;
+}
+
+function acortarTexto(texto: string) {
+  const limpio = texto.trim();
+  return limpio.length > 38 ? `${limpio.slice(0, 35)}…` : limpio;
+}
+
+function formatearFechaCambio(fecha: string | null) {
+  if (!fecha) return "Sin fecha";
+  const fechaValida = DateTime.fromISO(fecha, { zone: ZONA_HORARIA });
+  return fechaValida.isValid ? fechaValida.toFormat("d LLL") : fecha;
+}
+
+function formatearHoraCambio(hora: string | null) {
+  return hora ? String(hora).slice(0, 5) : "";
+}
+
+function formatearFrecuencia(frecuencia: any) {
+  const nombres: Record<string, string> = {
+    puntual: "Puntual",
+    semanal: "Semanal",
+    mensual: "Mensual",
+    anual: "Anual",
+  };
+  const nombre = nombres[frecuencia?.recurrencia] || frecuencia?.recurrencia || "—";
+  const dias = Array.isArray(frecuencia?.dias) && frecuencia.dias.length > 0
+    ? ` (${frecuencia.dias.join(", ")})`
+    : "";
+  return `${nombre}${dias}`;
+}
+
+function formatearAviso(aviso: any) {
+  const nombres: Record<string, string> = {
+    "sin-aviso": "Sin aviso",
+    "una-hora-antes": "1 hora antes",
+    "un-dia-antes": "1 día antes",
+    "hora-concreta": "A una hora concreta",
+  };
+  const nombre = nombres[aviso?.tipo_aviso] || aviso?.tipo_aviso || "Sin aviso";
+  const hora = formatearHoraCambio(aviso?.hora_aviso);
+  return hora && ["un-dia-antes", "hora-concreta"].includes(aviso?.tipo_aviso)
+    ? `${nombre} (${hora})`
+    : nombre;
+}
+
 async function avisoYaEnviado(supabase: any, usuarioId: string, clave: string) {
   const { data, error } = await supabase
     .from("avisos_enviados")
@@ -457,7 +820,7 @@ async function registrarAviso(
   actividadId: string | null,
   clave: string,
   tipo: string,
-  fechaActividad: string,
+  fechaActividad: string | null,
 ) {
   const { error } = await supabase.from("avisos_enviados").insert({
     usuario_id: usuarioId,
