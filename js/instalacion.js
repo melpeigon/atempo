@@ -8,6 +8,11 @@ const mensajeInstalacion = document.querySelector("#mensaje-instalacion");
 
 let avisoInstalacionAndroid = null;
 
+function esRecuperacionContrasena() {
+  return window.location.hash.includes("type=recovery") ||
+    new URLSearchParams(window.location.search).get("type") === "recovery";
+}
+
 function comprobarSiEstaInstalada() {
   const instaladaComoAplicacion = window.matchMedia("(display-mode: standalone)").matches;
   const instaladaEnIphone = window.navigator.standalone === true;
@@ -28,7 +33,7 @@ function comprobarSiEsIphone() {
 }
 
 function mostrarInstruccionesIphone() {
-  if (comprobarSiEstaInstalada()) {
+  if (comprobarSiEstaInstalada() || esRecuperacionContrasena()) {
     return;
   }
 
@@ -61,7 +66,7 @@ async function instalarAtempo() {
 window.addEventListener("beforeinstallprompt", function (evento) {
   evento.preventDefault();
 
-  if (comprobarSiEstaInstalada()) {
+  if (comprobarSiEstaInstalada() || esRecuperacionContrasena()) {
     return;
   }
 
@@ -87,7 +92,11 @@ if (comprobarSiEsIphone()) {
   mostrarInstruccionesIphone();
 }
 
-if (comprobarSiEsAndroid() && !comprobarSiEstaInstalada()) {
+if (
+  comprobarSiEsAndroid() &&
+  !comprobarSiEstaInstalada() &&
+  !esRecuperacionContrasena()
+) {
   pantallaInstalacion.hidden = false;
   instalacionAndroid.hidden = false;
   botonInstalar.textContent = "Preparando instalación…";
