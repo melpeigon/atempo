@@ -190,3 +190,7 @@
 .boton-cerrar-notificaciones:active {
   transform: scale(0.98);
 }
+
+.version-app-menu {
+  margin: 14px 0 0;
+}

@@ -4,10 +4,8 @@ Atempo es una agenda familiar pensada para aliviar la carga mental de recordar
 horarios, actividades y avisos. Cada persona tiene un color propio, y sus planes
 se muestran en la agenda diaria y en el calendario.
 
-La aplicación está actualmente en fase de pruebas con testers. La última versión
-estable publicada es la **1.4.0**. El código de la siguiente versión está
-registrado como candidata **1.5.0-beta.1** y se está probando en dispositivos
-reales. La versión estable se cerrará después de revisar ese feedback.
+Atempo está actualmente en fase de pruebas con testers. La versión estable que
+se está preparando para el lanzamiento es la **1.5.0**.
 
 ## Funciones principales
 

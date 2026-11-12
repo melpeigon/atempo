@@ -4,7 +4,7 @@ Este archivo recoge las novedades principales de cada versión. Las Releases de
 GitHub conservan el punto exacto del código publicado; este documento explica
 qué cambió entre versiones.
 
-## Candidata 1.5.0-beta.1 — en pruebas
+## 1.5.0 — 12 de noviembre de 2026
 
 ### Añadido
 
@@ -13,6 +13,7 @@ qué cambió entre versiones.
   cambiaron, como la actividad, fecha, hora, recurrencia o aviso.
 - Columna en el panel de administración para ver con qué otras cuentas comparte
   agenda cada tester.
+- Versión visible en el menú y al final de la guía de uso.
 
 ### Mejorado
 
@@ -20,12 +21,9 @@ qué cambió entre versiones.
   evita enviar avisos sobre información que la persona destinataria no puede ver.
 - Corregida la lectura de permisos necesaria para preparar los resúmenes diarios
   de agendas con perfiles compartidos.
-
-> El procesador ya está desplegado en producción y las testers están comprobando
-> los avisos con distintos móviles y situaciones. Esta candidata deja registrado
-> el estado de las pruebas; no es todavía el lanzamiento estable 1.5.0.
-> La columna de agendas compartidas del panel aún necesita aplicar y probar su
-> migración SQL.
+- Corregida la creación de perfiles para que quien los crea pueda recibir y
+  consultar la ficha recién creada. La migración `049_creador_puede_ver_persona.sql`
+  no comparte el perfil automáticamente.
 
 ## 1.4.0 — 29 de octubre de 2026
 

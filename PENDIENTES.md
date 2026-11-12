@@ -1,6 +1,6 @@
 # Pendientes de Atempo
 
-Última revisión: 10 de noviembre de 2026.
+Última revisión: 12 de noviembre de 2026.
 
 Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar primero el funcionamiento principal de la aplicación y dejar las mejoras más grandes para después.
 
@@ -183,13 +183,14 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [ ] Revisar errores de la consola.
 - [x] Guardar una versión estable en Git.
 
-## Versión 1.5.0 — pruebas con testers
+## Versión 1.5.0 — lanzamiento estable
 
-- [x] Registrar la candidata `1.5.0-beta.1` en Git con un commit y un tag antes de continuar las pruebas.
-- [ ] Comprobar en producción la columna «Agenda compartida con» del panel de administración.
-- [ ] Recoger y resolver el feedback de la ronda de pruebas en dispositivos reales.
-- [ ] Actualizar `VERSION_ATEMPO`, la versión de caché, `CHANGELOG.md` y el README al cerrar las pruebas.
-- [ ] Crear el commit de lanzamiento y el tag `v1.5.0` después de validar la versión.
+- [x] Probar en producción la columna «Agenda compartida con» del panel de administración.
+- [x] Probar que un perfil nuevo queda sin compartir hasta conceder el permiso, y que se oculta al retirarlo.
+- [x] Corregir la lectura de perfiles recién creados con la migración `049_creador_puede_ver_persona.sql`, sin compartirlos automáticamente.
+- [x] Actualizar `VERSION_ATEMPO`, la versión de caché, el número visible en el menú y la guía, `CHANGELOG.md` y el README para `1.5.0`.
+- [ ] Crear el commit de lanzamiento, subirlo a GitHub y crear el tag `v1.5.0`.
+- [ ] Publicar en el panel de administración el aviso de novedades para los testers.
 
 ## Versión 1.1 — cierre de versión
 

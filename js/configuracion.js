@@ -1,3 +1,3 @@
 // Datos generales compartidos por Atempo y su panel de administración.
 
-const VERSION_ATEMPO = "1.4.0";
+const VERSION_ATEMPO = "1.5.0";
