@@ -33,6 +33,13 @@ body {
   font-family: var(--font-body);
 }
 
+@media (max-width: 440px) {
+  body {
+    place-items: start center;
+    background: var(--crema);
+  }
+}
+
 button {
   font: inherit;
   color: inherit;
