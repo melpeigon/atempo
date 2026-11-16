@@ -1,0 +1,114 @@
+.pantalla-personas {
+  gap: 20px;
+  padding-top: 42px;
+  padding-bottom: calc(104px + env(safe-area-inset-bottom));
+}
+
+.pantalla-personas h1 {
+  margin: 0;
+  font-size: 32px;
+}
+
+.boton-anadir-persona-lista {
+  min-height: 48px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background:
+    linear-gradient(var(--crema), var(--crema)) padding-box,
+    var(--degradado) border-box;
+  color: var(--ciruela);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.boton-anadir-persona-lista span {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.lista-personas-completa {
+  display: grid;
+  gap: 12px;
+}
+
+.fila-persona-completa {
+  width: 100%;
+  min-height: 78px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  border: 1px solid var(--gris);
+  border-radius: 18px;
+  background: #fff;
+  color: var(--ciruela);
+  text-align: left;
+  cursor: pointer;
+}
+
+.avatar-persona-completa {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+
+.avatar-persona-completa img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
+.informacion-persona-completa {
+  min-width: 0;
+  flex: 1;
+  display: grid;
+  gap: 6px;
+}
+
+.nombre-persona-completa {
+  overflow: hidden;
+  font-size: 16px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.etiquetas-persona-completa {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.etiqueta-persona-completa {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--lila) 18%, white);
+  color: var(--ciruela);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.etiqueta-no-compartida-completa {
+  background: color-mix(in srgb, var(--gris) 45%, white);
+}
+
+.flecha-persona-completa {
+  flex: 0 0 auto;
+  color: var(--ciruela);
+  font-size: 27px;
+  line-height: 1;
+}
+
+.fila-persona-completa:focus-visible,
+.boton-anadir-persona-lista:focus-visible {
+  outline: 2px solid var(--ciruela);
+  outline-offset: 3px;
+}

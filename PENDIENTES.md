@@ -1,10 +1,17 @@
 # Pendientes de Atempo
 
-Última revisión: 12 de noviembre de 2026.
+Última revisión: 15 de noviembre de 2026.
 
 Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar primero el funcionamiento principal de la aplicación y dejar las mejoras más grandes para después.
 
 ## Siguiente paso
+
+- [ ] Terminar la navegación inferior en local: Hoy, Calendario, Personas, Compartir y el botón «+».
+- [ ] Completar la pantalla Personas con la lista de perfiles, su tipo, estado de compartir y acceso a su ficha; añadir desde ahí personas con el formulario actual.
+- [ ] Rediseñar la ficha de persona para ordenar el perfil, sus próximos planes y las acciones sin que parezcan pegadas al menú inferior.
+- [ ] Probar los enlaces del menú y el botón Atrás en móvil y escritorio; corregir lo que falle.
+- [ ] Cuando la navegación esté terminada y comprobada, valorar y hacer el commit de estos cambios.
+- [ ] Siguiente actualización: definir una estética coherente y más cuidada para toda Atempo. Debatir primero tipografía, colores, espaciados, botones, tarjetas y formularios; preparar una dirección visual común antes de rediseñar pantallas.
 
 - [x] Crear las tarjetas de las actividades de hoy.
 - [x] Ordenar las actividades de hoy por hora.
@@ -136,6 +143,8 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [ ] Preparar los datos existentes para poder migrarlos desde `localStorage`.
 - [x] Publicar una primera versión de prueba en GitHub Pages.
 - [x] Probar la instalación como aplicación web en el móvil.
+- [ ] Crear y guardar periódicamente una copia manual de seguridad de la base de datos de Supabase fuera del proyecto.
+- [ ] Documentar qué incluye la copia, cómo guardarla de forma segura y cómo restaurarla sin sobrescribir producción por accidente.
 
 ## Compartir la agenda entre adultos
 
@@ -152,6 +161,7 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Al retirar a un adulto, preguntar si quiere conservar (transfiriendo la autoría) o eliminar los planes compartidos de menores creados por quien se marcha; mantener intactos los privados y perfiles.
 - [x] Al salir, permitir al adulto invitado copiar a su agenda propia los perfiles infantiles compartidos y sus planes visibles; mantener los originales en la agenda compartida.
 - [ ] Si quien comparte la agenda retira al otro adulto, avisarle dentro de Atempo de que ha dejado de tener acceso y preguntarle si quiere conservar en su agenda propia copias de los perfiles compartidos y sus planes o eliminarlos solo de su agenda; la persona que los compartió conserva siempre los originales.
+- [ ] Permitir que un miembro comparta voluntariamente su propio perfil adulto con la persona titular dentro de la agenda compartida, sin tener que compartir una agenda completa; pedir consentimiento explícito y protegerlo con permisos RLS/RPC específicos.
 - [x] Probar en producción el aviso push al crear una actividad compartida; solo llega a otro adulto con acceso al perfil y avisos individuales activos.
 - [x] Ejecutar `sql/048_detallar_cambios_actividad_compartida.sql` y desplegar `procesar-avisos` en producción.
 - [ ] Completar pruebas con testers en distintos móviles: creación, modificación de campos (actividad, fecha, hora, aviso), borrado, permisos del perfil y preferencias de notificación.
@@ -283,6 +293,8 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [ ] Permitir que cada familia cree sus propias categorías de actividad, con nombre e icono, además de las categorías incluidas en Atempo.
 - [ ] Permitir editar, ordenar y eliminar categorías personalizadas sin afectar a las actividades ya guardadas.
 - [ ] Permitir indicar la duración de una actividad o su hora de finalización.
+- [ ] En Inicio, permitir cambiar de día deslizando horizontalmente para consultar los planes del día anterior o siguiente.
+- [ ] Añadir una papelera de Atempo para recuperar personas o actividades eliminadas accidentalmente, con un plazo de conservación y una acción de borrado definitivo.
 - [ ] Mostrar la duración en la ficha y valorar su uso para detectar actividades que se solapan.
 - [ ] Permitir que una misma actividad pertenezca a dos o más personas sin duplicarla.
 - [ ] Representar las actividades compartidas con un único icono y los colores de todas las personas asociadas.

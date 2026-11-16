@@ -1,0 +1,247 @@
+.pantalla-compartir {
+  gap: 16px;
+  padding-top: 42px;
+  padding-bottom: calc(112px + env(safe-area-inset-bottom));
+}
+
+.pantalla-compartir h1 {
+  margin: 0;
+  font-size: 32px;
+}
+
+.introduccion-compartir {
+  margin-top: -8px;
+  color: #746b75;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.boton-compartir-agenda {
+  min-height: 48px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--degradado);
+  color: var(--ciruela);
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+
+.boton-compartir-agenda[hidden] {
+  display: none;
+}
+
+.adultos-con-acceso {
+  display: grid;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.adultos-con-acceso h2 {
+  font-size: 23px;
+}
+
+#lista-adultos-compartidos {
+  display: grid;
+  gap: 12px;
+}
+
+.grupo-agenda-permisos {
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.grupo-agenda-permisos h3 {
+  margin: 4px 0 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+#estado-adultos-compartidos {
+  color: #746b75;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+#estado-adultos-compartidos.es-error,
+.mensaje-permisos-compartir.es-error {
+  color: #9b3f50;
+}
+
+.tarjeta-adulto-compartido {
+  overflow: hidden;
+  border: 1px solid var(--gris);
+  border-radius: 18px;
+  background: #fff;
+}
+
+.resumen-adulto-compartido {
+  min-height: 72px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.resumen-adulto-compartido::-webkit-details-marker {
+  display: none;
+}
+
+.resumen-adulto-compartido::after {
+  content: "⌄";
+  margin-left: auto;
+  font-size: 22px;
+  transition: transform 180ms ease;
+}
+
+.tarjeta-adulto-compartido[open] .resumen-adulto-compartido::after {
+  transform: rotate(180deg);
+}
+
+.icono-adulto-compartido {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--lila) 24%, white);
+  color: var(--ciruela);
+  font-size: 26px;
+}
+
+.datos-adulto-compartido {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.datos-adulto-compartido strong {
+  overflow-wrap: anywhere;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.rol-adulto-compartido {
+  color: var(--ciruela);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.estado-permiso-adulto {
+  color: #746b75;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.contenido-adulto-compartido {
+  padding: 0 12px 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.grupo-perfiles-compartidos,
+.grupo-permisos-edicion {
+  min-width: 0;
+  margin: 0;
+  padding: 10px;
+  display: grid;
+  gap: 7px;
+  border: 1px solid var(--gris);
+  border-radius: 14px;
+}
+
+.grupo-perfiles-compartidos legend,
+.grupo-permisos-edicion legend {
+  padding: 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.fila-perfil-permisos {
+  min-height: 38px;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--crema) 65%, white);
+  font-size: 13px;
+}
+
+.fila-perfil-permisos input,
+.opcion-permiso-edicion input {
+  accent-color: #a87db3;
+}
+
+.fila-perfil-permisos small {
+  margin-left: auto;
+  color: #746b75;
+  font-size: 11px;
+}
+
+.opcion-permiso-edicion {
+  padding: 7px 6px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.opcion-permiso-edicion input {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.resumen-permiso-recibido {
+  padding: 10px;
+  display: grid;
+  gap: 4px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--crema) 65%, white);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.resumen-permiso-recibido p {
+  margin: 0;
+  color: #746b75;
+}
+
+.ayuda-permisos-compartir,
+.mensaje-permisos-compartir {
+  color: #746b75;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.boton-guardar-permisos-compartir {
+  min-height: 42px;
+  justify-self: center;
+  padding: 9px 20px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--degradado);
+  color: var(--ciruela);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.boton-guardar-permisos-compartir:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.boton-guardar-permisos-compartir:focus-visible,
+.resumen-adulto-compartido:focus-visible {
+  outline: 2px solid var(--ciruela);
+  outline-offset: 2px;
+}

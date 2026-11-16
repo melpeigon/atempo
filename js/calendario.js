@@ -1,8 +1,6 @@
 // Elementos del calendario
 
-const botonVerCalendario = document.querySelector("#boton-ver-calendario");
 const pantallaCalendario = document.querySelector("#pantalla-calendario");
-const botonVolverCalendario = document.querySelector("#boton-volver-calendario");
 const tituloMesCalendario = document.querySelector("#mes-calendario");
 const cuadriculaCalendario = document.querySelector("#cuadricula-calendario");
 const botonMesAnterior = document.querySelector("#boton-mes-anterior");
@@ -264,13 +262,8 @@ function ocultarActividadesDelDia() {
 }
 
 function abrirCalendario() {
-  pantallaInicio.hidden = true;
-  pantallaCalendario.hidden = false;
   registrarPantalla("calendario");
-}
-
-function volverInicioDesdeCalendario() {
-  history.back();
+  mostrarPantallaDesdeHistorial(history.state);
 }
 
 function mostrarMesAnterior() {
@@ -283,8 +276,6 @@ function mostrarMesSiguiente() {
   mostrarMes();
 }
 
-botonVerCalendario.addEventListener("click", abrirCalendario);
-botonVolverCalendario.addEventListener("click", volverInicioDesdeCalendario);
 botonMesAnterior.addEventListener("click", mostrarMesAnterior);
 botonMesSiguiente.addEventListener("click", mostrarMesSiguiente);
 botonAnadirActividadDia.addEventListener("click", function () {

@@ -108,10 +108,12 @@ const botonPersona = document.querySelector("#boton-primera-persona");
 const emergenteNuevaPersona = document.querySelector("#emergente-nueva-persona");
 const botonCerrarEmergente = document.querySelector("#boton-cerrar-emergente");
 const formularioNuevaPersona = document.querySelector("#formulario-nueva-persona");
-const botonAnadirOtraPersona = document.querySelector("#boton-anadir-otra-persona");
 
 const estadoSinPersonas = document.querySelector("#estado-sin-personas");
 const listaPersonas = document.querySelector("#lista-personas");
+const listaPersonasCompleta = document.querySelector("#lista-personas-completa");
+const botonAnadirPersonaLista = document.querySelector("#boton-anadir-persona-lista");
+const pantallaPersonasDesdeApp = document.querySelector("#pantalla-personas");
 
 
 const pantallaInicio = document.querySelector("#pantalla-inicio");
@@ -387,6 +389,7 @@ function abrirFichaPersona(idPersona, guardarEnHistorial = true) {
   );
 
   pantallaInicio.hidden = true;
+  pantallaPersonasDesdeApp.hidden = true;
   fichaPersona.hidden = false;
 
   if (guardarEnHistorial) {
@@ -601,16 +604,10 @@ async function guardarNuevaPersona(evento) {
 
 function renderizarPersonas() {
   listaPersonas.replaceChildren();
+  listaPersonasCompleta.replaceChildren();
   botonPersona.disabled = false;
-  botonAnadirOtraPersona.disabled = false;
 
-  if (personas.length === 0) {
-    estadoSinPersonas.hidden = false;
-    botonAnadirOtraPersona.hidden = true;
-  } else {
-    estadoSinPersonas.hidden = true;
-    botonAnadirOtraPersona.hidden = false;
-  }
+  estadoSinPersonas.hidden = personas.length !== 0;
 
   for (const persona of personas) {
     const tarjetaPersona = document.createElement("button");
@@ -641,17 +638,64 @@ function renderizarPersonas() {
 
     tarjetaPersona.append(avatarPersona, nombrePersona);
 
-
     listaPersonas.append(tarjetaPersona);
+
+    const filaPersona = document.createElement("button");
+    filaPersona.type = "button";
+    filaPersona.className = "fila-persona-completa";
+    filaPersona.dataset.id = persona.id;
+    filaPersona.setAttribute("aria-label", `Abrir ficha de ${persona.nombre}`);
+    filaPersona.addEventListener("click", function () {
+      abrirFichaPersona(persona.id);
+    });
+
+    const avatarCompleto = document.createElement("span");
+    avatarCompleto.className = "avatar-persona-completa";
+    avatarCompleto.style.backgroundColor = persona.color;
+
+    const iconoCompleto = document.createElement("img");
+    iconoCompleto.src = rutasIconos[persona.icono];
+    iconoCompleto.alt = "";
+    avatarCompleto.append(iconoCompleto);
+
+    const informacionPersona = document.createElement("span");
+    informacionPersona.className = "informacion-persona-completa";
+
+    const nombreCompleto = document.createElement("strong");
+    nombreCompleto.className = "nombre-persona-completa";
+    nombreCompleto.textContent = persona.nombre;
+
+    const etiquetasPersona = document.createElement("span");
+    etiquetasPersona.className = "etiquetas-persona-completa";
+
+    const tipoCompleto = document.createElement("span");
+    tipoCompleto.className = "etiqueta-persona-completa";
+    tipoCompleto.textContent = persona.tipoPersona === "menor" ? "Infantil" : "Adulto";
+
+    const compartirCompleto = document.createElement("span");
+    compartirCompleto.className = persona.compartida
+      ? "etiqueta-persona-completa etiqueta-compartida-completa"
+      : "etiqueta-persona-completa etiqueta-no-compartida-completa";
+    compartirCompleto.textContent = persona.compartida ? "Compartida" : "Solo en tu agenda";
+
+    const flechaPersona = document.createElement("span");
+    flechaPersona.className = "flecha-persona-completa";
+    flechaPersona.setAttribute("aria-hidden", "true");
+    flechaPersona.textContent = "›";
+
+    etiquetasPersona.append(tipoCompleto, compartirCompleto);
+    informacionPersona.append(nombreCompleto, etiquetasPersona);
+    filaPersona.append(avatarCompleto, informacionPersona, flechaPersona);
+    listaPersonasCompleta.append(filaPersona);
   }
 }
 
 
 botonPersona.addEventListener("click", abrirEmergenteNuevaPersona);
 botonCerrarEmergente.addEventListener("click", cerrarEmergenteNuevaPersona);
+botonAnadirPersonaLista.addEventListener("click", abrirEmergenteNuevaPersona);
 
 formularioNuevaPersona.addEventListener("submit", guardarNuevaPersona);
-botonAnadirOtraPersona.addEventListener("click", abrirEmergenteNuevaPersona);
 
 botonVolverInicio.addEventListener("click", volverInicio);
 botonEliminarPersona.addEventListener("click", eliminarPersonaSeleccionada);

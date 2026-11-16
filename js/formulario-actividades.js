@@ -1,8 +1,7 @@
 // Elementos del formulario de actividades
 
-const botonAnadirActividad = document.querySelector("#boton-anadir-actividad");
 const botonAnadirActividadPersona = document.querySelector("#boton-anadir-actividad-persona");
-botonAnadirActividad.disabled = false;
+
 botonAnadirActividadPersona.disabled = false;
 
 const botonCerrarActividad = document.querySelector("#boton-cerrar-actividad");
@@ -599,10 +598,6 @@ async function guardarNuevaActividad(evento) {
     document.querySelector("#aviso-regreso-bienvenida").hidden = true;
   }
 }
-
-botonAnadirActividad.addEventListener("click", function () {
-  abrirEmergenteNuevaActividad();
-});
 
 botonAnadirActividadPersona.addEventListener("click", function () {
   abrirEmergenteNuevaActividad(idPersonaSeleccionada);

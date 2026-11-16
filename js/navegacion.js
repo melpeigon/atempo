@@ -1,5 +1,8 @@
 // Navegación con el botón Atrás del móvil
 
+const pantallaPersonas = document.querySelector("#pantalla-personas");
+const pantallaCompartir = document.querySelector("#pantalla-compartir");
+
 function registrarPantalla(nombrePantalla, datos = {}) {
   history.pushState(
     {
@@ -21,6 +24,8 @@ function cerrarDialogosDeNavegacion() {
 }
 
 function mostrarInicioDesdeHistorial() {
+  pantallaPersonas.hidden = true;
+  pantallaCompartir.hidden = true;
   cerrarDialogosDeNavegacion();
 
   pantallaInicio.hidden = false;
@@ -34,6 +39,19 @@ function mostrarPantallaDesdeHistorial(estado) {
   const pantalla = estado?.pantalla || "inicio";
 
   mostrarInicioDesdeHistorial();
+  if (pantalla === "personas") {
+    pantallaInicio.hidden = true;
+    pantallaPersonas.hidden = false;
+    window.scrollTo(0, 0);
+    return;
+  }
+
+  if (pantalla === "compartir") {
+    pantallaInicio.hidden = true;
+    pantallaCompartir.hidden = false;
+    window.scrollTo(0, 0);
+    return;
+  }
 
   if (pantalla === "calendario") {
     pantallaInicio.hidden = true;

@@ -236,6 +236,7 @@ async function prepararSesion() {
 
   if (familiaCargada) {
     pantallaAcceso.hidden = true;
+    mostrarMenuInferior(true);
     avisoRegresoBienvenida.hidden = !sessionStorage.getItem("atempo-bienvenida-regreso");
     if (sessionStorage.getItem("atempo-bienvenida-revision") === "1") {
       avisoRegresoBienvenida.querySelector("p").textContent = "Cuando termines, puedes volver a revisar los primeros pasos.";
@@ -432,6 +433,7 @@ async function cerrarSesion() {
   familiasUsuario = [];
   vaciarDatosDeLaAgenda();
   pantallaAcceso.hidden = false;
+  mostrarMenuInferior(false);
   cerrarMenu();
 }
 
