@@ -1,17 +1,17 @@
 # Pendientes de Atempo
 
-Última revisión: 15 de noviembre de 2026.
+Última revisión: 16 de noviembre de 2026.
 
 Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar primero el funcionamiento principal de la aplicación y dejar las mejoras más grandes para después.
 
 ## Siguiente paso
 
-- [ ] Terminar la navegación inferior en local: Hoy, Calendario, Personas, Compartir y el botón «+».
-- [ ] Completar la pantalla Personas con la lista de perfiles, su tipo, estado de compartir y acceso a su ficha; añadir desde ahí personas con el formulario actual.
-- [ ] Rediseñar la ficha de persona para ordenar el perfil, sus próximos planes y las acciones sin que parezcan pegadas al menú inferior.
-- [ ] Probar los enlaces del menú y el botón Atrás en móvil y escritorio; corregir lo que falle.
-- [ ] Cuando la navegación esté terminada y comprobada, valorar y hacer el commit de estos cambios.
+- [ ] Probar en móvil, con sesión iniciada, los enlaces del menú, las fichas, el botón «+» y el botón Atrás.
+- [ ] Cuando terminen las pruebas, decidir si la 1.6.0 se publica primero con un tester de confianza o se anuncia al grupo.
+- [ ] Actualizar el aviso de novedades de la versión 1.6.0 en el panel de administración antes de publicarla.
+- [ ] Fusionar la rama `codex/menu-inferior` con `master`, subirla a GitHub y crear el tag `v1.6.0` al confirmar el lanzamiento.
 - [ ] Siguiente actualización: definir una estética coherente y más cuidada para toda Atempo. Debatir primero tipografía, colores, espaciados, botones, tarjetas y formularios; preparar una dirección visual común antes de rediseñar pantallas.
+- [ ] Rediseñar la ficha de persona para ordenar el perfil, sus próximos planes y las acciones sin que parezcan pegadas al menú inferior.
 
 - [x] Crear las tarjetas de las actividades de hoy.
 - [x] Ordenar las actividades de hoy por hora.
@@ -201,6 +201,15 @@ Este archivo es una hoja de ruta. Las tareas están ordenadas para terminar prim
 - [x] Actualizar `VERSION_ATEMPO`, la versión de caché, el número visible en el menú y la guía, `CHANGELOG.md` y el README para `1.5.0`.
 - [ ] Crear el commit de lanzamiento, subirlo a GitHub y crear el tag `v1.5.0`.
 - [ ] Publicar en el panel de administración el aviso de novedades para los testers.
+
+## Versión 1.6.0 — en preparación
+
+- [x] Crear el menú inferior y conectarlo con Hoy, Calendario, Personas, Compartir y añadir actividad.
+- [x] Crear la pantalla Personas con perfiles, tipo, estado compartido y acceso a las fichas.
+- [x] Crear la pantalla Compartir con información de adultos y permisos por agenda.
+- [x] Actualizar la versión de la aplicación, las etiquetas visibles, la caché PWA, el README y el changelog.
+- [ ] Probar los flujos principales en un móvil con sesión iniciada.
+- [ ] Publicar la versión para testers y crear el tag `v1.6.0`.
 
 ## Versión 1.1 — cierre de versión
 

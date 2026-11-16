@@ -4,6 +4,24 @@ Este archivo recoge las novedades principales de cada versión. Las Releases de
 GitHub conservan el punto exacto del código publicado; este documento explica
 qué cambió entre versiones.
 
+## 1.6.0 — en preparación
+
+### Añadido
+
+- Menú inferior para cambiar entre Hoy, Calendario, Personas y Compartir, con
+  el botón «+» para añadir actividades.
+- Pantalla Personas con la lista de perfiles, su tipo, si están compartidos y
+  acceso a sus fichas.
+- Pantalla Compartir dentro de Atempo para consultar quién tiene acceso a cada
+  agenda y revisar qué permisos concede y recibe cada adulto.
+
+### Mejorado
+
+- La navegación mantiene seleccionada la sección correspondiente al abrir una
+  ficha y al volver atrás.
+- El botón de añadir actividad responde al toque y las acciones antiguas de
+  Inicio se trasladan al nuevo menú.
+
 ## 1.5.0 — 12 de noviembre de 2026
 
 ### Añadido

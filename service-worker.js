@@ -1,4 +1,4 @@
-const NOMBRE_CACHE = "atempo-v72";
+const NOMBRE_CACHE = "atempo-v73";
 
 const ARCHIVOS_PRINCIPALES = [
   "./",
@@ -18,6 +18,9 @@ const ARCHIVOS_PRINCIPALES = [
   "./css/acceso.css",
   "./css/invitaciones.css",
   "./css/bienvenida.css",
+  "./css/menu-inferior.css",
+  "./css/personas.css",
+  "./css/compartir.css",
   "./css/responsive.css",
   "./js/app.js",
   "./js/supabase.js",
@@ -31,6 +34,8 @@ const ARCHIVOS_PRINCIPALES = [
   "./js/actividades.js",
   "./js/formulario-actividades.js",
   "./js/calendario.js",
+  "./js/menu-inferior.js",
+  "./js/compartir.js",
   "./js/menu.js",
   "./js/guia.js",
   "./js/instalacion.js",
@@ -67,6 +72,8 @@ const ARCHIVOS_PRINCIPALES = [
   "./Branding/iconos/SVG/abuelo.svg",
   "./Branding/iconos/SVG/beba.svg",
   "./Branding/iconos/SVG/baile.svg",
+  "./Branding/iconos/SVG/hoy.svg",
+  "./Branding/iconos/SVG/compartir.svg",
   "./Branding/iconos/SVG/baloncesto.svg",
   "./Branding/iconos/SVG/celebraci%C3%B3n.svg",
   "./Branding/iconos/SVG/dibujo.svg",
