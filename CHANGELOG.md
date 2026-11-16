@@ -21,6 +21,8 @@ qué cambió entre versiones.
   ficha y al volver atrás.
 - El botón de añadir actividad responde al toque y las acciones antiguas de
   Inicio se trasladan al nuevo menú.
+- Las pantallas Inicio, Personas y Compartir se ajustan a la altura visible del
+  móvil incluso cuando cambian las barras del navegador.
 
 ## 1.5.0 — 12 de noviembre de 2026
 
